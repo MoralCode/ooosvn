@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="Module1" script:language="StarBasic">Sub ImportSVN()
-  
-  dim document   as object
+
+ImportSVN = 1
+
+dim document   as object
 dim dispatcher as object
 
 document   = ThisComponent.CurrentController.Frame
@@ -22,12 +24,14 @@ sDocURL = FileName(oDoc)
 
 &apos; Test for wrong file type
 if validatefiletype(sDocURL)=&quot;false&quot; then
+ImportSVN = 0
 	exit sub
 end if
 
 &apos; Test to see if file of same name is already under change control
 If FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/&quot;) Then
 MsgBox( &quot;A file named &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is already under version control.  Please save as a different file name before reattempting.&quot;, 16, &quot;File not imported&quot;)
+ImportSVN = 0
 Exit Sub
 End If
          
@@ -64,46 +68,6 @@ Sub CommitSVN()
 
 cQuote = Chr( 34 )
 	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/commit.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; Comment + cQuote)
-	
-end sub
-
-Sub oldRevertSVN()
-
-dim document   as object
-dim dispatcher as object
-
-document   = ThisComponent.CurrentController.Frame
-dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
-
-  Dim oDoc
-  Dim sDocURL
-  Dim repo
-  oDoc = ThisComponent
-
-LoadTools
-
-  If (oDoc.hasLocation()) Then
-    sDocURL = oDoc.getURL()
-    sDocURL2 = mid(sDocURL, 8)
-    repo = getRepo
-    WorkingDir = getWorkingDir
-    else sDocURL = &quot;[no name]&quot;
-
-  End If
-  
-  &apos; Test to see if file of same name is already under change control
-	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/&quot;) Then
-		MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable version management.&quot;, 16, &quot;Error&quot;)
-		Exit Sub
-	End If
-  
-  version = InputBox (&quot;Enter version of this document to recover:&quot;, 1, &quot;Revert&quot;)
-  exit sub
-
-cQuote = Chr( 34 )
-	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version + cQuote, &quot;&quot;,6,true)
-	
-	dispatcher.executeDispatch(document, &quot;.uno:Reload&quot;, &quot;&quot;, 0, Array())
 	
 end sub
 
@@ -223,46 +187,6 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
 	dispatcher.executeDispatch(document, &quot;.uno:Reload&quot;, &quot;&quot;, 0, Array())
    
 End sub
-
-sub OldLogSVN()
-
-  Dim oDoc
-  Dim sDocURL
-  Dim repo
-  oDoc = ThisComponent
-
-LoadTools
-  If (oDoc.hasLocation()) Then
-	sDocURL = oDoc.getURL()
-    sDocURL2 = mid(sDocURL, 8)
-    repo = getRepo
-    WorkingDir = getWorkingDir
-    else sDocURL = &quot;[no name]&quot;
-End If
-
-&apos; Test to see if file of same name is already under change control
-	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/&quot;) Then
-		MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable version management.&quot;, 16, &quot;Error&quot;)
-		Exit Sub
-	End If
-
-cQuote = Chr( 34 )
-
-	Shell( &quot;bash -c &quot; + cQuote + &quot;cd &quot; &amp; WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/ &amp;&amp; svn log -v &gt; &quot; &amp; WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/log.txt&quot; + cQuote, &quot;&quot;,6,true)
-	
-	iNumber = Freefile
-	aFile = WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/log.txt&quot;
-Open aFile For Input As iNumber
-While not eof(iNumber)
-Line Input #iNumber, sLine
-If sLine &lt;&gt;&quot;&quot; then
-sMsg = sMsg &amp; sLine &amp; chr(13)
-end if
-wend
-Close #iNumber
-Msgbox (sMsg, 64, &quot;SVN log for &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;))
-
-end sub
 
 Sub RevertSVN()
 
@@ -725,10 +649,14 @@ If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL
 	Exit Sub
 End If
 
-    comment = &quot;Printed&quot;
-    
+        copytype = &quot;tag&quot;
+    copyname = &quot;tagtest&quot;
+    comment = &quot;tagtest&quot;
+    &apos; tag the active version     
     cQuote = Chr( 34 )
-	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/commit.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; Comment + cQuote, &quot;&quot;,6,true)
+	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/tag.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; copytype &amp; &quot; &quot; &amp; copyname &amp; &quot; &quot; &amp; comment + cQuote )
+  
+
   
 end sub
 
@@ -856,26 +784,29 @@ Dim sMsg As String
 End Sub
 
 REM ========================================================
+REM ========================================================
 function CreateSVN() as integer
-        CreateSVN = true
-
-        &apos;&apos; need to make sure we have SVN, and get path to svn and svnadmin executables
-        sSVNURL = PickFolder(sGetHomeURL(), &quot;Select a directory for the new repository&quot;)
-        ret = Shell(&quot;svnadmin create --fs-type fsfs &quot; &amp; sSVNURL, &quot;&quot;,6,true)
-        if ret &lt;&gt; 0 then
-                CreateSVN = false
-               msgbox(&quot;Failed&quot;)
-                exit function
-        end if
-       
- &apos;       if ConnectToSVN(sSVNDir) = true then
-  &apos;              bConnected = true
-   &apos;     else
-    &apos;            CreateSVN = false
-     &apos;           MsgBox(&quot;Repository created, but could not be opened.&quot;)
-      &apos;          exit function
-      &apos;  end if
+	CreateSVN = True
+	
+	&apos;&apos; need to make sure we have SVN, and get path to svn and svnadmin executables
+	ret = Shell(&quot;svn --help&quot;, 6,&quot;&quot;,true)
+	if ret &lt;&gt; 0 then
+		CreateSVN = false
+		MsgBox(&quot;Could not find svn. Please install SubVersion first.&quot; &amp; chr$(13) &amp; &quot;See http://subversion.tigris.org&quot;,48,&quot;Error&quot;)
+		exit function
+	end if
+		
+ 	sSVNURL = PickFolder(sGetHomeURL(), &quot;Select a folder for the new repository&quot;, &quot;&quot;)
+	ret = Shell(&quot;svnadmin create &quot;, 6, sSVNURL,true)
+	if ret &lt;&gt; 0 then
+		CreateSVN = false
+		MsgBox(&quot;Failed to create repository.&quot;,48,&quot;Error&quot;)
+		exit function
+	end if
+	
+	ConnectToSVN(sSVNURL)
 end function
+
 
 REM ========================================================
 &apos; PSEUDO CODE!
@@ -893,12 +824,15 @@ REM ========================================================
 &apos;end function
 
 REM ========================================================
-Function PickFolder( cFolder, title )
+Function PickFolder( cFolder, desc, title ) as string
    oFolderPickerDlg = createUnoService( &quot;com.sun.star.ui.dialogs.FolderPicker&quot; )
    If Len( cFolder ) &gt; 0 Then
       oFolderPickerDlg.setDisplayDirectory( ConvertToURL( cFolder ) )
    EndIf
-   oFolderPickerDlg.title = title
+   If len(title)&gt;0 then
+		oFolderPickerDlg.title = title
+   End if
+   oFolderPickerDlg.title = desc
    oFolderPickerDlg.execute()
    cPickedFolder = oFolderPickerDlg.getDirectory()
    PickFolder = ConvertFromURL( cPickedFolder )
@@ -930,5 +864,53 @@ Function FileName(oDoc as Object) as string
                 exit function
         End If
         FileName = sDocURL
+end function
+
+Function ErrBox(sMsg)
+	MsgBox(sMsg, 48, &quot;Error&quot;)
+end function
+
+Function IsWebAdd(sURL as string) as integer
+	IsWebAdd = false
+	if left(sURL,7) = &quot;http://&quot; then
+		IsWebAdd = true
+	end if	
+end function
+
+REM ========================================================
+function CallConnectToSVN
+	CallConnectToSVN = true
+
+&apos;&apos; not working!	
+&apos;&apos;	if not isempty(sGlobalRepoURL) then
+&apos;&apos;		ret = MsgBox(&quot;Already connected to repository:&quot; &amp; chr$(13) &amp; sGlobalRepoURL &amp; chr$(13) &amp; &quot;Are you sure you want to connect to another one?&quot;, 48 + 4 + 128, &quot;Warning&quot;)
+&apos;&apos;		if ret = 7 then
+&apos;&apos;			CallConnectToSVN = false
+&apos;&apos;			exit function
+&apos;&apos;		end if
+&apos;&apos;	end if
+		
+	
+&apos;&apos;	sRepoURL = InputBox(&quot;Enter repository folder or repository URL:&quot;)
+	
+	exitOK=com.sun.star.ui.dialogs.ExecutableDialogResults.OK
+	Library=DialogLibraries.GetByName(&quot;ooosvn&quot;)
+	Dialog=Library.GetByName(&quot;SelectRepo&quot;)
+	Dlg=CreateUnoDialog(Dialog)
+
+	If Dlg.Execute &lt;&gt; exitOK then
+		CallConnectToSVN = false
+		exit function
+	End If
+	URLField=Dlg.GetControl(&quot;ComboBox1&quot;)
+	sRepoURL=URLField.Text
+	if not IsWebAdd(sURL) then
+		sRepoURL = &quot;file://&quot; &amp; sRepoURL
+	end if 
+			
+&apos;	sRepoURL = PickFolder( sGetHomeURL(), &quot;Pick a repository folder or give full URL&quot;, &quot;&quot;)
+&apos;	sRepoURL = &quot;file:///tmp/avielTMP/svn&quot;
+	Dlg.Dispose
+	CallConnectToSVN = ConnectToSVN(sRepoURL)
 end function
 </script:module>
