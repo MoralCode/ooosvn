@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="UserGuide" script:language="StarBasic">REM  *****  BASIC  *****
+
+Sub GetUserguide
+
+dim dispatcher as object
+
+dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+
+WorkingDir = getWorkingDir
+
+   cQuote = Chr( 34 )
+
+   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/userguide.sh &quot; &amp; WorkingDir + cQuote , &quot;&quot;,6,true)
+
+StarDesktop.loadComponentfromURL(ConvertToURL(WorkingDir) &amp; &quot;/userguide.odt&quot;,&quot;_blank&quot;, 0, Array())
+
+End Sub
+</script:module>
