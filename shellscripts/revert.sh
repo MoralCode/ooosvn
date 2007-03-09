@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 cd $4/
 
 rm -rf $4/$2/trunk/

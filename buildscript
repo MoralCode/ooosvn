@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 # build OOoSVN from sourcefiles, as structured in SVN repo
 # Usage: sh buildscript [version]
 # eg.    sh buildscript 0.3.4

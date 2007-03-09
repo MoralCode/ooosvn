@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 for version in `svn log -q $3/$2 | grep r | cut -c2- | cut -d' ' -f1`
 do

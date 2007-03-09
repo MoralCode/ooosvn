@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 rm -f $4/$2/trunk/Pictures/*
 #rm -rf $4/$2/trunk/*

@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 unzip -o $1 -d $4/$2/trunk/ -x *.svn*
 svn mkdir $4/$2/$5
 cd $4/$2/trunk/
