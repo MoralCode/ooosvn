@@ -3,4 +3,6 @@
 <library:library xmlns:library="http://openoffice.org/2000/library" library:name="ooosvn" library:readonly="false" library:passwordprotected="false">
  <library:element library:name="Module1"/>
  <library:element library:name="UserGuide"/>
+ <library:element library:name="installation"/>
+ <library:element library:name="Zip"/>
 </library:library>

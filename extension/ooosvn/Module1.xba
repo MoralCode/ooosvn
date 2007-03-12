@@ -77,9 +77,7 @@ sub InfoSVN()
   Dim sDocURL
   Dim repo
   oDoc = ThisComponent
-&apos;  If (Not GlobalScope.BasicLibraries.isLibraryLoaded(&quot;Tools&quot;)) Then
-&apos;    GlobalScope.BasicLibraries.LoadLibrary(&quot;Tools&quot;)
-&apos;  End If
+
 LoadTools
   If (oDoc.hasLocation()) Then
 	sDocURL = oDoc.getURL()
@@ -716,40 +714,6 @@ Close #iNumber
 		
 End Sub
 
-Sub reportfiletypetest()
-
-Dim oDoc
- Dim sDocURL
-  Dim repo
-  oDoc = ThisComponent
-
-  LoadTools
-  If (oDoc.hasLocation()) Then
-	sDocURL = oDoc.getURL()
-    sDocURL2 = mid(sDocURL, 8)
-    repo = getRepo
-    WorkingDir = getWorkingDir
-    else sDocURL = &quot;[no name]&quot;
-End If
-
-oSFA       = createUNOService (&quot;com.sun.star.ucb.SimpleFileAccess&quot;)
-oInpStream = oSFA.openFileRead(sDocURL)
-
-Dim aProps(0) as new  com.sun.star.beans.PropertyValue
-aProps(0).Name = &quot;InputStream&quot;
-aProps(0).Value = oInpStream
-
-oTD = createUnoService(&quot;com.sun.star.document.TypeDetection&quot;)
-
-bDeepDetection: true
-sType = oTD.queryTypeByDescriptor(aProps(), true)
-
-oInpStream.closeInput()
-
-msgbox (sType)
-
-end sub
-
 Function getRepo()
 	aService = CreateUnoService(&quot;com.sun.star.util.PathSubstitution&quot;)
 	sUserPath = aService.substituteVariables(&quot;$(home)&quot;, true)
@@ -782,31 +746,6 @@ Dim sMsg As String
 	oDlgLog.execute
 		
 End Sub
-
-REM ========================================================
-REM ========================================================
-function CreateSVN() as integer
-	CreateSVN = True
-	
-	&apos;&apos; need to make sure we have SVN, and get path to svn and svnadmin executables
-	ret = Shell(&quot;svn --help&quot;, 6,&quot;&quot;,true)
-	if ret &lt;&gt; 0 then
-		CreateSVN = false
-		MsgBox(&quot;Could not find svn. Please install SubVersion first.&quot; &amp; chr$(13) &amp; &quot;See http://subversion.tigris.org&quot;,48,&quot;Error&quot;)
-		exit function
-	end if
-		
- 	sSVNURL = PickFolder(sGetHomeURL(), &quot;Select a folder for the new repository&quot;, &quot;&quot;)
-	ret = Shell(&quot;svnadmin create &quot;, 6, sSVNURL,true)
-	if ret &lt;&gt; 0 then
-		CreateSVN = false
-		MsgBox(&quot;Failed to create repository.&quot;,48,&quot;Error&quot;)
-		exit function
-	end if
-	
-	ConnectToSVN(sSVNURL)
-end function
-
 
 REM ========================================================
 &apos; PSEUDO CODE!
@@ -848,9 +787,19 @@ REM ========================================================
 Function FileName(oDoc as Object) as string
         If (oDoc.hasLocation()) Then
           sDocURL = oDoc.getURL()
-          repo = getRepo
-          WorkingDir = getWorkingDir
           
+          WorkingDir = getWorkingDir
+
+          &apos; Test for repo existence.
+          If NOT FileExists(WorkingDir) then
+                msgbox (&quot;Working directory &quot; &amp; WorkingDir &amp; &quot; not found.  Creating.&quot;, 16, &quot;Error&quot;)
+               CreateWorkingDir
+                FileName = &quot;&quot;
+        &apos;    exit function
+          end if
+          
+          repo = getRepo
+      
           &apos; Test for repo existence.
           If NOT FileExists(repo &amp; &quot;/README.txt&quot;) then
                 msgbox (&quot;Repository not found. Create it using:&quot; &amp; chr(13) &amp; &quot;svnadmin create --fs-type fsfs &quot; &amp; mid(repo, 8) &amp; chr(13) &amp; &quot;Then all scripts should be placed in &quot; &amp; WorkingDir, 16, &quot;Repository Error&quot;)

@@ -1,0 +1,83 @@
+Current ::
+
+### New Features ###
+Started adding icons to SVN menu.  More, including large size and high contrast, will happen over time.
+
+Added Userguide download tool: Help > Get latest OOoSVN Userguide.  This checks out the latest version of the document from Sourceforge and builds it for the user.
+
+Working directory creation function
+
+Shell script installation/upgrade function started
+
+### Bug Fixes ###
+Changed #! /bin/bash top #!/bin/bash which is more correct, even though both work.  Thanks to Richard Bos for his suggestion.
+
+0.3.3 :: 2007-03-06
+
+### New Features ###
+CreateSVN command added.  Not currently set up by default as it's better from a
+testing POV to do this on the command line.  Fully utilising this function is
+dependent upon implementing multi-repository handling.  Thanks to Yuval Aviel
+for his work on this.
+
+Some more modularisation work done.  Thanks to Yuval Aviel for his input.
+
+### Bug Fixes ###
+Changed a number of shell script executions so that OOo waits for the script to
+finish before executing.  This fixes many problems and makes the info and log
+display bugs (1654245, 1654246) fixed properly this time.  It also means that
+the documented is rebuilt and reloaded on import so the Repo-UUID field is held
+(1658949).  Thanks to Yuval Aviel for his help on this.
+
+Fixed a minor bug in the syntax of a few cut commands.  Not harmful, just not
+correct.  Thanks to Richard Bos for his suggestion.
+
+1654590 - Document reloads now happen immediately.  Much quicker and safer. 
+This is related to the big load of bug fixes too.
+
+
+0.3.2 :: 2007-02-13
+
+### New features ###
+Switched back to using .zip extension from .oxt.  The packages are exactly the
+same but .zip will install on OOo <2.1 without problems.
+
+1654374 - Metadata can now be written to meta.xml on import.  Currently all it
+does is replace the Info 1 field with the Repository-UUID field.  This is a
+requirement for multiple repositories as it allows a repository to be uniquely
+referenced.
+
+1655618 - Repository referred to by UUID, see above.
+
+1654600 - Online help added to Help menu.  Will in the long run be replaced as
+OOo's extension framework will in future allow 3rd party help content.
+
+### Bug Fixes ###
+1654245 - Further improvement of the Info display code. Almost bomb proof now
+and really should never display the wrong info version or blank.
+
+1654246 - Log should now be correct all the time now, same as above.
+
+0.3.1 :: 2007-02-07
+===================
+
+### New features ###
+1655501 - Comments no longer hardcoded as 'Revision' in commit.sh.  Now the
+comment is taken as $5 and is different for different operations. 
+'Incremental-save' and 'Manual-commit' are currently being used for OnSavedSVN
+and CommitSVN.
+
+Some more work on OnPrintSVN.  It will save and commit a file with 'Printed'
+comment although as save will commit anyway, this does nothing useful yet.
+
+### Bug Fixes ###
+1654245 - Info screen should now always be up to date and correct.
+
+1654251 - Some more references to repo changed to ConvertToURL(WorkingDir) in
+OOo Basic.  These are requirements for separating repository from working
+directory.
+
+1655454 - Commit no longer writes ~/commit.txt.  This was some obsolete
+debugging thing that was no use anyway.
+
+Partial fix for log not being up to date.  Should very rarely be incorrect now.

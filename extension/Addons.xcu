@@ -28,7 +28,7 @@
 						<value>%origin%/icons/image2</value>
 					</prop>
 					<prop oor:name="Title" oor:type="xs:string">
-						<value>Place document under version control</value>
+						<value>Place under version control</value>
 					</prop>
 					<prop oor:name="Target" oor:type="xs:string">
 						<value>_self</value>
@@ -106,13 +106,13 @@
 						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.sdb.OfficeDatabaseDocument</value>
 					</prop>
 					<prop oor:name="URL" oor:type="xs:string">
-						<value>macro:///ooosvn.Module1.RevertSVN</value>
+						<value>macro:///ooosvn.Module1.DiffSVN</value>
 					</prop>
 					<prop oor:name="ImageIdentifier" oor:type="xs:string">
 						<value>%origin%/icons/image6</value>
 					</prop>
 					<prop oor:name="Title" oor:type="xs:string">
-						<value>Revert to older/newer version</value>
+						<value>Compare with older/newer version</value>
 					</prop>
 					<prop oor:name="Target" oor:type="xs:string">
 						<value>_self</value>
@@ -123,13 +123,13 @@
 						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.sdb.OfficeDatabaseDocument</value>
 					</prop>
 					<prop oor:name="URL" oor:type="xs:string">
-						<value>macro:///ooosvn.Module1.ThumbnailsSVN</value>
+						<value>macro:///ooosvn.Module1.RevertSVN</value>
 					</prop>
 					<prop oor:name="ImageIdentifier" oor:type="xs:string">
 						<value>%origin%/icons/image7</value>
 					</prop>
 					<prop oor:name="Title" oor:type="xs:string">
-						<value>Graphically browse versions and revert</value>
+						<value>Revert to older/newer version</value>
 					</prop>
 					<prop oor:name="Target" oor:type="xs:string">
 						<value>_self</value>
@@ -140,13 +140,13 @@
 						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.sdb.OfficeDatabaseDocument</value>
 					</prop>
 					<prop oor:name="URL" oor:type="xs:string">
-						<value>macro:///ooosvn.Module1.RecoverSVN</value>
+						<value>macro:///ooosvn.Module1.ThumbnailsSVN</value>
 					</prop>
 					<prop oor:name="ImageIdentifier" oor:type="xs:string">
 						<value>%origin%/icons/image8</value>
 					</prop>
 					<prop oor:name="Title" oor:type="xs:string">
-						<value>Recover lost document</value>
+						<value>Graphically browse versions and revert</value>
 					</prop>
 					<prop oor:name="Target" oor:type="xs:string">
 						<value>_self</value>
@@ -157,21 +157,13 @@
 						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.sdb.OfficeDatabaseDocument</value>
 					</prop>
 					<prop oor:name="URL" oor:type="xs:string">
-						<value>private:separator</value>
-					</prop>
-				</node>
-				<node oor:name="m11" oor:op="replace">
-					<prop oor:name="Context" oor:type="xs:string">
-						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.sdb.OfficeDatabaseDocument</value>
-					</prop>
-					<prop oor:name="URL" oor:type="xs:string">
-						<value>macro:///ooosvn.Module1.DiffSVN</value>
+						<value>macro:///ooosvn.Module1.RecoverSVN</value>
 					</prop>
 					<prop oor:name="ImageIdentifier" oor:type="xs:string">
 						<value>%origin%/icons/image9</value>
 					</prop>
 					<prop oor:name="Title" oor:type="xs:string">
-						<value>Compare with older/newer version</value>
+						<value>Recover lost document</value>
 					</prop>
 					<prop oor:name="Target" oor:type="xs:string">
 						<value>_self</value>
@@ -193,6 +185,23 @@
 					</prop>
 					<prop oor:name="Title" oor:type="xs:string">
 						<value>About OOoSVN</value>
+					</prop>
+					<prop oor:name="Target" oor:type="xs:string">
+						<value>_self</value>
+					</prop>
+				</node>
+				<node oor:name="ooosvn.OfficeHelp.m2" oor:op="replace">
+					<prop oor:name="Context" oor:type="xs:string">
+						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.sdb.OfficeDatabaseDocument</value>
+					</prop>
+					<prop oor:name="URL" oor:type="xs:string">
+						<value>macro:///ooosvn.UserGuide.GetUserguide</value>
+					</prop>
+					<prop oor:name="ImageIdentifier" oor:type="xs:string">
+						<value>%origin%/icons/image11</value>
+					</prop>
+					<prop oor:name="Title" oor:type="xs:string">
+						<value>Get latest OOoSVN userguide</value>
 					</prop>
 					<prop oor:name="Target" oor:type="xs:string">
 						<value>_self</value>

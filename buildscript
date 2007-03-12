@@ -14,6 +14,7 @@ cd ..
 cp shellscripts/* build
 cp gpl.txt build
 cp readme.txt build
+cp changes.txt build
 
 cd build
 zip -rDX ../ooosvn-beta-$1.zip * -x *.svn*

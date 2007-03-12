@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--	
+		BasicAddonBuilder for OpenOffice.org 
+		$ Version 20061201 $
+		Copyright (C) Paolo Mantovani 2006
+		
+		This library is free software; you can redistribute it and/or
+		modify it under the terms of the GNU Lesser General Public
+		License as published by the Free Software Foundation.
+		
+		This library is distributed in the hope that it will be useful,
+		but WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+		Lesser General Public License for more details.
+		
+		Please email me with any bug reports, questions or comments:
+		paolomantovani@openoffice.org
+		-->
+
+<oor:component-data xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" oor:name="Configuration" oor:package="ooo.ext.BasicAddonBuilder">
+	
+	<!--  General info -->
+	<node oor:name="ProductInfo">
+		<prop oor:name="ProductName" oor:type="xs:string">
+			<value>OOoSVN</value>
+		</prop>
+		<prop oor:name="Description" oor:type="xs:string" oor:localized="true">
+			<value/>
+			<value xml:lang="en">A version control system for OpenOffice.org documents.</value>	
+		</prop>
+		<prop oor:name="Version" oor:type="xs:string">
+			<value>$ 0.3.4 $</value>
+		</prop>
+		<prop oor:name="License" oor:type="xs:string">
+			<value>GNU General Public License</value>
+		</prop>
+		<prop oor:name="AuthorName" oor:type="xs:string">
+			<value>Edward Holness</value>
+		</prop>
+		<prop oor:name="AuthorEmail"Paolo Mantovani oor:type="xs:string">
+			<value>ed.holness@gmail.com</value>
+		</prop>
+		<prop oor:name="Copyright" oor:type="xs:string">
+			<value>Copyright (C) 2007 Edward Holness</value>
+		</prop>
+		<node oor:name="Contributors"/>
+		<node oor:name="Translators"/>
+	</node>
+	
+	<!--  File resources (supports localization) -->
+	<node oor:name="FileResources">
+		<node oor:name="0424cfb7-612a-0410-b645-fc5361911868" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>file:///home/ed/.ooosvn/</value>
+			</prop>
+			<prop oor:name="Name" oor:type="xs:string" oor:localized="true">
+				<value>Home repository</value>
+			</prop>
+		</node>
+	</node>
+	
+	<!--  Localized messages -->	
+	<node oor:name="Messages"/>
+</oor:component-data>

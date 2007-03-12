@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="installation" script:language="StarBasic">Function CreateWorkingDir
+
+   WorkingDir = getWorkingDir
+
+   cQuote = Chr( 34 )
+   Shell(&quot;mkdir &quot; , 6, WorkingDir, true)
+
+   If NOT FileExists(WorkingDir) Then
+     MsgBox(&quot;Creation of working directory &quot; &amp; WorkingDir &amp; &quot; failed.  Do you have adequate write permissions?&quot;, 16, &quot;File not imported&quot;)
+     WorkingDirCreate = 0
+     Exit Function
+   End If
+
+   Installscripts
+
+end Function
+
+Function InstallScripts
+&apos; Installs/upgrades scripts.  It is strongly recommended that after any upgrade, this macro is run.
+  WorkingDir = getWorkingDir
+
+          If NOT FileExists(WorkingDir) then
+               CreateWorkingDir
+            exit function
+          end if
+          
+  
+
+end Function
+
+function CreateSVN() as integer
+	CreateSVN = True
+	
+	&apos; If no working directory, it needs to be created for a repository to exist.
+	WorkingDir = getWorkingDir	
+	If NOT FileExists(WorkingDir) Then
+       CreateWorkingDir
+     Exit Function
+   End If
+	
+	&apos;&apos; need to make sure we have SVN, and get path to svn and svnadmin executables
+	ret = Shell(&quot;svn --help&quot;, 6,&quot;&quot;,true)
+	if ret &lt;&gt; 0 then
+		CreateSVN = false
+		MsgBox(&quot;Could not find svn. Please install Subversion first.&quot; &amp; chr$(13) &amp; &quot;See http://subversion.tigris.org&quot;,48,&quot;Error&quot;)
+		exit function
+	end if
+		
+ 	sSVNURL = PickFolder(sGetHomeURL(), &quot;Select a directory for the new repository&quot;, &quot;&quot;)
+	ret = Shell(&quot;svnadmin create &quot;, 6, sSVNURL,true)
+	if ret &lt;&gt; 0 then
+		CreateSVN = false
+		MsgBox(&quot;Failed to create repository.&quot;,48,&quot;Error&quot;)
+		exit function
+	end if
+	
+&apos;	ConnectToSVN(sSVNURL)
+
+If NOT FileExists(sSVNURL &amp; &quot;/README.txt&quot;) then
+msgbox (&quot;Repository creation failed.&quot; &amp; repo, 16, &quot;Error&quot;)
+exit function
+end if
+
+uuid = shell(&quot;svn info &quot; &amp; converttourl(sSVNURL) &amp; &quot;| grep UUID | cut -c18-&quot;)
+msgbox(sSVNURL)
+msgbox(uuid)
+
+end function
+</script:module>
