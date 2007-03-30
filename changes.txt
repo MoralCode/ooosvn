@@ -1,9 +1,9 @@
-Current ::
+0.3.4 :: 2007-03-30
 
 ### New Features ###
-Started adding icons to SVN menu.  More, including large size and high contrast, will happen over time.
+1655501 - Started adding icons to SVN menu.  More, including large size and high contrast, will happen over time.
 
-Added Userguide download tool: Help > Get latest OOoSVN Userguide.  This checks out the latest version of the document from Sourceforge and builds it for the user.
+1656450 - Added Userguide download tool: Help > Get latest OOoSVN Userguide.  This checks out the latest version of the document from Sourceforge and builds it for the user.
 
 Working directory creation function
 
