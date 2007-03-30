@@ -18,7 +18,7 @@
 		paolomantovani@openoffice.org
 		-->
 
-<oor:component-data xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" oor:name="Configuration" oor:package="ooo.ext.BasicAddonBuilder">
+<oor:component-data xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" oor:name="Configuration" oor:package="ooo.ext.ooosvn">
 	
 	<!--  General info -->
 	<node oor:name="ProductInfo">
@@ -27,39 +27,677 @@
 		</prop>
 		<prop oor:name="Description" oor:type="xs:string" oor:localized="true">
 			<value/>
-			<value xml:lang="en">A version control system for OpenOffice.org documents.</value>	
+			<value xml:lang="en">A wizard to export StarBasic libraries as UNO packages</value>
+			<value xml:lang="it">Esportazione guidata di librarie StarBasic come pacchetti UNO</value>
 		</prop>
 		<prop oor:name="Version" oor:type="xs:string">
-			<value>$ 0.3.4 $</value>
+			<value>$ Version 20061201 $</value>
 		</prop>
 		<prop oor:name="License" oor:type="xs:string">
-			<value>GNU General Public License</value>
+			<value>GNU Lesser General Public License</value>
 		</prop>
 		<prop oor:name="AuthorName" oor:type="xs:string">
-			<value>Edward Holness</value>
+			<value>Paolo Mantovani</value>
 		</prop>
-		<prop oor:name="AuthorEmail"Paolo Mantovani oor:type="xs:string">
-			<value>ed.holness@gmail.com</value>
+		<prop oor:name="AuthorEmail" oor:type="xs:string">
+			<value>paolomantovani@openoffice.org</value>
 		</prop>
 		<prop oor:name="Copyright" oor:type="xs:string">
-			<value>Copyright (C) 2007 Edward Holness</value>
+			<value>Copyright (C) 2006 Paolo Mantovani</value>
 		</prop>
 		<node oor:name="Contributors"/>
-		<node oor:name="Translators"/>
+		<node oor:name="Translators">
+			<node oor:name="t1" oor:op="replace">
+				<prop oor:name="TranslatorName" oor:type="xs:string">
+					<value>Paolo Mantovani</value>
+				</prop>
+				<prop oor:name="Email" oor:type="xs:string">
+					<value>paolomantovani@openoffice.org</value>
+				</prop>
+				<prop oor:name="Language" oor:type="xs:string">
+					<value>Italian</value>
+				</prop>
+			</node>
+		</node>
 	</node>
 	
 	<!--  File resources (supports localization) -->
 	<node oor:name="FileResources">
-		<node oor:name="0424cfb7-612a-0410-b645-fc5361911868" oor:op="replace">
+		<node oor:name="AboutTopImage" oor:op="replace">
 			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
-				<value>file:///home/ed/.ooosvn/</value>
-			</prop>
-			<prop oor:name="Name" oor:type="xs:string" oor:localized="true">
-				<value>Home repository</value>
+				<value>%origin%/images/abouttop.bmp</value>
 			</prop>
 		</node>
+		<node oor:name="UpArrowImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/up.png</value>
+			</prop>
+		</node>
+		<node oor:name="DownArrowImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/down.png</value>
+			</prop>
+		</node>
+		<node oor:name="LeftArrowImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/left.png</value>
+			</prop>
+		</node>
+		<node oor:name="RightArrowImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/right.png</value>
+			</prop>
+		</node>
+		<node oor:name="MenuArrowImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/menu.png</value>
+			</prop>
+		</node>
+		<node oor:name="EditPropsImageSmall" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/configure_16.png</value>
+			</prop>
+		</node>
+		<node oor:name="EditPropsImageBig" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/configure_22.png</value>
+			</prop>
+		</node>
+		<node oor:name="TranslateImageSmall" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/locale_16.png</value>
+			</prop>
+		</node>
+		<node oor:name="TranslateImageBig" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/locale_22.png</value>
+			</prop>
+		</node>
+		<node oor:name="SelectMacroImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/macro.png</value>
+			</prop>
+		</node>
+		<node oor:name="AddImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value/>
+				<!-- 			<value>%origin%/images/plus.png</value> -->
+			</prop>
+		</node>
+		<node oor:name="DeleteImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/delete.png</value>
+			</prop>
+		</node>
+		<node oor:name="WriterImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/writer.png</value>
+			</prop>
+		</node>
+		<node oor:name="CalcImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/calc.png</value>
+			</prop>
+		</node>
+		<node oor:name="ImpressImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/impress.png</value>
+			</prop>
+		</node>
+		<node oor:name="DrawImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/draw.png</value>
+			</prop>
+		</node>
+		<node oor:name="BaseImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/base.png</value>
+			</prop>
+		</node>
+		<node oor:name="MathImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/math.png</value>
+			</prop>
+		</node>
+		<node oor:name="BasicIDEImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/basicide.png</value>
+			</prop>
+		</node>
+		<node oor:name="AboutImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/abouttop.png</value>
+			</prop>
+		</node>
+		<!--		<node oor:name="HelpDir" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value/>
+				<value xml:lang="en">%origin%/help/en/</value>
+				<value xml:lang="it">%origin%/help/it/</value>
+			</prop>
+		</node>-->
 	</node>
 	
 	<!--  Localized messages -->	
-	<node oor:name="Messages"/>
+	<node oor:name="Messages">
+		<node oor:name="Backward" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>&lt; Backward</value>
+				<value xml:lang="en_US">&lt; Backward</value>
+				<value xml:lang="it_IT">&lt; Indietro</value>
+			</prop>
+		</node>
+		<node oor:name="16x16" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>16x16</value>
+				<value xml:lang="en_US">16x16</value>
+				<value xml:lang="it_IT">16x16</value>
+			</prop>
+		</node>
+		<node oor:name="26x26" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>26x26</value>
+				<value xml:lang="en_US">26x26</value>
+				<value xml:lang="it_IT">26x26</value>
+			</prop>
+		</node>
+		<node oor:name="Add button" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add button</value>
+				<value xml:lang="en_US">Add button</value>
+				<value xml:lang="it_IT">Pulsante</value>
+			</prop>
+		</node>
+		<node oor:name="Add customized office toolbar" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add customized office toolbar</value>
+				<value xml:lang="en_US">Add customized office toolbar</value>
+				<value xml:lang="it_IT">Aggiungi barra degli strumenti personalizzata</value>
+			</prop>
+		</node>
+		<node oor:name="Add group" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add submenu</value>
+				<value xml:lang="en_US">Add submenu</value>
+				<value xml:lang="it_IT">Sottomenu</value>
+			</prop>
+		</node>
+		<node oor:name="Add items under Help (?) menu" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add items under Help (?) menu</value>
+				<value xml:lang="en_US">Add items under Help (?) menu</value>
+				<value xml:lang="it_IT">Aggiungi elementi al meno Aiuto (?) </value>
+			</prop>
+		</node>
+		<node oor:name="Add items under Tools/Add-on menu" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add items under Tools/Add-on menu</value>
+				<value xml:lang="en_US">Add items under Tools/Add-on menu</value>
+				<value xml:lang="it_IT">Aggiungi elementi al meno Strumenti/Add-on</value>
+			</prop>
+		</node>
+		<node oor:name="Add menu" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add menu</value>
+				<value xml:lang="en_US">Add menu</value>
+				<value xml:lang="it_IT">Nuovo menu</value>
+			</prop>
+		</node>
+		<node oor:name="Add separator" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add separator</value>
+				<value xml:lang="en_US">Add separator</value>
+				<value xml:lang="it_IT">Separatore</value>
+			</prop>
+		</node>
+		<node oor:name="Add top level menu" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add top level menu</value>
+				<value xml:lang="en_US">Add top level menu</value>
+				<value xml:lang="it_IT">Aggiungi un menu principale</value>
+			</prop>
+		</node>
+		<node oor:name="Base" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Base</value>
+				<value xml:lang="en_US">Base</value>
+				<value xml:lang="it_IT">Base</value>
+			</prop>
+		</node>
+		<node oor:name="Basic IDE" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Basic IDE</value>
+				<value xml:lang="en_US">Basic IDE</value>
+				<value xml:lang="it_IT">Basic IDE</value>
+			</prop>
+		</node>
+		<node oor:name="Calc" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Calc</value>
+				<value xml:lang="en_US">Calc</value>
+				<value xml:lang="it_IT">Calc</value>
+			</prop>
+		</node>
+		<node oor:name="Cancel" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Cancel</value>
+				<value xml:lang="en_US">Cancel</value>
+				<value xml:lang="it_IT">Annulla</value>
+			</prop>
+		</node>
+		<node oor:name="Click to select an image" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Click to select an image</value>
+				<value xml:lang="en_US">Click to select an image</value>
+				<value xml:lang="it_IT">Fare click per selezionare un immagine</value>
+			</prop>
+		</node>
+		<node oor:name="Command" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Command</value>
+				<value xml:lang="en_US">Command</value>
+				<value xml:lang="it_IT">Comando</value>
+			</prop>
+		</node>
+		<node oor:name="Draw" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Draw</value>
+				<value xml:lang="en_US">Draw</value>
+				<value xml:lang="it_IT">Draw</value>
+			</prop>
+		</node>
+		<node oor:name="Edit" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Edit</value>
+				<value xml:lang="en_US">Edit</value>
+				<value xml:lang="it_IT">Modifica</value>
+			</prop>
+		</node>
+		<node oor:name="Finish" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Finish</value>
+				<value xml:lang="en_US">Finish</value>
+				<value xml:lang="it_IT">Fine</value>
+			</prop>
+		</node>
+		<node oor:name="Forward" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Forward &gt;</value>
+				<value xml:lang="en_US">Forward &gt;</value>
+				<value xml:lang="it_IT">Avanti &gt;</value>
+			</prop>
+		</node>
+		<node oor:name="High contrast" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>High contrast</value>
+				<value xml:lang="en_US">High contrast</value>
+				<value xml:lang="it_IT">Contrasto elevato</value>
+			</prop>
+		</node>
+		<node oor:name="Icons" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Icons</value>
+				<value xml:lang="en_US">Icons</value>
+				<value xml:lang="it_IT">Icone</value>
+			</prop>
+		</node>
+		<node oor:name="Impress" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Impress</value>
+				<value xml:lang="en_US">Impress</value>
+				<value xml:lang="it_IT">Impress</value>
+			</prop>
+		</node>
+		<node oor:name="Item label" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Item label</value>
+				<value xml:lang="en_US">Item label</value>
+				<value xml:lang="it_IT">Titolo dell&apos;elemento</value>
+			</prop>
+		</node>
+		<node oor:name="Low contrast" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Low contrast</value>
+				<value xml:lang="en_US">Low contrast</value>
+				<value xml:lang="it_IT">Contrasto normale</value>
+			</prop>
+		</node>
+		<node oor:name="Macro command" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Macro command</value>
+				<value xml:lang="en_US">Macro command</value>
+				<value xml:lang="it_IT">Comando macro</value>
+			</prop>
+		</node>
+		<node oor:name="Macros" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Macros</value>
+				<value xml:lang="en_US">Macros</value>
+				<value xml:lang="it_IT">Macro</value>
+			</prop>
+		</node>
+		<node oor:name="Math" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Math</value>
+				<value xml:lang="en_US">Math</value>
+				<value xml:lang="it_IT">Math</value>
+			</prop>
+		</node>
+		<node oor:name="Menu title" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Menu title</value>
+				<value xml:lang="en_US">Menu title</value>
+				<value xml:lang="it_IT">Titolo del menu</value>
+			</prop>
+		</node>
+		<node oor:name="Modules" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Modules</value>
+				<value xml:lang="en_US">Modules</value>
+				<value xml:lang="it_IT">Moduli</value>
+			</prop>
+		</node>
+		<node oor:name="More languages" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>More languages</value>
+				<value xml:lang="en_US">More languages</value>
+				<value xml:lang="it_IT">Altre lingue</value>
+			</prop>
+		</node>
+		<node oor:name="Move down" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Move down</value>
+				<value xml:lang="en_US">Move down</value>
+				<value xml:lang="it_IT">Sposta in basso</value>
+			</prop>
+		</node>
+		<node oor:name="Move up" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Move up</value>
+				<value xml:lang="en_US">Move up</value>
+				<value xml:lang="it_IT">Sposta in alto</value>
+			</prop>
+		</node>
+		<node oor:name="Office context" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Office context</value>
+				<value xml:lang="en_US">Office context</value>
+				<value xml:lang="it_IT">Contesto</value>
+			</prop>
+		</node>
+		<node oor:name="OK" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>OK</value>
+				<value xml:lang="en_US">OK</value>
+				<value xml:lang="it_IT">OK</value>
+			</prop>
+		</node>
+		<node oor:name="Package description" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Package description</value>
+				<value xml:lang="en_US">Package description</value>
+				<value xml:lang="it_IT">Descrizione del pacchetto</value>
+			</prop>
+		</node>
+		<node oor:name="Preview" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Preview</value>
+				<value xml:lang="en_US">Preview</value>
+				<value xml:lang="it_IT">Anteprima</value>
+			</prop>
+		</node>
+		<node oor:name="Remove" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Remove</value>
+				<value xml:lang="en_US">Remove</value>
+				<value xml:lang="it_IT">Elimina</value>
+			</prop>
+		</node>
+		<node oor:name="Select library" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Select library</value>
+				<value xml:lang="en_US">Select library</value>
+				<value xml:lang="it_IT">Selezionare una libreria</value>
+			</prop>
+		</node>
+		<node oor:name="Select the StarBasic library to export" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Select the StarBasic library to export</value>
+				<value xml:lang="en_US">Select the StarBasic library to export</value>
+				<value xml:lang="it_IT">Selezionare la libreria StarBasic da esportare</value>
+			</prop>
+		</node>
+		<node oor:name="Text" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Text</value>
+				<value xml:lang="en_US">Text</value>
+				<value xml:lang="it_IT">Testo</value>
+			</prop>
+		</node>
+		<node oor:name="Toolbar title" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Toolbar title</value>
+				<value xml:lang="en_US">Toolbar title</value>
+				<value xml:lang="it_IT">Titolo della barra degli strumenti</value>
+			</prop>
+		</node>
+		<node oor:name="Translate" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Translate</value>
+				<value xml:lang="en_US">Translate</value>
+				<value xml:lang="it_IT">Traduzioni</value>
+			</prop>
+		</node>
+		<node oor:name="Writer" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Writer</value>
+				<value xml:lang="en_US">Writer</value>
+				<value xml:lang="it_IT">Writer</value>
+			</prop>
+		</node>
+		
+		<node oor:name="--separator--" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>--separator--</value>
+				<value xml:lang="en_US">--separator--</value>
+				<value xml:lang="it_IT">--separatore--</value>
+			</prop>
+		</node>
+		<node oor:name="[OfficeMenu title]" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>[OfficeMenu title]</value>
+				<value xml:lang="en_US">[OfficeMenu title]</value>
+				<value xml:lang="it_IT">[Titolo del menu]</value>
+			</prop>
+		</node>
+		<node oor:name="[Toolbar title]" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>[Toolbar title]</value>
+				<value xml:lang="en_US">[Toolbar title]</value>
+				<value xml:lang="it_IT">[Titolo della barra]</value>
+			</prop>
+		</node>
+		<node oor:name="Add a description for the Add-on to create." oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add a description for the Add-on to create.</value>
+				<value xml:lang="en_US">Add a description for the Add-on to create.</value>
+				<value xml:lang="it_IT">Inserire una descrizione per l&apos; Add-on da creare</value>
+			</prop>
+		</node>
+		<node oor:name="Add-on description" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add-on description</value>
+				<value xml:lang="en_US">Add-on description</value>
+				<value xml:lang="it_IT">Descrizione Add-on</value>
+			</prop>
+		</node>
+		<node oor:name="Addon menu" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Addon menu</value>
+				<value xml:lang="en_US">Addon menu</value>
+				<value xml:lang="it_IT">Menu Add-on</value>
+			</prop>
+		</node>
+		<node oor:name="Define a customized toolbar for the Add-on to create" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Define a customized toolbar for the Add-on to create</value>
+				<value xml:lang="en_US">Define a customized toolbar for the Add-on to create</value>
+				<value xml:lang="it_IT">Definire una barra degli strumenti personalizzata per l&apos;Add-on da creare</value>
+			</prop>
+		</node>
+		<node oor:name="Define a customized top level menu that will be shown between the Tools and the Window menus" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Define a customized top level menu that will be shown between the Tools and the Window menus</value>
+				<value xml:lang="en_US">Define a customized top level menu that will be shown between the Tools and the Window menus</value>
+				<value xml:lang="it_IT">Definire un menu nella barra principale per l&apos;Add-on da creare</value>
+			</prop>
+		</node>
+		<node oor:name="Define Help menu entries" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Define Help menu entries</value>
+				<value xml:lang="en_US">Define Help menu entries</value>
+				<value xml:lang="it_IT">Definire gli elementi da aggiungere al menu Aiuto (?)</value>
+			</prop>
+		</node>
+		<node oor:name="Define menu entries under the Tools->Addon's menu" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Define menu entries under the Tools-&gt;Addon&apos;s menu</value>
+				<value xml:lang="en_US">Define menu entries under the Tools-&gt;Addon&apos;s menu</value>
+				<value xml:lang="it_IT">Definire gli elementi da aggiungere al menu Strumenti-&gt;Add-on</value>
+			</prop>
+		</node>
+		<node oor:name="General options" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>General options</value>
+				<value xml:lang="en_US">General options</value>
+				<value xml:lang="it_IT">Opzioni generali</value>
+			</prop>
+		</node>
+		<node oor:name="Help (?)" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Help (?)</value>
+				<value xml:lang="en_US">Help (?)</value>
+				<value xml:lang="it_IT">Aiuto (?)</value>
+			</prop>
+		</node>
+		<node oor:name="Help menu" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Help menu</value>
+				<value xml:lang="en_US">Help menu</value>
+				<value xml:lang="it_IT">Menu Aiuto (?)</value>
+			</prop>
+		</node>
+		<node oor:name="in the Package manager dialog" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>in the Package manager dialog</value>
+				<value xml:lang="en_US">in the Package manager dialog</value>
+				<value xml:lang="it_IT">nel dialogo Gestione pacchetti</value>
+			</prop>
+		</node>
+		<node oor:name="Large icons - High Contrast" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Large icons - High Contrast</value>
+				<value xml:lang="en_US">Large icons - High Contrast</value>
+				<value xml:lang="it_IT">Icone grandi - alta visibilit&#224;</value>
+			</prop>
+		</node>
+		<node oor:name="Large icons - Low contrast" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Large icons - Low contrast</value>
+				<value xml:lang="en_US">Large icons - Low contrast</value>
+				<value xml:lang="it_IT">Icone grandi - visibilit&#224; normale</value>
+			</prop>
+		</node>
+		<node oor:name="Library selection" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Library selection</value>
+				<value xml:lang="en_US">Library selection</value>
+				<value xml:lang="it_IT">Selezione libreria</value>
+			</prop>
+		</node>
+		<node oor:name="Menu group" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Menu group</value>
+				<value xml:lang="en_US">Menu group</value>
+				<value xml:lang="it_IT">Sottomenu</value>
+			</prop>
+		</node>
+		<node oor:name="Menu item" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Menu item</value>
+				<value xml:lang="en_US">Menu item</value>
+				<value xml:lang="it_IT">Menu</value>
+			</prop>
+		</node>
+		<node oor:name="Office menubar" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Office menubar</value>
+				<value xml:lang="en_US">Office menubar</value>
+				<value xml:lang="it_IT">Menu nella barra principale</value>
+			</prop>
+		</node>
+		<node oor:name="Office toolbar" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Office toolbar</value>
+				<value xml:lang="en_US">Office toolbar</value>
+				<value xml:lang="it_IT">Barra degli strumenti</value>
+			</prop>
+		</node>
+		<node oor:name="Select the options that you want activate for the Add-on to create" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Select the options that you want activate for the Add-on to create</value>
+				<value xml:lang="en_US">Select the options that you want activate for the Add-on to create</value>
+				<value xml:lang="it_IT">Selezionare le opzioni desiderate per l&apos;Add-on da creare</value>
+			</prop>
+		</node>
+		<node oor:name="Select the StarBasic library to deploy as OpenOffice.org add-on" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Select the StarBasic library to deploy as OpenOffice.org add-on</value>
+				<value xml:lang="en_US">Select the StarBasic library to deploy as OpenOffice.org add-on</value>
+				<value xml:lang="it_IT">Selezionare la libreria StarBasic da distribuire come OpenOffice.org Add-on</value>
+			</prop>
+		</node>
+		<node oor:name="Small icons - High Contrast" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Small icons - High Contrast</value>
+				<value xml:lang="en_US">Small icons - High Contrast</value>
+				<value xml:lang="it_IT">Icone piccole - alta visibilit&#224;</value>
+			</prop>
+		</node>
+		<node oor:name="Small icons - Low contrast" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Small icons - Low contrast</value>
+				<value xml:lang="en_US">Small icons - Low contrast</value>
+				<value xml:lang="it_IT">Icone piccole - visibilit&#224; normale</value>
+			</prop>
+		</node>
+		<node oor:name="Steps" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Steps</value>
+				<value xml:lang="en_US">Steps</value>
+				<value xml:lang="it_IT">Passi</value>
+			</prop>
+		</node>
+		<node oor:name="The description will be shown in the tool-tip text of the installed package," oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>The description will be shown in the tool-tip text of the installed package,</value>
+				<value xml:lang="en_US">The description will be shown in the tool-tip text of the installed package,</value>
+				<value xml:lang="it_IT">La descrizione verr&#224; mostrata nel testo di aiuto del pacchetto installato,</value>
+			</prop>
+		</node>
+		<node oor:name="Toolbar button" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Toolbar button</value>
+				<value xml:lang="en_US">Toolbar button</value>
+				<value xml:lang="it_IT">Pulsante della barra degli strumenti</value>
+			</prop>
+		</node>
+		<node oor:name="Tools | Addon's" oor:op="fuse">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Tools | Addon&apos;s</value>
+				<value xml:lang="en_US">Tools | Addon&apos;s</value>
+				<value xml:lang="it_IT">Strumenti | Add-on</value>
+			</prop>
+		</node>
+	</node>
 </oor:component-data>

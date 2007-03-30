@@ -7,7 +7,7 @@ Added Userguide download tool: Help > Get latest OOoSVN Userguide.  This checks 
 
 Working directory creation function
 
-Shell script installation/upgrade function started
+A whole load of experimental stuff that's not hooked up properly yet but may be useful for anyone interested in where this project is going.
 
 ### Bug Fixes ###
 Changed #! /bin/bash top #!/bin/bash which is more correct, even though both work.  Thanks to Richard Bos for his suggestion.

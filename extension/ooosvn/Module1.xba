@@ -36,8 +36,15 @@ Exit Sub
 End If
          
             cQuote = Chr( 34 )
+&apos; old shell command
+&apos;   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir + cQuote , &quot;&quot;,6,true)
+  ret = MyShell(sWorkingDir &amp; &quot;/import.sh &quot;, sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; sGlobalRepoURL  &amp; &quot; &quot; &amp; sWorkingDir)
+  if ret &lt;&gt; 0 then 
+  	ErrBox(&quot;Failed to put file in the repository.&quot;)
+  	ImportSVN = false
+  	exit sub
+  end if
 
-   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir + cQuote , &quot;&quot;,6,true)
   dispatcher.executeDispatch(document, &quot;.uno:Reload&quot;, &quot;&quot;, 0, Array())
   
 end sub
@@ -124,6 +131,7 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
   oDoc = ThisComponent
 
   LoadTools
+  
   If (oDoc.hasLocation()) Then
     sDocURL = oDoc.getURL()
     sDocURL2 = mid(sDocURL, 8)
@@ -140,7 +148,8 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
          
             cQuote = Chr( 34 )
 
-   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/thumbnails.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir + cQuote)
+&apos;   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/thumbnails.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir + cQuote)
+MyShell(WorkingDir &amp; &quot;/revert.sh &quot;, sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; sGlobalRepoURL &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version)
 
 	do
 	wait 100
@@ -815,6 +824,14 @@ Function FileName(oDoc as Object) as string
         FileName = sDocURL
 end function
 
+REM ========================================================
+Function MyShell(sCmd, Optional sPrm)
+	if IsMissing(sPrm) then
+		sPrm = &quot;&quot;
+	end if
+	MyShell = Shell(sCmd, 6, sPrm, True)
+end function
+
 Function ErrBox(sMsg)
 	MsgBox(sMsg, 48, &quot;Error&quot;)
 end function
@@ -861,5 +878,34 @@ function CallConnectToSVN
 &apos;	sRepoURL = &quot;file:///tmp/avielTMP/svn&quot;
 	Dlg.Dispose
 	CallConnectToSVN = ConnectToSVN(sRepoURL)
+end function
+
+REM ========================================================
+Function ConnectToSVN(sSVNURL) as integer
+	ConnectToSVN = true
+	
+	REM Is SVN installed?
+	&apos;ya implement!
+	
+	REM Estaplish a working directory
+	sWorkingDir = GetWorkingDir
+	If NOT FileExists(WorkingDir) then
+		ConnectToSVN = false
+		bConnected = false
+		sRepoURL = &quot;&quot;
+		exit function
+	end if
+		
+	REM Validate repository by calling &quot;svn info&quot;
+	ret = Shell(&quot;svn info &quot;, 6, sSVNURL,true)
+	if (ret &lt;&gt; 0) then
+		ConnectToSVN = false
+		bConnected = false
+		sRepoURL = &quot;&quot;
+		ErrBox(&quot;Failed to connect to repository &quot; &amp; chr$(13) &amp; sSVNURL)
+		exit function
+	end if
+	bConnected = true
+	sGlobalRepoURL = sSVNURL
 end function
 </script:module>

@@ -18,7 +18,7 @@
 	paolomantovani@openoffice.org
 -->
 
-<oor:component-schema oor:name="Configuration" oor:package="ooo.ext.OOoSVN" xml:lang="en-US" xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<oor:component-schema oor:name="Configuration" oor:package="ooo.ext.ooosvn" xml:lang="en-US" xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<templates>
 		<group oor:name="Contributor">
 			<prop oor:name="ContributorName" oor:type="xs:string"/>
