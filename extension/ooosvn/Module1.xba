@@ -398,9 +398,11 @@ Sub RecoverSVN()
 	outputfile = ConvertToURL(outputURL)
 
 &apos; Load the recovered file
-
-oNewCalc = StarDesktop.loadComponentfromURL(outputfile,&quot;_blank&quot;, 0, Array())
-   
+If FileExists(outputfile) then
+	StarDesktop.loadComponentfromURL(outputfile,&quot;_blank&quot;, 0, Array())
+   		else
+	MsgBox(&quot;File recovery somehow failed!  File not created.&quot;, 16, &quot;Error&quot;)
+end if
 End sub
 
 

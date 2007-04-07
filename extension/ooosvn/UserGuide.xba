@@ -14,9 +14,11 @@ WorkingDir = getWorkingDir
 
    Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/userguide.sh &quot; &amp; WorkingDir + cQuote , &quot;&quot;,6,true)
 
-wait 1000
-
-StarDesktop.loadComponentfromURL(ConvertToURL(WorkingDir) &amp; &quot;/userguide.odt&quot;,&quot;_blank&quot;, 0, Array())
+If FileExists(ConvertToURL(WorkingDir) &amp; &quot;/userguide.odt&quot;) then
+	StarDesktop.loadComponentfromURL(ConvertToURL(WorkingDir) &amp; &quot;/userguide.odt&quot;,&quot;_blank&quot;, 0, Array())
+		else
+	MsgBox(&quot;Userguide checkout somehow failed!  File not created.&quot;, 16, &quot;Error&quot;)
+end if
 
 End Sub
 </script:module>
