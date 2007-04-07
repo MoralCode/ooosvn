@@ -1,23 +1,4 @@
 <?xml version='1.0' encoding='UTF-8'?>
-
-<!--	
-		BasicAddonBuilder for OpenOffice.org 
-		$ Version 20061201 $
-		Copyright (C) Paolo Mantovani 2006
-		
-		This library is free software; you can redistribute it and/or
-		modify it under the terms of the GNU Lesser General Public
-		License as published by the Free Software Foundation.
-		
-		This library is distributed in the hope that it will be useful,
-		but WITHOUT ANY WARRANTY; without even the implied warranty of
-		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-		Lesser General Public License for more details.
-		
-		Please email me with any bug reports, questions or comments:
-		paolomantovani@openoffice.org
-		-->
-
 <oor:component-data xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" oor:name="Configuration" oor:package="ooo.ext.ooosvn">
 	
 	<!--  General info -->
@@ -27,24 +8,33 @@
 		</prop>
 		<prop oor:name="Description" oor:type="xs:string" oor:localized="true">
 			<value/>
-			<value xml:lang="en">A wizard to export StarBasic libraries as UNO packages</value>
-			<value xml:lang="it">Esportazione guidata di librarie StarBasic come pacchetti UNO</value>
+			<value xml:lang="en">A tool to enable change control of OOo documents through Subversion</value>
 		</prop>
 		<prop oor:name="Version" oor:type="xs:string">
-			<value>$ Version 20061201 $</value>
+			<value>$ Version $</value>
 		</prop>
 		<prop oor:name="License" oor:type="xs:string">
-			<value>GNU Lesser General Public License</value>
+			<value>GNU General Public License</value>
 		</prop>
 		<prop oor:name="AuthorName" oor:type="xs:string">
-			<value>Paolo Mantovani</value>
+			<value>Edward Holness</value>
 		</prop>
 		<prop oor:name="AuthorEmail" oor:type="xs:string">
-			<value>paolomantovani@openoffice.org</value>
+			<value>ed.holness@gmail.com</value>
 		</prop>
 		<prop oor:name="Copyright" oor:type="xs:string">
-			<value>Copyright (C) 2006 Paolo Mantovani</value>
+			<value>Copyright (C) 2007 Edward Holness</value>
 		</prop>
+		<node oor:name="Repositorys">
+			<node oor:name="t1" oor:op="replace">
+				<prop oor:name="UUID" oor:type="xs:string">
+					<value>2abb7df7-5d29-0410-912f-aa4066f74452</value>
+				</prop>
+				<prop oor:name="URL" oor:type="xs:string">
+					<value>https://svn.sourceforge.net/svnroot/ooosvn</value>
+				</prop>
+			</node>
+		</node>
 		<node oor:name="Contributors"/>
 		<node oor:name="Translators">
 			<node oor:name="t1" oor:op="replace">

@@ -1,25 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
-
-<!--	
-	BasicAddonBuilder for OpenOffice.org 
-	$ Version 20061201 $
-	Copyright (C) Paolo Mantovani 2006
-	
-	This library is free software; you can redistribute it and/or
-	modify it under the terms of the GNU Lesser General Public
-	License as published by the Free Software Foundation.
-	
-	This library is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-	Lesser General Public License for more details.
-	
-	Please email me with any bug reports, questions or comments:
-	paolomantovani@openoffice.org
--->
-
 <oor:component-schema oor:name="Configuration" oor:package="ooo.ext.ooosvn" xml:lang="en-US" xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<templates>
+		<group oor:name="Repository">
+			<prop oor:name="UUID" oor:type="xs:string"/>
+			<prop oor:name="URL" oor:type="xs:string"/>
+		</group>
 		<group oor:name="Contributor">
 			<prop oor:name="ContributorName" oor:type="xs:string"/>
 			<prop oor:name="Email" oor:type="xs:string"/>
