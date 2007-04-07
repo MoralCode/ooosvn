@@ -37,8 +37,8 @@ End If
          
             cQuote = Chr( 34 )
 &apos; old shell command
-&apos;   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir + cQuote , &quot;&quot;,6,true)
-  ret = MyShell(sWorkingDir &amp; &quot;/import.sh &quot;, sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; sGlobalRepoURL  &amp; &quot; &quot; &amp; sWorkingDir)
+   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir + cQuote , &quot;&quot;,6,true)
+&apos;  ret = MyShell(sWorkingDir &amp; &quot;/import.sh &quot;, sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; sGlobalRepoURL  &amp; &quot; &quot; &amp; sWorkingDir)
   if ret &lt;&gt; 0 then 
   	ErrBox(&quot;Failed to put file in the repository.&quot;)
   	ImportSVN = false
