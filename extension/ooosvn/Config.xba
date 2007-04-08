@@ -71,51 +71,59 @@ Sub CallSetMyPropertyAttributes()
    End if
 
 End Sub
+&apos;##############
+Const BASE_KEY As String = &quot;/ooo.ext.ooosvn.Configuration/&quot;
 
-Function GetTranslators() As Variant
+Function GetAppName() As String
+Dim oRegKey As Object
+&apos;	oRegKey = GetRegistryKeyContent( BASE_KEY &amp; &quot;ProductInfo&quot; )
+	oRegKey = GetRegistryKeyContent( &quot;/ooo.ext.ooosvn.Configuration/ProductInfo/Repositorys/t1&quot; )
+	
+&apos;	GetAppName = oRegKey.ProductName
+GetAppName = oRegKey.URL
+	msgbox(getappname)
+End Function
+&apos;###################
+Function GetRepos() As Variant
+Const BASE_KEY As String = &quot;/ooo.ext.ooosvn.Configuration/&quot;
 Dim oRegKey As Object
 Dim oTrKey As Object
 Dim mKeys()
 Dim sKey As String
-Dim sTrName As String
-Dim sTrEmail As String
-Dim sTrLang As String
 Dim I As Integer
 Dim mTranslators()
 
-
-	oRegKey = GetRegistryKeyContent( BASE_KEY &amp; &quot;ProductInfo/Translators&quot; )
+&apos;	oRegKey = GetRegistryKeyContent( BASE_KEY &amp; &quot;ProductInfo/Repositorys&quot; )
+	oRegKey = GetRegistryKeyContent( &quot;/ooo.ext.ooosvn.Configuration/ProductInfo/Translators&quot; )
 	mKeys() = oRegKey.ElementNames
 	
 	For I = LBound(mKeys()) To UBound(mKeys())
 		sKey = mKeys(I)
+		
 		oTrKey = oRegKey.getByname(sKey)
 		With oTrKey 
+&apos;			sUUID = .UUID 
 			sTrName = .TranslatorName 
 			sTrEmail = .Email
 			sTrLang = .Language
 		End With 
 		Redim Preserve mTranslators(I)
+		msgbox(sTrLang &amp; sTrName &amp; sTrEmail)
 		mTranslators(I) = sTrLang &amp; &quot; - &quot; &amp; sTrName &amp; &quot; (&quot;&amp; sTrEmail &amp; &quot;)&quot;
 	Next I
 	
 	GetTranslators = mTranslators()
+&apos;	msgbox(gettranslators)
 End Function
 
-Function GetRegistryKeyContent(sKeyName as string, Optional bforUpdate as Boolean)
+Function GetRegistryKeyContent(sKeyName as string)
 Dim oConfigProvider as Object
 Dim aNodePath(0) as new com.sun.star.beans.PropertyValue
 	oConfigProvider = createUnoService(&quot;com.sun.star.configuration.ConfigurationProvider&quot;)
 	aNodePath(0).Name = &quot;nodepath&quot;
 	aNodePath(0).Value = sKeyName
-	If IsMissing(bForUpdate) Then
 		GetRegistryKeyContent() = oConfigProvider.createInstanceWithArguments(&quot;com.sun.star.configuration.ConfigurationAccess&quot;, aNodePath())
-	Else
-		If bForUpdate Then
-			GetRegistryKeyContent() = oConfigProvider.createInstanceWithArguments(&quot;com.sun.star.configuration.ConfigurationUpdateAccess&quot;, aNodePath())
-		Else
-			GetRegistryKeyContent() = oConfigProvider.createInstanceWithArguments(&quot;com.sun.star.configuration.ConfigurationAccess&quot;, aNodePath())
-		End If
-	End If
 End Function
+
+
 </script:module>
