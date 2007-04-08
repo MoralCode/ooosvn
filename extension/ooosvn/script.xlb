@@ -5,4 +5,5 @@
  <library:element library:name="UserGuide"/>
  <library:element library:name="installation"/>
  <library:element library:name="Zip"/>
+ <library:element library:name="Config"/>
 </library:library>
