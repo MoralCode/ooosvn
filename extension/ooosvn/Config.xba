@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Config" script:language="StarBasic">Sub ExistsMetadata()
+
+   oDoc = thisComponent
+   oInfo = oDoc.DocumentInfo()
+   if oInfo.getPropertySetInfo().hasPropertyByName(&quot;Repository-UUID&quot;) then
+      print &quot;Exists.&quot;
+   Else
+      print &quot;Doesn&apos;t exist.&quot;
+   End if
+
+End Sub
+
+Function GetRepoUUID
+
+oDoc = ThisComponent
+oInfo = oDoc.DocumentInfo()
+myName = &quot;Repository-UUID&quot;&apos;&quot;Repository-UUID&quot;
+if oInfo.getPropertySetInfo().hasPropertyByName(myname) then
+      print &quot;Exists.&quot;
+      msgbox(oDoc.DocumentInfo.getPropertyValue(&quot;Repository-UUID&quot;))
+   Else
+      print &quot;Doesn&apos;t exist.&quot;
+      exit function
+   End if
+
+End Function
+
+Function getMyPropertyAttributes(oInfo,myName)
+
+   aProps() = oInfo.getPropertySetInfo.getProperties()
+   for i = uBound(aProps()) to 0 step -1
+      prop = aProps(i)
+      if prop.Name = myName then exit for
+   next
+   if i &gt; -1 then getMyPropertyAttributes = prop.Attributes
+end function
+
+Function setMyPropertyAttributes(oInfo,myName,iAttribute)
+
+   aProps() = oInfo.getPropertySetInfo.getProperties()
+   for i = uBound(aProps()) to 0 step -1
+      prop = aProps(i)
+      if prop.Name = myName then exit for
+   next
+   if i &gt; -1 then
+      &apos;RemoveMetadata(myName)
+      &apos;NewMetadata(myName,iAttribute)
+      prop.Attributes = iAttribute
+      setMyPropertyAttributes = prop.Attributes
+   End if
+End Function
+
+Sub CallSetMyPropertyAttributes()
+
+   oDoc = thisComponent
+   oInfo = oDoc.DocumentInfo()
+  &apos; myName = &quot;test&quot;
+&apos;   oDoc.DocumentInfo.AddProperty(&quot;Repository-UUID&quot;,0,&quot;test&quot;)
+   if oInfo.getPropertySetInfo().hasPropertyByName(&quot;Repository-UUID&quot;) then
+      print &quot;Exists.&quot;
+      oDoc.DocumentInfo.setPropertyValue(&quot;Repository-UUID&quot;, &quot;2abb7df7-5d29-0410-912f-aa4066f74452&quot;)
+      msgbox getMyPropertyAttributes(oInfo,myName),0,&quot;ATTRIBUTES of &quot;&amp; myName
+
+   Else
+   oDoc.DocumentInfo.AddProperty(&quot;Repository-UUID&quot;,0,&quot;2abb7df7-5d29-0410-912f-aa4066f74452&quot;)
+   oDoc.DocumentInfo.setPropertyValue(&quot;Repository-UUID&quot;, &quot;2abb7df7-5d29-0410-912f-aa4066f74452&quot;)
+      msgbox getMyPropertyAttributes(oInfo,myName),0,&quot;ATTRIBUTES of &quot;&amp; myName
+
+   End if
+
+End Sub
+
+Function GetTranslators() As Variant
+Dim oRegKey As Object
+Dim oTrKey As Object
+Dim mKeys()
+Dim sKey As String
+Dim sTrName As String
+Dim sTrEmail As String
+Dim sTrLang As String
+Dim I As Integer
+Dim mTranslators()
+
+
+	oRegKey = GetRegistryKeyContent( BASE_KEY &amp; &quot;ProductInfo/Translators&quot; )
+	mKeys() = oRegKey.ElementNames
+	
+	For I = LBound(mKeys()) To UBound(mKeys())
+		sKey = mKeys(I)
+		oTrKey = oRegKey.getByname(sKey)
+		With oTrKey 
+			sTrName = .TranslatorName 
+			sTrEmail = .Email
+			sTrLang = .Language
+		End With 
+		Redim Preserve mTranslators(I)
+		mTranslators(I) = sTrLang &amp; &quot; - &quot; &amp; sTrName &amp; &quot; (&quot;&amp; sTrEmail &amp; &quot;)&quot;
+	Next I
+	
+	GetTranslators = mTranslators()
+End Function
+
+Function GetRegistryKeyContent(sKeyName as string, Optional bforUpdate as Boolean)
+Dim oConfigProvider as Object
+Dim aNodePath(0) as new com.sun.star.beans.PropertyValue
+	oConfigProvider = createUnoService(&quot;com.sun.star.configuration.ConfigurationProvider&quot;)
+	aNodePath(0).Name = &quot;nodepath&quot;
+	aNodePath(0).Value = sKeyName
+	If IsMissing(bForUpdate) Then
+		GetRegistryKeyContent() = oConfigProvider.createInstanceWithArguments(&quot;com.sun.star.configuration.ConfigurationAccess&quot;, aNodePath())
+	Else
+		If bForUpdate Then
+			GetRegistryKeyContent() = oConfigProvider.createInstanceWithArguments(&quot;com.sun.star.configuration.ConfigurationUpdateAccess&quot;, aNodePath())
+		Else
+			GetRegistryKeyContent() = oConfigProvider.createInstanceWithArguments(&quot;com.sun.star.configuration.ConfigurationAccess&quot;, aNodePath())
+		End If
+	End If
+End Function
+</script:module>
