@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dlg:window PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "dialog.dtd">
+<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="DlgRepoSelect" dlg:left="168" dlg:top="85" dlg:width="135" dlg:height="118" dlg:closeable="true" dlg:moveable="true" dlg:title="Select Repository">
+ <dlg:bulletinboard>
+  <dlg:combobox dlg:id="ComboBox1" dlg:tab-index="0" dlg:left="21" dlg:top="35" dlg:width="90" dlg:height="12" dlg:spin="true"/>
+  <dlg:button dlg:id="CommandButton1" dlg:tab-index="1" dlg:left="34" dlg:top="79" dlg:width="24" dlg:height="12" dlg:value="OK"/>
+  <dlg:button dlg:id="CommandButton2" dlg:tab-index="2" dlg:left="68" dlg:top="79" dlg:width="25" dlg:height="12" dlg:value="Cancel"/>
+  <dlg:button dlg:id="CommandButton3" dlg:tab-index="3" dlg:left="34" dlg:top="55" dlg:width="61" dlg:height="14" dlg:value="Manage Repositories"/>
+ </dlg:bulletinboard>
+</dlg:window>

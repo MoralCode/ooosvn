@@ -91,10 +91,8 @@ Dim oTrKey As Object
 Dim mKeys()
 Dim sKey As String
 Dim I As Integer
-Dim mTranslators()
 
-&apos;	oRegKey = GetRegistryKeyContent( BASE_KEY &amp; &quot;ProductInfo/Repositorys&quot; )
-	oRegKey = GetRegistryKeyContent( &quot;/ooo.ext.ooosvn.Configuration/ProductInfo/Translators&quot; )
+	oRegKey = GetRegistryKeyContent( BASE_KEY &amp; &quot;Repositories&quot; )
 	mKeys() = oRegKey.ElementNames
 	
 	For I = LBound(mKeys()) To UBound(mKeys())
@@ -102,18 +100,11 @@ Dim mTranslators()
 		
 		oTrKey = oRegKey.getByname(sKey)
 		With oTrKey 
-&apos;			sUUID = .UUID 
-			sTrName = .TranslatorName 
-			sTrEmail = .Email
-			sTrLang = .Language
+			sUUID = .UUID 
+			sURL = .URL
 		End With 
-		Redim Preserve mTranslators(I)
-		msgbox(sTrLang &amp; sTrName &amp; sTrEmail)
-		mTranslators(I) = sTrLang &amp; &quot; - &quot; &amp; sTrName &amp; &quot; (&quot;&amp; sTrEmail &amp; &quot;)&quot;
+		msgbox(sUUID &amp; sURL)
 	Next I
-	
-	GetTranslators = mTranslators()
-&apos;	msgbox(gettranslators)
 End Function
 
 Function GetRegistryKeyContent(sKeyName as string)
@@ -125,5 +116,55 @@ Dim aNodePath(0) as new com.sun.star.beans.PropertyValue
 		GetRegistryKeyContent() = oConfigProvider.createInstanceWithArguments(&quot;com.sun.star.configuration.ConfigurationAccess&quot;, aNodePath())
 End Function
 
+Function AddRepos() As Variant
+Const BASE_KEY As String = &quot;/ooo.ext.ooosvn.Configuration/&quot;
+Dim oRegKey As Object
+Dim oTrKey As Object
+Dim mKeys()
+Dim sKey As String
+Dim I As Integer
+Dim mTranslators()
 
+&apos;Dim aNodePath(0) as new com.sun.star.beans.PropertyValue
+	&apos;oConfigProvider = createUnoService(&quot;com.sun.star.configuration.ConfigurationProvider&quot;)
+	
+&apos;	oRegKey = GetRegistryKeyContent( BASE_KEY &amp; &quot;ProductInfo/Repositorys&quot; )
+	&apos;oRegKey = GetRegistryKeyContent( BASE_KEY &amp; &quot;ProductInfo/Translators&quot; )
+	&apos;mKeys() = oRegKey.ElementNames
+	
+	&apos;newkey = 1 + UBound(mKeys())
+	&apos;msgbox(newkey)
+
+	&apos;aNodePath(0).Name = &quot;nodepath&quot;
+	&apos;aNodePath(0).Value = sKeyName
+	&apos;oConfigProvider.createInstanceWithArguments(&quot;com.sun.star.configuration.ConfigurationAccess&quot;, aNodePath()) = &quot;test&quot;
+
+&apos;	msgbox(gettranslators)
+
+oConfigAccess = GetConfigAccess( BASE_KEY &amp; &quot;ProductInfo/Translators&quot; )
+
+oInsertedNode = AddConfigNode(oConfigAccess, &quot;my.newSetting&quot;)
+oInsertedNode.Setting = &quot;test&quot;
+
+End Function
+&apos; #######################
+&apos; Add a node
+&apos; #########################
+Function AddConfigNode( xAccess as Variant, sName as String, optional bForce as Boolean)
+   
+   If IsMissing( bEnableSync ) Then
+      bEnableSync = False
+   EndIf
+   
+   if xAccess.supportsService(&quot;com.sun.star.configuration.ConfigurationUpdateAccess&quot;) AND NOT isEmpty(sName) then
+      
+      if NOT (xAccess.hasByName(sName) AND bForce) then
+         oNewNode = xAccess.createInstance()
+         xAccess.insertByName(sName, oNewNode)
+      
+         AddConfigNode() = oNewNode
+      end if
+   end if
+   
+End Function
 </script:module>
