@@ -25,16 +25,7 @@
 		<prop oor:name="Copyright" oor:type="xs:string">
 			<value>Copyright (C) 2007 Edward Holness</value>
 		</prop>
-		<node oor:name="Repositorys">
-			<node oor:name="t1" oor:op="replace">
-				<prop oor:name="UUID" oor:type="xs:string">
-					<value>2abb7df7-5d29-0410-912f-aa4066f74452</value>
-				</prop>
-				<prop oor:name="URL" oor:type="xs:string">
-					<value>https://svn.sourceforge.net/svnroot/ooosvn</value>
-				</prop>
-			</node>
-		</node>
+		
 		<node oor:name="Contributors"/>
 		<node oor:name="Translators">
 			<node oor:name="t1" oor:op="replace">
@@ -49,6 +40,16 @@
 				</prop>
 			</node>
 		</node>
+	</node>
+	<node oor:name="Repositories">
+			<node oor:name="t1" oor:op="replace">
+				<prop oor:name="UUID" oor:type="xs:string">
+					<value>2abb7df7-5d29-0410-912f-aa4066f74452</value>
+				</prop>
+				<prop oor:name="URL" oor:type="xs:string">
+					<value>https://svn.sourceforge.net/svnroot/ooosvn</value>
+				</prop>
+			</node>
 	</node>
 	
 	<!--  File resources (supports localization) -->

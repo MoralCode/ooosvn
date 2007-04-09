@@ -26,7 +26,26 @@ Function InstallScripts
             exit function
           end if
           
-  
+  &apos;now open the file..
+oFileAccessService = createUnoService(&quot;com.sun.star.ucb.SimpleFileAccess&quot;)
+&apos;oTextInputStream = createUnoService(&quot;com.sun.star.io.TextInputStream&quot;)
+oTextOutputStream = createUnoService(&quot;com.sun.star.io.TextOutputStream&quot;)
+
+&apos;file manipulation
+outStream = oFileAccessService.openFileWrite(WorkingDir &amp; &quot;/test.txt&quot;)
+oTextOutputStream.setOutputStream(outStream)
+
+ oTextOutputStream.writeString(&quot;set terminal png font &apos;&quot; &amp; Font &amp; &quot;&apos; 11 xffffff x000000 x000000 x000000 x000000&quot; _
+ &amp; chr(10) &amp; &quot;clear; reset&quot; &amp; chr(10) &amp; &quot;f(x) = a*x + b&quot; &amp; chr(10) &amp; &quot;a = 0&quot; &amp; chr(10) &amp; &quot;b = 0&quot; &amp; chr(10) _
+ &amp; &quot;fit f(x) &apos;&quot; &amp; OutPutDir &amp; ProjectName &amp; &quot;.data&apos; using 1:2:($4+sqrt(a*a*$3*$3+$4*$4)) via a, b&quot; &amp; chr(10) &amp; _
+ &quot;set output &apos;&quot;&amp; OutputDir &amp; ProjectName &amp; &quot;.png&apos;&quot; &amp; chr(10) &amp; &quot;set title &apos;&quot; &amp; GraphTitle &amp;&quot;&apos;&quot;&amp; chr(10) &amp; _
+ &quot;set xlabel &apos;&quot; &amp; XName &amp; &quot;&apos;&quot; &amp; chr(10) &amp; &quot;set ylabel &apos;&quot; &amp; YName &amp; &quot;&apos;&quot; &amp; chr(10) &amp; &quot;set key off&quot; &amp; chr(10) &amp;_
+ &quot;plot &apos;&quot; &amp; OutputDir &amp; ProjectName &amp; &quot;.data&apos; using 1:2:3:4 with xyerrorbars&quot; &amp; chr(10) &amp;_
+ &quot;set xrange [&quot; &amp; XMin &amp; &quot;:&quot; &amp; XMax &amp; &quot;]; replot&quot; &amp; chr(10) &amp; &quot;set yrange [&quot; &amp; YMin &amp; &quot;:&quot; &amp; YMax &amp; &quot;]; replot&quot; &amp; _
+ chr(10) &amp; &quot;replot f(x)&quot;)
+
+&apos;close all streams
+oTextOutputStream.closeOutput()
 
 end Function
 

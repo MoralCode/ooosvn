@@ -33,6 +33,7 @@
 			<prop oor:name="Copyright" oor:type="xs:string"/>
 			<set oor:name="Contributors" oor:node-type="Contributor"/>
 			<set oor:name="Translators" oor:node-type="Translator"/>
+			<set oor:name="Repositories" oor:node-type="Repository"/>
 		</group>
 		<set oor:name="FileResources" oor:node-type="FileResource"/>
 		<set oor:name="Messages" oor:node-type="Message"/>
