@@ -7,6 +7,8 @@ ImportSVN = 1
 dim document   as object
 dim dispatcher as object
 
+FirstRunCheck &apos;Check scripts are installed, if not do so.
+
 document   = ThisComponent.CurrentController.Frame
 dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
 
@@ -16,13 +18,27 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
 
 LoadTools
 
-sDocURL = FileName(oDoc)
-        if sDocURL = &quot;&quot; then
-                ImportSVN = 0
-            exit sub
-        end if
+          
+        If (oDoc.hasLocation()) Then
+          sDocURL = oDoc.getURL()
+                else      
+                      MsgBox(&quot;File has not been saved so can not be placed under version control.  Save the file to disk before reattempting.&quot;, 16, &quot;File not imported&quot;)
+                exit sub
+        End If
+    
+    
+    sDocURL2 = mid(sDocURL, 8)
+    repo = getRepo
 
-&apos; Test for wrong file type
+	If NOT FileExists(repo &amp; &quot;/README.txt&quot;) then
+                msgbox (&quot;Repository not found. Create it using:&quot; &amp; chr(13) &amp; &quot;svnadmin create --fs-type fsfs &quot; &amp; mid(repo, 8) &amp; chr(13) &amp; &quot;Then all scripts should be placed in &quot; &amp; WorkingDir, 16, &quot;Repository Error&quot;)
+            exit sub
+          end if
+
+
+    WorkingDir = getWorkingDir
+    
+    &apos; Test for wrong file type
 if validatefiletype(sDocURL)=&quot;false&quot; then
 ImportSVN = 0
 	exit sub
@@ -37,7 +53,8 @@ End If
          
             cQuote = Chr( 34 )
 &apos; old shell command
-   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir + cQuote , &quot;&quot;,6,true)
+ &apos;  msgbox( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp;  sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir + cQuote , &quot;&quot;,6,true)
+   Shell(&quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp;  sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir + cQuote , &quot;&quot;,6,true)
 &apos;  ret = MyShell(sWorkingDir &amp; &quot;/import.sh &quot;, sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; sGlobalRepoURL  &amp; &quot; &quot; &amp; sWorkingDir)
   if ret &lt;&gt; 0 then 
   	ErrBox(&quot;Failed to put file in the repository.&quot;)

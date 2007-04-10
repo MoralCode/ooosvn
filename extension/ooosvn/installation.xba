@@ -4,11 +4,15 @@
 
    WorkingDir = getWorkingDir
 
-   cQuote = Chr( 34 )
-   Shell(&quot;mkdir &quot; , 6, WorkingDir, true)
+&apos; Create the home repository
+   ret = Shell(&quot;svnadmin create --fs-type fsfs&quot;, 6, WorkingDir,true)
+	if ret &lt;&gt; 0 then
+		CreateSVN = false
+		MsgBox(&quot;Failed to create repository.&quot;,48,&quot;Error&quot;)
+		end if
 
    If NOT FileExists(WorkingDir) Then
-     MsgBox(&quot;Creation of working directory &quot; &amp; WorkingDir &amp; &quot; failed.  Do you have adequate write permissions?&quot;, 16, &quot;File not imported&quot;)
+     MsgBox(&quot;Creation of working directory &quot; &amp; WorkingDir &amp; &quot; failed.  Do you have adequate write permissions?&quot;, 16, &quot;Failed&quot;)
      WorkingDirCreate = 0
      Exit Function
    End If
@@ -31,18 +35,124 @@ oFileAccessService = createUnoService(&quot;com.sun.star.ucb.SimpleFileAccess&qu
 &apos;oTextInputStream = createUnoService(&quot;com.sun.star.io.TextInputStream&quot;)
 oTextOutputStream = createUnoService(&quot;com.sun.star.io.TextOutputStream&quot;)
 
-&apos;file manipulation
-outStream = oFileAccessService.openFileWrite(WorkingDir &amp; &quot;/test.txt&quot;)
+&apos;commit.sh
+outStream = oFileAccessService.openFileWrite(WorkingDir &amp; &quot;/commit.sh&quot;)
 oTextOutputStream.setOutputStream(outStream)
 
- oTextOutputStream.writeString(&quot;set terminal png font &apos;&quot; &amp; Font &amp; &quot;&apos; 11 xffffff x000000 x000000 x000000 x000000&quot; _
- &amp; chr(10) &amp; &quot;clear; reset&quot; &amp; chr(10) &amp; &quot;f(x) = a*x + b&quot; &amp; chr(10) &amp; &quot;a = 0&quot; &amp; chr(10) &amp; &quot;b = 0&quot; &amp; chr(10) _
- &amp; &quot;fit f(x) &apos;&quot; &amp; OutPutDir &amp; ProjectName &amp; &quot;.data&apos; using 1:2:($4+sqrt(a*a*$3*$3+$4*$4)) via a, b&quot; &amp; chr(10) &amp; _
- &quot;set output &apos;&quot;&amp; OutputDir &amp; ProjectName &amp; &quot;.png&apos;&quot; &amp; chr(10) &amp; &quot;set title &apos;&quot; &amp; GraphTitle &amp;&quot;&apos;&quot;&amp; chr(10) &amp; _
- &quot;set xlabel &apos;&quot; &amp; XName &amp; &quot;&apos;&quot; &amp; chr(10) &amp; &quot;set ylabel &apos;&quot; &amp; YName &amp; &quot;&apos;&quot; &amp; chr(10) &amp; &quot;set key off&quot; &amp; chr(10) &amp;_
- &quot;plot &apos;&quot; &amp; OutputDir &amp; ProjectName &amp; &quot;.data&apos; using 1:2:3:4 with xyerrorbars&quot; &amp; chr(10) &amp;_
- &quot;set xrange [&quot; &amp; XMin &amp; &quot;:&quot; &amp; XMax &amp; &quot;]; replot&quot; &amp; chr(10) &amp; &quot;set yrange [&quot; &amp; YMin &amp; &quot;:&quot; &amp; YMax &amp; &quot;]; replot&quot; &amp; _
- chr(10) &amp; &quot;replot f(x)&quot;)
+ oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+&quot;rm -f $4/$2/trunk/Pictures/*&quot; &amp; chr(10) &amp; _
+&quot;#rm -rf $4/$2/trunk/*&quot; &amp; chr(10) &amp; _
+&quot;unzip -o $1 -d $4/$2/trunk/ -x *.svn*&quot; &amp; chr(10) &amp; _
+&quot;cd $4/$2/trunk/&quot; &amp; chr(10) &amp; _
+&quot;svn status | grep ^\! | cut -c8- | xargs svn rm&quot; &amp; chr(10) &amp; _
+&quot;svn status | grep ^\? | cut -c8- | xargs svn add&quot; &amp; chr(10) &amp; _
+&quot;svn commit -m &quot; &amp; chr(34) &amp; &quot;$5&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;cd $4/&quot; &amp; chr(10) &amp; _
+&quot;svn checkout $3/$2/&quot; &amp; chr(10) &amp; _
+&quot;#cd $4/$2/trunk/&quot; &amp; chr(10) &amp; _
+&quot;#zip -rDX $1 * -x *.svn*&quot;)
+
+&apos;close all streams
+oTextOutputStream.closeOutput()
+
+&apos;import.sh
+outStream = oFileAccessService.openFileWrite(WorkingDir &amp; &quot;/import.sh&quot;)
+oTextOutputStream.setOutputStream(outStream)
+
+ oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+&quot;mkdir $4/$2/&quot; &amp; chr(10) &amp; _
+&quot;mkdir $4/$2/temp/&quot; &amp; chr(10) &amp; _
+&quot;unzip -o $1 -d $4/$2/temp/ -x *.svn*&quot; &amp; chr(10) &amp; _
+&quot;cd $4/$2/temp/&quot; &amp; chr(10) &amp; _
+&quot;# Get and write repo UUID&quot; &amp; chr(10) &amp; _
+&quot;repo_uuid=`svnlook uuid $4`&quot; &amp; chr(10) &amp; _
+&quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;Info 1\&quot; &amp; chr(34) &amp; &quot;\/&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;#echo $txtold&quot; &amp; chr(10) &amp; _
+&quot;txtnew=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;Repository-UUID\&quot; &amp; chr(34) &amp; &quot;&gt;$repo_uuid&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;#echo $txtnew&quot; &amp; chr(10) &amp; _
+&quot;#echo s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/g&quot; &amp; chr(10) &amp; _
+&quot;sed s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/g meta.xml &gt; meta2.xml&quot; &amp; chr(10) &amp; _
+&quot;mv meta2.xml meta.xml&quot; &amp; chr(10) &amp; _
+&quot;# Import&quot; &amp; chr(10) &amp; _
+&quot;svn import . $3/$2/trunk/ -m &apos;Initial Import&apos;&quot; &amp; chr(10) &amp; _
+&quot;rm -rf $4/$2/temp/&quot; &amp; chr(10) &amp; _
+&quot;cd $4/&quot; &amp; chr(10) &amp; _
+&quot;svn checkout $3/$2/&quot; &amp; chr(10) &amp; _
+&quot;cd $4/$2/trunk/&quot; &amp; chr(10) &amp; _
+&quot;zip -rDX $1 * -x *.svn*&quot;)
+
+&apos;close all streams
+oTextOutputStream.closeOutput()
+
+&apos;listdocuments.sh
+outStream = oFileAccessService.openFileWrite(WorkingDir &amp; &quot;/listdocuments.sh&quot;)
+oTextOutputStream.setOutputStream(outStream)
+
+ oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+&quot;mkdir $1/documentlist/&quot; &amp; chr(10) &amp; _
+&quot;for document in `find $1 -maxdepth 2 -mindepth 2 -iname trunk | cut -d&apos;/&apos; -f5`&quot; &amp; chr(10) &amp; _
+&quot;do&quot; &amp; chr(10) &amp; _
+&quot;svn &gt;&gt; $1/documentlist/$document&quot; &amp; chr(10) &amp; _
+&quot;#svn &gt;&gt; $1/documentlist/log.txt&quot; &amp; chr(10) &amp; _
+&quot;done&quot;)
+
+&apos;close all streams
+oTextOutputStream.closeOutput()
+
+&apos;listversions.sh
+outStream = oFileAccessService.openFileWrite(WorkingDir &amp; &quot;/listversions.sh&quot;)
+oTextOutputStream.setOutputStream(outStream)
+
+ oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+&quot;mkdir $4/$2/versions/&quot; &amp; chr(10) &amp; _
+&quot;for version in `svn log -q $3/$2 | grep r | cut -c2- | cut -d&apos; &apos; -f1`&quot; &amp; chr(10) &amp; _
+&quot;do&quot; &amp; chr(10) &amp; _
+&quot;svn &gt;&gt; $4/$2/versions/$version.version&quot; &amp; chr(10) &amp; _
+&quot;#svn &gt;&gt; $4/$2/versions/log.txt&quot; &amp; chr(10) &amp; _
+&quot;done&quot;)
+
+&apos;close all streams
+oTextOutputStream.closeOutput()
+
+&apos;revert.sh
+outStream = oFileAccessService.openFileWrite(WorkingDir &amp; &quot;/revert.sh&quot;)
+oTextOutputStream.setOutputStream(outStream)
+
+ oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+&quot;cd $4/&quot; &amp; chr(10) &amp; _
+&quot;rm -rf $4/$2/trunk&quot; &amp; chr(10) &amp; _
+&quot;svn checkout -r$5 $3/$2/&quot; &amp; chr(10) &amp; _
+&quot;cd $4/$2/trunk/&quot; &amp; chr(10) &amp; _
+&quot;zip -rDX $1 * -x *.svn*&quot;)
+
+&apos;close all streams
+oTextOutputStream.closeOutput()
+
+&apos;thumbnails.sh
+outStream = oFileAccessService.openFileWrite(WorkingDir &amp; &quot;/thumbnails.sh&quot;)
+oTextOutputStream.setOutputStream(outStream)
+
+ oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+&quot;for version in `svn log -q $3/$2 | grep r | cut -c2- | cut -d&apos; &apos; -f1`&quot; &amp; chr(10) &amp; _
+&quot;do&quot; &amp; chr(10) &amp; _
+&quot;svn checkout -r$version $3/$2/trunk/Thumbnails/ $4/$2/preview/.$version/&quot; &amp; chr(10) &amp; _
+&quot;mv $4/$2/preview/.$version/thumbnail.png $4/$2/preview/$version.png &gt;&gt; $4/$2/preview/log.txt&quot; &amp; chr(10) &amp; _
+&quot;rm -rf $4/$2/preview/$version/&quot; &amp; chr(10) &amp; _
+&quot;done&quot;)
+
+&apos;close all streams
+oTextOutputStream.closeOutput()
+
+&apos;userguide.sh
+outStream = oFileAccessService.openFileWrite(WorkingDir &amp; &quot;/userguide.sh&quot;)
+oTextOutputStream.setOutputStream(outStream)
+
+ oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+&quot;cd $1/&quot; &amp; chr(10) &amp; _
+&quot;rm -rf $1/userguide&quot; &amp; chr(10) &amp; _
+&quot;svn checkout https://svn.sourceforge.net/svnroot/ooosvn/userguide/&quot; &amp; chr(10) &amp; _
+&quot;cd $1/userguide&quot; &amp; chr(10) &amp; _
+&quot;zip -rDX ../userguide.odt * -x *.svn*&quot;)
 
 &apos;close all streams
 oTextOutputStream.closeOutput()
@@ -55,7 +165,7 @@ function CreateSVN() as integer
 	&apos; If no working directory, it needs to be created for a repository to exist.
 	WorkingDir = getWorkingDir	
 	If NOT FileExists(WorkingDir) Then
-       CreateWorkingDir
+       InstallScripts
      Exit Function
    End If
 	
@@ -68,7 +178,7 @@ function CreateSVN() as integer
 	end if
 		
  	sSVNURL = PickFolder(sGetHomeURL(), &quot;Select a directory for the new repository&quot;, &quot;&quot;)
-	ret = Shell(&quot;svnadmin create &quot;, 6, sSVNURL,true)
+	ret = Shell(&quot;svnadmin create --fs-type fsfs&quot;, 6, sSVNURL,true)
 	if ret &lt;&gt; 0 then
 		CreateSVN = false
 		MsgBox(&quot;Failed to create repository.&quot;,48,&quot;Error&quot;)
@@ -87,4 +197,19 @@ msgbox(sSVNURL)
 msgbox(uuid)
 
 end function
+
+Function FirstRunCheck
+
+	WorkingDir = getWorkingDir	
+	
+If NOT FileExists(WorkingDir) then
+               MsgBox(&quot;This appears to be the first time you have run OOoSVN.&quot; &amp; chr(10) &amp; chr(10) &amp; _
+               &quot;There are several configuration steps we must do:&quot; &amp; chr(10) &amp; _
+               &quot;1. Create a working directory, &quot; &amp; WorkingDir &amp; &quot;, which will be used for file operations.&quot; &amp; chr(10) &amp; _
+               &quot;2. Configure a repository for documents to be checked into.&quot; &amp; chr(10) &amp; chr(10) &amp; _
+               &quot;Press OK to begin.&quot;,64, &quot;First run wizard&quot;)
+               InstallScripts
+               &apos;CreateSVN
+          end if
+End Function
 </script:module>
