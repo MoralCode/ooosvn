@@ -3,8 +3,8 @@
 # Usage: sh buildscript [version]
 # eg.    sh buildscript 0.3.4
 
-rm -rf build
-mkdir build
+#rm -rf build
+#mkdir build
 
 cd extension
 zip -rDX ../ooosvn-beta-$1.zip * -x *.svn*
