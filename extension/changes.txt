@@ -1,3 +1,17 @@
+0.3.5 :: 2007-04-10
+
+### New Features ###
+Added document existence check to file loading on recoverSVN and GetUserguide
+
+Added working dir and scripts installation tool.  This will create the home repository also.  It is recommended that users upgrading run Tools > Addons > Install OOoSVN scripts to check their scripts are up to date.
+
+No more two layered installation.  The outer ZIP file is the extension so just install the ZIP file in OOo through the extension manager and go.
+
+FirstRunCheck Function which checks for existence of workingdir, if not found it creates the working directory, home repository and installs the scripts there.  This should make installation straight forward.
+
+### Bug Fixes ###
+1690311 - Fixed broken ImportSVN module.  This was down to some problems with the Filename Function, this won't happen again.  Thanks to earlycj5 for reporting this.
+
 0.3.4 :: 2007-03-30
 
 ### New Features ###
