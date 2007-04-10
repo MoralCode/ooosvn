@@ -9,13 +9,18 @@ versions so the only chance for losing work with this version is if there is a
 problem with one of the underlying programs, all of which are pretty mature and
 are trusted by many thousands of people.
 
-This ZIP file is now the extension, unlike with older versions.  Installation should be more straight forward.
+This ZIP file is now the extension, unlike with older versions.  Installation
+should be more straight forward.
 
 1. Install the ooosvn-0.3.5.zip package using OOo's package manager, Tools >
 Package Manager (Extension Manager after 2.1) .  This will install the BASIC
 module and will give you the SVN menu.
 
-2. If doing an upgrade it is strongly recommended that you run Tools > Addons > Install OOoSVN scripts to upgrade the scripts.  If this is a fresh install, use SVN > Place document under version control for the first time and your home repository, working directory and shell scripts will be created for you by the new wizard.
+2. If doing an upgrade it is strongly recommended that you run Tools > Addons >
+Install OOoSVN scripts to upgrade the scripts.  If this is a fresh install, use
+SVN > Place document under version control for the first time and your home
+repository, working directory and shell scripts will be created for you by the
+new wizard.
 
 Use:
 The SVN menu gives all of the options to carry out on a document.  They're safe

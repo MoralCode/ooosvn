@@ -3,28 +3,40 @@
 ### New Features ###
 Added document existence check to file loading on recoverSVN and GetUserguide
 
-Added working dir and scripts installation tool.  This will create the home repository also.  It is recommended that users upgrading run Tools > Addons > Install OOoSVN scripts to check their scripts are up to date.
+Added working dir and scripts installation tool.  This will create the home
+repository also.  It is recommended that users upgrading run Tools > Addons >
+Install OOoSVN scripts to check their scripts are up to date.
 
-No more two layered installation.  The outer ZIP file is the extension so just install the ZIP file in OOo through the extension manager and go.
+No more two layered installation.  The outer ZIP file is the extension so just
+install the ZIP file in OOo through the extension manager and go.
 
-FirstRunCheck Function which checks for existence of workingdir, if not found it creates the working directory, home repository and installs the scripts there.  This should make installation straight forward.
+FirstRunCheck Function which checks for existence of workingdir, if not found it
+creates the working directory, home repository and installs the scripts there. 
+This should make installation straight forward.
 
 ### Bug Fixes ###
-1690311 - Fixed broken ImportSVN module.  This was down to some problems with the Filename Function, this won't happen again.  Thanks to earlycj5 for reporting this.
+1690311 - Fixed broken ImportSVN module.  This was down to some problems with
+the Filename Function, this won't happen again.  Thanks to earlycj5 for
+reporting this.
 
 0.3.4 :: 2007-03-30
 
 ### New Features ###
-1655501 - Started adding icons to SVN menu.  More, including large size and high contrast, will happen over time.
+1655501 - Started adding icons to SVN menu.  More, including large size and high
+contrast, will happen over time.
 
-1656450 - Added Userguide download tool: Help > Get latest OOoSVN Userguide.  This checks out the latest version of the document from Sourceforge and builds it for the user.
+1656450 - Added Userguide download tool: Help > Get latest OOoSVN Userguide. 
+This checks out the latest version of the document from Sourceforge and builds
+it for the user.
 
 Working directory creation function
 
-A whole load of experimental stuff that's not hooked up properly yet but may be useful for anyone interested in where this project is going.
+A whole load of experimental stuff that's not hooked up properly yet but may be
+useful for anyone interested in where this project is going.
 
 ### Bug Fixes ###
-Changed #! /bin/bash top #!/bin/bash which is more correct, even though both work.  Thanks to Richard Bos for his suggestion.
+Changed #! /bin/bash top #!/bin/bash which is more correct, even though both
+work.  Thanks to Richard Bos for his suggestion.
 
 0.3.3 :: 2007-03-06
 
