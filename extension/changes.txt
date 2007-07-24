@@ -1,14 +1,19 @@
 0.3.6 :: 2007-07-24
 
 ### New Features ###
-Added a check for SVN during first run wizard.  It currently requires 1.3 (the
+1654579 - Added a check for SVN during first run wizard.  It currently requires
+1.3 (the
 oldest supported by Tigris) to pass though if anyone has any problem with this
 limit and a better suggestion for what the requirment should be, please get in
 touch.
 
+Added a configuration complete dialogue to the end of the installation wizard.
+
 ### Bug fixes ###
-Fixed failing to generate thumbnail images.  This was due to a broken shell
-command that didn't get spotted earlier as not many people use it anyway.
+1758195 - Fixed failing to generate thumbnail images.  This was due to a broken
+shell
+command that didn't get spotted earlier as not many people use it anyway. 
+Thanks to monnier for spotting this error.
 
 0.3.5 :: 2007-04-10
 
