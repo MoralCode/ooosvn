@@ -4,6 +4,12 @@
 		<group oor:name="Repository">
 			<prop oor:name="UUID" oor:type="xs:string"/>
 			<prop oor:name="URL" oor:type="xs:string"/>
+			<prop oor:name="Description" oor:type="xs:string"/>
+			<prop oor:name="Admin" oor:type="xs:string"/>
+			<prop oor:name="Admin-email" oor:type="xs:string"/>
+			<prop oor:name="UserDocCount" oor:type="xs:string"/>
+			<prop oor:name="Location" oor:type="xs:string"/>
+			<prop oor:name="Latency" oor:type="xs:string"/>
 		</group>
 		<group oor:name="Contributor">
 			<prop oor:name="ContributorName" oor:type="xs:string"/>

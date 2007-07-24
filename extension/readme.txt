@@ -1,6 +1,6 @@
 Requirements:
 - OOo 1.1 or later, tested with 2.0.2 and 2.1
-- Subversion.  Tested with 1.3 and 1.4, latest stable version is recommended.
+- Subversion 1.3 or greater, latest stable version is recommended.
 - svnadmin, svnlook, zip, unzip
 
 Installation:
@@ -12,11 +12,11 @@ are trusted by many thousands of people.
 This ZIP file is now the extension, unlike with older versions.  Installation
 should be more straight forward.
 
-1. Install the ooosvn-0.3.5.zip package using OOo's package manager, Tools >
+1. Install the ooosvn-0.3.6.zip package using OOo's package manager, Tools >
 Package Manager (Extension Manager after 2.1) .  This will install the BASIC
 module and will give you the SVN menu.
 
-2. If doing an upgrade it is strongly recommended that you run Tools > Addons >
+2. If doing an upgrade it is strongly recommended that you run Tools > Add-Ons >
 Install OOoSVN scripts to upgrade the scripts.  If this is a fresh install, use
 SVN > Place document under version control for the first time and your home
 repository, working directory and shell scripts will be created for you by the
@@ -43,3 +43,6 @@ available there.  Also do check for updated documentation and new releases.  If
 you are interested in contributing, let me know.
 
 This is still **very much under development**.
+
+Thanks:
+Yuval Aviel, Richard Bos, everyone who has reported bugs and tested

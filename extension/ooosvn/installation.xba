@@ -2,6 +2,8 @@
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="installation" script:language="StarBasic">Function CreateWorkingDir
 
+
+
    WorkingDir = getWorkingDir
 
 &apos; Create the home repository
@@ -16,8 +18,15 @@
      WorkingDirCreate = 0
      Exit Function
    End If
+   
+                  PackagesCheck
+ &apos;              If Packages = false then
+  &apos;             exit function
+              &apos; else
 
    Installscripts
+
+&apos;end if
 
 end Function
 
@@ -206,10 +215,42 @@ If NOT FileExists(WorkingDir) then
                MsgBox(&quot;This appears to be the first time you have run OOoSVN.&quot; &amp; chr(10) &amp; chr(10) &amp; _
                &quot;There are several configuration steps we must do:&quot; &amp; chr(10) &amp; _
                &quot;1. Create a working directory, &quot; &amp; WorkingDir &amp; &quot;, which will be used for file operations.&quot; &amp; chr(10) &amp; _
-               &quot;2. Configure a repository for documents to be checked into.&quot; &amp; chr(10) &amp; chr(10) &amp; _
+               &quot;2. Check you have the required packages&quot; &amp; chr(10) &amp; _
+               &quot;3. Configure a repository for documents to be checked into.&quot; &amp; chr(10) &amp; chr(10) &amp; _
                &quot;Press OK to begin.&quot;,64, &quot;First run wizard&quot;)
+
                InstallScripts
-               &apos;CreateSVN
+               MsgBox(&quot;Configuration complete.&quot;, 64, &quot;Complete&quot;)
           end if
+End Function
+
+Function PackagesCheck
+  Dim lSVN as Single
+  packages = true
+
+    WorkingDir = getWorkingDir
+
+cQuote = Chr( 34 )
+
+	Shell( &quot;bash -c &quot; + cQuote + &quot;svn --version -q &gt; &quot; &amp; WorkingDir &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
+		
+	iNumber = Freefile
+	aFile = WorkingDir &amp; &quot;/test.txt&quot;
+Open aFile For Input As iNumber
+While not eof(iNumber)
+Line Input #iNumber, sLine
+If sLine &lt;&gt;&quot;&quot; then
+sSVN = sSVN &amp; sLine &amp; chr(13)
+end if
+wend
+Close #iNumber
+lSVN=left(sSVN,3)
+if lSVN &lt; 1.3 then
+msgbox(&quot;OOoSVN is supported for use with SVN &gt;= 1.3.&quot; &amp; chr(13) &amp; &quot;You either have too early a version or don&apos;t have it installed.&quot; &amp; chr(13) &amp; chr(13) &amp; &quot;Using the latest stable version of SVN available is recommended. Please check your distros package manager.&quot; &amp; chr(10) &amp; &quot;Setup will continue but OOoSVN may not function correctly.&quot;, 16, &quot;SVN error&quot;)
+packages=false
+else
+&apos;Msgbox (&quot;SVN version: &quot; &amp; sSVN, 64, &quot;Checking package versions&quot;)
+end if
+
 End Function
 </script:module>

@@ -7,7 +7,7 @@ ImportSVN = 1
 dim document   as object
 dim dispatcher as object
 
-FirstRunCheck &apos;Check scripts are installed, if not do so.
+FirstRunCheck &apos;Check scripts are installed, if not, install them.
 
 document   = ThisComponent.CurrentController.Frame
 dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
@@ -165,8 +165,8 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
          
             cQuote = Chr( 34 )
 
-&apos;   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/thumbnails.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir + cQuote)
-MyShell(WorkingDir &amp; &quot;/revert.sh &quot;, sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; sGlobalRepoURL &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version)
+   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/thumbnails.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir + cQuote)
+&apos;MyShell(WorkingDir &amp; &quot;/revert.sh &quot;, sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; sGlobalRepoURL &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version)
 
 	do
 	wait 100
