@@ -1,6 +1,132 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
-<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Config" script:language="StarBasic">Sub ExistsMetadata()
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Config" script:language="StarBasic">Sub Main
+   &apos;ShowUserProfile()
+   &apos;ChangeUserProfile()
+   UUID=&quot;2abb7df7-5d29-0410-912f-aa4066f74452&quot;
+   URL = GetURLfromUUID(UUID)
+   If Len(URL) &lt; 10 Then
+   Msgbox(&quot;Repository &quot; &amp; UUID &amp; &quot; not found in your database.&quot;)
+   Else
+   Msgbox(URL)
+   End IF
+End Sub 
+
+Function GetURLfromUUID(ByVal UUID As String)
+
+oConfigData_UserProfile = GetConfigAccess( &quot;/ooo.ext.ooosvn.Configuration/ProductInfo/Repositories&quot;, False )
+&apos;
+	mKeys() = oConfigData_UserProfile.ElementNames
+	
+	For I = LBound(mKeys()) To UBound(mKeys())
+		sKey = mKeys(I)
+		&apos;URL = oConfigData_UserProfile.sKey.URL
+		Repo = oConfigData_UserProfile.getByname(sKey)
+		With Repo
+			sUUID = .UUID 
+			sURL = .URL
+			If sUUID = UUID Then
+			GetURLfromUUID = sURL
+			End If
+		End With 
+		&apos;Msgbox(URL)
+		&apos;oTrKey = oRegKey.getByname(sKey)
+		&apos;With oTrKey 
+		&apos;	sUUID = .UUID 
+		&apos;	sURL = .URL
+		&apos;End With 
+		&apos;msgbox(sUUID &amp; sURL)
+	Next I
+&apos;
+&apos;GetURLfromUUID = oConfigData_UserProfile.t1.URL
+
+End Function
+
+Sub ShowUserProfile()
+   &apos;oConfigData_UserProfile = GetConfigAccess( &quot;/org.openoffice.UserProfile/Data&quot;, False )
+   oConfigData_UserProfile = GetConfigAccess( &quot;/ooo.ext.ooosvn.Configuration/ProductInfo/Repositories&quot;, False )
+   &apos;oConfigData_UserProfile = GetConfigAccess( &quot;/ooo.ext.ooosvn.Configuration/Repositories&quot;, False )
+   
+   &apos;cCR = Chr(13)
+   MsgBox      &quot;Country: &quot; + oConfigData_UserProfile.t1.URL
+End Sub
+
+Sub ChangeUserProfile()
+   &apos;oConfigData_UserProfile = GetConfigAccess( &quot;/org.openoffice.UserProfile/Data&quot;, True, True, False )
+   oConfigData_UserProfile = GetConfigAccess( &quot;/ooo.ext.ooosvn.Configuration/ProductInfo&quot;, True, True, False )
+   
+   &apos; Change the user&apos;s country.
+   &apos;oConfigData_UserProfile.c = &quot;United States of America&quot;
+   oConfigData_UserProfile.ProductName = &quot;OOoSVN&quot;
+   
+   &apos; You must quit and re-launch the office to see the changes take effect.
+   oConfigData_UserProfile.commitChanges()
+   
+   &apos; The data will be written to...
+   &apos;   /home/danny/OpenOffice.org1.9.104/user/registry/data/org/openoffice/UserProfile.xcu
+   &apos; or for some systems...
+   &apos;   C:\Documents and Settings\dbrewer\Application Data\OpenOffice.org1.9.104\user\registry\data\org\openoffice\UserProfile.xcu
+End Sub
+
+Function GetConfigAccess( ByVal cNodePath As String,_
+                     ByVal bWriteAccess As Boolean,_
+                     Optional bEnableSync,_
+                     Optional bLazyWrite ) As Object
+   If IsMissing( bEnableSync ) Then
+      bEnableSync = True
+   EndIf
+   If IsMissing( bLazyWrite ) Then
+      bLazyWrite = False
+   EndIf
+
+&apos;   If bWriteAccess  And  bEnableSync Then
+      oConfigProvider = GetProcessServiceManager().createInstanceWithArguments(_
+                     &quot;com.sun.star.configuration.ConfigurationProvider&quot;,_
+                     Array( MakePropertyValue( &quot;enableasync&quot;, bEnableSync ) ) )
+&apos;   Else
+&apos;      oConfigProvider = createUnoService( &quot;com.sun.star.configuration.ConfigurationProvider&quot; )
+&apos;   EndIf
+   
+   If bWriteAccess Then
+      cServiceName = &quot;com.sun.star.configuration.ConfigurationUpdateAccess&quot;
+   Else
+      cServiceName = &quot;com.sun.star.configuration.ConfigurationAccess&quot;
+   EndIf
+   
+   oConfigAccess = oConfigProvider.createInstanceWithArguments( cServiceName,_
+      Array( MakePropertyValue( &quot;nodepath&quot;, cNodePath ),_
+            MakePropertyValue( &quot;lazywrite&quot;, bLazyWrite ) ) )
+   
+   GetConfigAccess = oConfigAccess
+End Function
+
+
+Function MakePropertyValue( Optional cName As String, Optional uValue ) As com.sun.star.beans.PropertyValue
+   oPropertyValue = createUnoStruct( &quot;com.sun.star.beans.PropertyValue&quot; )
+   If Not IsMissing( cName ) Then
+      oPropertyValue.Name = cName
+   EndIf
+   If Not IsMissing( uValue ) Then
+      oPropertyValue.Value = uValue
+   EndIf
+   MakePropertyValue() = oPropertyValue
+End Function  
+&apos;#################
+&apos;Const BASE_KEY As String = &quot;/ooo.ext.BasicAddonBuilder.Configuration/&quot;
+Const BASE_KEY As String = &quot;/ooo.ext.ooosvn.Configuration/&quot;
+
+&apos;__________________________________________________________________________________________________________
+Function GetAppName() As String
+Dim oRegKey As Object
+	oRegKey = GetRegistryKeyContent( BASE_KEY &amp; &quot;ProductInfo&quot; )
+	
+	GetAppName = oRegKey.ProductName
+	msgbox(GetAppName)
+End Function
+
+&apos;################
+
+Sub ExistsMetadata()
 
    oDoc = thisComponent
    oInfo = oDoc.DocumentInfo()
@@ -71,18 +197,7 @@ Sub CallSetMyPropertyAttributes()
    End if
 
 End Sub
-&apos;##############
-Const BASE_KEY As String = &quot;/ooo.ext.ooosvn.Configuration/&quot;
 
-Function GetAppName() As String
-Dim oRegKey As Object
-&apos;	oRegKey = GetRegistryKeyContent( BASE_KEY &amp; &quot;ProductInfo&quot; )
-	oRegKey = GetRegistryKeyContent( &quot;/ooo.ext.ooosvn.Configuration/ProductInfo/Repositorys/t1&quot; )
-	
-&apos;	GetAppName = oRegKey.ProductName
-GetAppName = oRegKey.URL
-	msgbox(getappname)
-End Function
 &apos;###################
 Function GetRepos() As Variant
 Const BASE_KEY As String = &quot;/ooo.ext.ooosvn.Configuration/&quot;
