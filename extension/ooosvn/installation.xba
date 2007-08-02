@@ -45,10 +45,11 @@ oFileAccessService = createUnoService(&quot;com.sun.star.ucb.SimpleFileAccess&qu
 oTextOutputStream = createUnoService(&quot;com.sun.star.io.TextOutputStream&quot;)
 
 &apos;commit.sh
-outStream = oFileAccessService.openFileWrite(WorkingDir &amp; &quot;/commit.sh&quot;)
+oFileAccessService.kill(WorkingDir &amp; &quot;/commit.sh&quot;)
+outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/commit.sh&quot;)
 oTextOutputStream.setOutputStream(outStream)
 
- oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
 &quot;rm -f $4/$2/trunk/Pictures/*&quot; &amp; chr(10) &amp; _
 &quot;#rm -rf $4/$2/trunk/*&quot; &amp; chr(10) &amp; _
 &quot;unzip -o $1 -d $4/$2/trunk/ -x *.svn*&quot; &amp; chr(10) &amp; _
@@ -65,7 +66,8 @@ oTextOutputStream.setOutputStream(outStream)
 oTextOutputStream.closeOutput()
 
 &apos;import.sh
-outStream = oFileAccessService.openFileWrite(WorkingDir &amp; &quot;/import.sh&quot;)
+oFileAccessService.kill(WorkingDir &amp; &quot;/import.sh&quot;)
+outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/import.sh&quot;)
 oTextOutputStream.setOutputStream(outStream)
 
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
@@ -94,7 +96,8 @@ oTextOutputStream.setOutputStream(outStream)
 oTextOutputStream.closeOutput()
 
 &apos;listdocuments.sh
-outStream = oFileAccessService.openFileWrite(WorkingDir &amp; &quot;/listdocuments.sh&quot;)
+oFileAccessService.kill(WorkingDir &amp; &quot;/listdocuments.sh&quot;)
+outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/listdocuments.sh&quot;)
 oTextOutputStream.setOutputStream(outStream)
 
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
@@ -109,7 +112,8 @@ oTextOutputStream.setOutputStream(outStream)
 oTextOutputStream.closeOutput()
 
 &apos;listversions.sh
-outStream = oFileAccessService.openFileWrite(WorkingDir &amp; &quot;/listversions.sh&quot;)
+oFileAccessService.kill(WorkingDir &amp; &quot;/listversions.sh&quot;)
+outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/listversions.sh&quot;)
 oTextOutputStream.setOutputStream(outStream)
 
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
@@ -124,7 +128,8 @@ oTextOutputStream.setOutputStream(outStream)
 oTextOutputStream.closeOutput()
 
 &apos;revert.sh
-outStream = oFileAccessService.openFileWrite(WorkingDir &amp; &quot;/revert.sh&quot;)
+oFileAccessService.kill(WorkingDir &amp; &quot;/revert.sh&quot;)
+outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/revert.sh&quot;)
 oTextOutputStream.setOutputStream(outStream)
 
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
@@ -138,7 +143,8 @@ oTextOutputStream.setOutputStream(outStream)
 oTextOutputStream.closeOutput()
 
 &apos;thumbnails.sh
-outStream = oFileAccessService.openFileWrite(WorkingDir &amp; &quot;/thumbnails.sh&quot;)
+oFileAccessService.kill(WorkingDir &amp; &quot;/thumbnails.sh&quot;)
+outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/thumbnails.sh&quot;)
 oTextOutputStream.setOutputStream(outStream)
 
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
@@ -153,7 +159,8 @@ oTextOutputStream.setOutputStream(outStream)
 oTextOutputStream.closeOutput()
 
 &apos;userguide.sh
-outStream = oFileAccessService.openFileWrite(WorkingDir &amp; &quot;/userguide.sh&quot;)
+oFileAccessService.kill(WorkingDir &amp; &quot;/userguide.sh&quot;)
+outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/userguide.sh&quot;)
 oTextOutputStream.setOutputStream(outStream)
 
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
