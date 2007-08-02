@@ -3,6 +3,19 @@
 	
 	<!--  General info -->
 	<node oor:name="ProductInfo">
+		<node oor:name="Repositories">
+			<node oor:name="t1" oor:op="replace">
+			<prop oor:name="Description" oor:type="xs:string">
+			<value>The OOoSVN SourceForge repository</value>
+			</prop>
+			<prop oor:name="URL" oor:type="xs:string">
+			<value>https://ooosvn.svn.sourceforge.net/svnroot/ooosvn</value>
+			</prop>
+			<prop oor:name="UUID" oor:type="xs:string">
+			<value>2abb7df7-5d29-0410-912f-aa4066f74452</value>
+			</prop>
+  			</node>
+ 		</node>
 		<prop oor:name="ProductName" oor:type="xs:string">
 			<value>OOoSVN</value>
 		</prop>
@@ -26,18 +39,4 @@
 			<value>Copyright (C) 2007 Edward Holness</value>
 		</prop>
 	</node>
-	<node oor:name="Repositories">
-			<node oor:name="t1" oor:op="replace">
-				<prop oor:name="UUID" oor:type="xs:string">
-					<value>2abb7df7-5d29-0410-912f-aa4066f74452</value>
-				</prop>
-				<prop oor:name="URL" oor:type="xs:string">
-					<value>https://svn.sourceforge.net/svnroot/ooosvn</value>
-				</prop>
-				<prop oor:name="Description" oor:type="xs:string">
-					<value>The OOoSVN SourceForge repository</value>
-				</prop>
-			</node>
-	</node>
-
 </oor:component-data>

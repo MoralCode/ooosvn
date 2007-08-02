@@ -159,7 +159,7 @@ oTextOutputStream.setOutputStream(outStream)
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
 &quot;cd $1/&quot; &amp; chr(10) &amp; _
 &quot;rm -rf $1/userguide&quot; &amp; chr(10) &amp; _
-&quot;svn checkout https://svn.sourceforge.net/svnroot/ooosvn/userguide/&quot; &amp; chr(10) &amp; _
+&quot;svn checkout $2&quot; &amp; chr(10) &amp; _
 &quot;cd $1/userguide&quot; &amp; chr(10) &amp; _
 &quot;zip -rDX ../userguide.odt * -x *.svn*&quot;)
 

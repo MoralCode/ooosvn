@@ -10,10 +10,19 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
 
 WorkingDir = getWorkingDir
 
+&apos; Config file loading of SVN repo
+UUID=&quot;2abb7df7-5d29-0410-912f-aa4066f74452&quot;
+   URL = GetURLfromUUID(UUID)
+   If Len(URL) &lt; 10 Then
+   Msgbox(&quot;Repository &quot; &amp; UUID &amp; &quot; not found in your database.&quot;)
+   Else
+   &apos;Msgbox(URL)
+   End IF
+&apos;
+
    cQuote = Chr( 34 )
 
-   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/userguide.sh &quot; &amp; WorkingDir + cQuote , &quot;&quot;,6,true)
-
+   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/userguide.sh &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; URL &amp; &quot;/userguide&quot; + cQuote , &quot;&quot;,6,true)
 If FileExists(ConvertToURL(WorkingDir) &amp; &quot;/userguide.odt&quot;) then
 	StarDesktop.loadComponentfromURL(ConvertToURL(WorkingDir) &amp; &quot;/userguide.odt&quot;,&quot;_blank&quot;, 0, Array())
 		else

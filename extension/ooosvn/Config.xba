@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="Config" script:language="StarBasic">Sub Main
-   &apos;ShowUserProfile()
-   &apos;ChangeUserProfile()
+&apos; Test for getting URL from a specified UUID
    UUID=&quot;2abb7df7-5d29-0410-912f-aa4066f74452&quot;
    URL = GetURLfromUUID(UUID)
    If Len(URL) &lt; 10 Then
@@ -13,14 +12,13 @@
 End Sub 
 
 Function GetURLfromUUID(ByVal UUID As String)
-
+&apos; Function to find URL from UUID
 oConfigData_UserProfile = GetConfigAccess( &quot;/ooo.ext.ooosvn.Configuration/ProductInfo/Repositories&quot;, False )
 &apos;
 	mKeys() = oConfigData_UserProfile.ElementNames
 	
 	For I = LBound(mKeys()) To UBound(mKeys())
 		sKey = mKeys(I)
-		&apos;URL = oConfigData_UserProfile.sKey.URL
 		Repo = oConfigData_UserProfile.getByname(sKey)
 		With Repo
 			sUUID = .UUID 
@@ -29,16 +27,7 @@ oConfigData_UserProfile = GetConfigAccess( &quot;/ooo.ext.ooosvn.Configuration/P
 			GetURLfromUUID = sURL
 			End If
 		End With 
-		&apos;Msgbox(URL)
-		&apos;oTrKey = oRegKey.getByname(sKey)
-		&apos;With oTrKey 
-		&apos;	sUUID = .UUID 
-		&apos;	sURL = .URL
-		&apos;End With 
-		&apos;msgbox(sUUID &amp; sURL)
 	Next I
-&apos;
-&apos;GetURLfromUUID = oConfigData_UserProfile.t1.URL
 
 End Function
 
@@ -62,10 +51,6 @@ Sub ChangeUserProfile()
    &apos; You must quit and re-launch the office to see the changes take effect.
    oConfigData_UserProfile.commitChanges()
    
-   &apos; The data will be written to...
-   &apos;   /home/danny/OpenOffice.org1.9.104/user/registry/data/org/openoffice/UserProfile.xcu
-   &apos; or for some systems...
-   &apos;   C:\Documents and Settings\dbrewer\Application Data\OpenOffice.org1.9.104\user\registry\data\org\openoffice\UserProfile.xcu
 End Sub
 
 Function GetConfigAccess( ByVal cNodePath As String,_
@@ -198,70 +183,6 @@ Sub CallSetMyPropertyAttributes()
 
 End Sub
 
-&apos;###################
-Function GetRepos() As Variant
-Const BASE_KEY As String = &quot;/ooo.ext.ooosvn.Configuration/&quot;
-Dim oRegKey As Object
-Dim oTrKey As Object
-Dim mKeys()
-Dim sKey As String
-Dim I As Integer
-
-	oRegKey = GetRegistryKeyContent( BASE_KEY &amp; &quot;Repositories&quot; )
-	mKeys() = oRegKey.ElementNames
-	
-	For I = LBound(mKeys()) To UBound(mKeys())
-		sKey = mKeys(I)
-		
-		oTrKey = oRegKey.getByname(sKey)
-		With oTrKey 
-			sUUID = .UUID 
-			sURL = .URL
-		End With 
-		msgbox(sUUID &amp; sURL)
-	Next I
-End Function
-
-Function GetRegistryKeyContent(sKeyName as string)
-Dim oConfigProvider as Object
-Dim aNodePath(0) as new com.sun.star.beans.PropertyValue
-	oConfigProvider = createUnoService(&quot;com.sun.star.configuration.ConfigurationProvider&quot;)
-	aNodePath(0).Name = &quot;nodepath&quot;
-	aNodePath(0).Value = sKeyName
-		GetRegistryKeyContent() = oConfigProvider.createInstanceWithArguments(&quot;com.sun.star.configuration.ConfigurationAccess&quot;, aNodePath())
-End Function
-
-Function AddRepos() As Variant
-Const BASE_KEY As String = &quot;/ooo.ext.ooosvn.Configuration/&quot;
-Dim oRegKey As Object
-Dim oTrKey As Object
-Dim mKeys()
-Dim sKey As String
-Dim I As Integer
-Dim mTranslators()
-
-&apos;Dim aNodePath(0) as new com.sun.star.beans.PropertyValue
-	&apos;oConfigProvider = createUnoService(&quot;com.sun.star.configuration.ConfigurationProvider&quot;)
-	
-&apos;	oRegKey = GetRegistryKeyContent( BASE_KEY &amp; &quot;ProductInfo/Repositorys&quot; )
-	&apos;oRegKey = GetRegistryKeyContent( BASE_KEY &amp; &quot;ProductInfo/Translators&quot; )
-	&apos;mKeys() = oRegKey.ElementNames
-	
-	&apos;newkey = 1 + UBound(mKeys())
-	&apos;msgbox(newkey)
-
-	&apos;aNodePath(0).Name = &quot;nodepath&quot;
-	&apos;aNodePath(0).Value = sKeyName
-	&apos;oConfigProvider.createInstanceWithArguments(&quot;com.sun.star.configuration.ConfigurationAccess&quot;, aNodePath()) = &quot;test&quot;
-
-&apos;	msgbox(gettranslators)
-
-oConfigAccess = GetConfigAccess( BASE_KEY &amp; &quot;ProductInfo/Translators&quot; )
-
-oInsertedNode = AddConfigNode(oConfigAccess, &quot;my.newSetting&quot;)
-oInsertedNode.Setting = &quot;test&quot;
-
-End Function
 &apos; #######################
 &apos; Add a node
 &apos; #########################
