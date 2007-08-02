@@ -9,7 +9,23 @@
    Else
    Msgbox(URL)
    End IF
-End Sub 
+End Sub
+
+Function GetRepoUUID
+&apos; A function to find the correct URL from the documents Repo UUID in meta.xml
+   oDoc = thisComponent
+   oInfo = oDoc.DocumentInfo()
+&apos;   oDoc.DocumentInfo.AddProperty(&quot;Repository-UUID&quot;,0,&quot;Test&quot;)
+UUID = oDoc.DocumentInfo.getPropertyValue(&quot;Repository-UUID&quot;)
+&apos;msgbox(UUID)
+URL = GetURLfromUUID(UUID)
+   If Len(URL) &lt; 10 Then
+   Msgbox(&quot;Repository &quot; &amp; UUID &amp; &quot; not found in your database.&quot;)
+   Else
+   Msgbox(URL)
+   End IF
+
+End Function
 
 Function GetURLfromUUID(ByVal UUID As String)
 &apos; Function to find URL from UUID
@@ -115,28 +131,13 @@ Sub ExistsMetadata()
 
    oDoc = thisComponent
    oInfo = oDoc.DocumentInfo()
-   if oInfo.getPropertySetInfo().hasPropertyByName(&quot;Repository-UUID&quot;) then
+   if oInfo.getPropertySetInfo().hasPropertyByName(&quot;Info 2&quot;) then
       print &quot;Exists.&quot;
    Else
       print &quot;Doesn&apos;t exist.&quot;
    End if
 
 End Sub
-
-Function GetRepoUUID
-
-oDoc = ThisComponent
-oInfo = oDoc.DocumentInfo()
-myName = &quot;Repository-UUID&quot;&apos;&quot;Repository-UUID&quot;
-if oInfo.getPropertySetInfo().hasPropertyByName(myname) then
-      print &quot;Exists.&quot;
-      msgbox(oDoc.DocumentInfo.getPropertyValue(&quot;Repository-UUID&quot;))
-   Else
-      print &quot;Doesn&apos;t exist.&quot;
-      exit function
-   End if
-
-End Function
 
 Function getMyPropertyAttributes(oInfo,myName)
 
