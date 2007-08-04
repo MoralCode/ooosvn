@@ -77,12 +77,22 @@ oTextOutputStream.setOutputStream(outStream)
 &quot;cd $4/$2/temp/&quot; &amp; chr(10) &amp; _
 &quot;# Get and write repo UUID&quot; &amp; chr(10) &amp; _
 &quot;repo_uuid=`svnlook uuid $4`&quot; &amp; chr(10) &amp; _
+&quot;if grep &quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;Repository-UUID\&quot; &amp; chr(34) &amp; &quot; meta:value-type=\&quot; &amp; chr(34) &amp; &quot;string\&quot; &amp; chr(34) &amp; &quot;&gt;&quot; &amp; chr(34) &amp; &quot; meta.xml&quot; &amp; chr(10) &amp; _
+&quot;then&quot; &amp; chr(10) &amp; _
+&quot;echo old repo found&quot; &amp; chr(10) &amp; _
+&quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;Repository-UUID\&quot; &amp; chr(34) &amp; &quot; meta:value-type=\&quot; &amp; chr(34) &amp; &quot;string\&quot; &amp; chr(34) &amp; &quot;&gt;.*&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; &quot;&quot; &amp; chr(10) &amp; _
+&quot;echo $txtold&quot; &amp; chr(10) &amp; _
+&quot;txtnew=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;Repository-UUID\&quot; &amp; chr(34) &amp; &quot; meta:value-type=\&quot; &amp; chr(34) &amp; &quot;string\&quot; &amp; chr(34) &amp; &quot;&gt;$repo_uuid&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; &quot;&quot; &amp; chr(10) &amp; _
+&quot;echo $txtnew&quot; &amp; chr(10) &amp; _
+&quot;sed s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/g meta.xml &gt; meta2.xml&quot; &amp; chr(10) &amp; _
+&quot;else&quot; &amp; chr(10) &amp; _
 &quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;\/office:meta&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
 &quot;#echo $txtold&quot; &amp; chr(10) &amp; _
 &quot;txtnew=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;Repository-UUID\&quot; &amp; chr(34) &amp; &quot; meta:value-type=\&quot; &amp; chr(34) &amp; &quot;string\&quot; &amp; chr(34) &amp; &quot;&gt;$repo_uuid&lt;\/meta:user-defined&gt;&lt;\/office:meta&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
 &quot;#echo $txtnew&quot; &amp; chr(10) &amp; _
 &quot;#echo s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/g&quot; &amp; chr(10) &amp; _
 &quot;sed s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/g meta.xml &gt; meta2.xml&quot; &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
 &quot;mv meta2.xml meta.xml&quot; &amp; chr(10) &amp; _
 &quot;# Import&quot; &amp; chr(10) &amp; _
 &quot;svn import . $3/$2/trunk/ -m &apos;Initial Import&apos;&quot; &amp; chr(10) &amp; _
