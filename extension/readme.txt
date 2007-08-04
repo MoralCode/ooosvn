@@ -1,7 +1,7 @@
 Requirements:
 - OOo 1.1 or later, tested with 2.0.2 and 2.1
 - Subversion 1.3 or greater, latest stable version is recommended.
-- svnadmin, svnlook, zip, unzip
+- svnadmin, svnlook, zip, unzip, sed
 
 Installation:
 This is BETA, use with caution.  This version is much tougher than previous
@@ -12,7 +12,7 @@ are trusted by many thousands of people.
 This ZIP file is now the extension, unlike with older versions.  Installation
 should be more straight forward.
 
-1. Install the ooosvn-0.3.6.zip package using OOo's package manager, Tools >
+1. Install the ooosvn-0.3.7.zip package using OOo's package manager, Tools >
 Package Manager (Extension Manager after 2.1) .  This will install the BASIC
 module and will give you the SVN menu.
 

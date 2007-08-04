@@ -1,3 +1,29 @@
+0.3.7 :: 2007-08-04
+
+### New Features ###
+Storing of repository info in a config file is now working but still
+experimental.  It is currently only used for checking out the userguide from
+SF.net.  The idea is that for 0.4 this will be standard so that multiple
+repositories can be handled.
+
+Changed how the Repo-UUID is written to meta.xml.  It's now in a hidden field
+which keeps it out of File > Properties which was a repudiation/security risk. 
+If a file is imported twice (ie. after a SaveAs) then the Repo-UUID is
+overwritten rather than adding a second one.  It can be successfully read from a
+file which will also be fully utilised in 0.4.
+
+Help > About OOoSVN now has a button to checkout the userguide.
+
+1759995 - More feedback needed about actions in progress, some work done on
+this.  Every process now has a status bar message to give the user some idea
+what is going on.  Some messages will only flash up for an instant, others may
+stay for a few seconds.  Watch the status bar.
+
+### Bug fixes ###
+OOoSVN will now delete any previous versions of shellscripts on shell script
+installation, this will prevent breakages from overwriting existing scripts
+without clearing the code previously in those files.
+
 0.3.6 :: 2007-07-24
 
 ### New Features ###
