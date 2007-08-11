@@ -115,7 +115,8 @@ Function MakePropertyValue( Optional cName As String, Optional uValue ) As com.s
       oPropertyValue.Value = uValue
    EndIf
    MakePropertyValue() = oPropertyValue
-End Function  
+End Function
+
 &apos;#################
 &apos;Const BASE_KEY As String = &quot;/ooo.ext.BasicAddonBuilder.Configuration/&quot;
 Const BASE_KEY As String = &quot;/ooo.ext.ooosvn.Configuration/&quot;
@@ -207,5 +208,35 @@ Function AddConfigNode( xAccess as Variant, sName as String, optional bForce as 
       end if
    end if
    
+End Function
+
+Function AddConfigNodeTest
+oConfigAccess = GetConfigAccess( &quot;/ooo.ext.ooosvn.Configuration/ProductInfo&quot;, true )
+&apos;oConfigAccess = GetConfigAccess( &quot;/nom.DannyBrewer.Example.DannyExample/DannysConfig/Settings&quot;, true )
+
+oInsertedNode = AddConfigNode(oConfigAccess, &quot;my.newSetting&quot;)
+oInsertedNode.Setting = &quot;New Setting&quot;
+&apos;oConfigAccess = GetConfigAccess( &quot;/ooo.ext.ooosvn.Configuration/ProductInfo&quot;, True )
+
+&apos;oInsertedNode = AddConfigNode(oConfigAccess, &quot;my.newSetting&quot;)
+&apos;oInsertedNode.Setting = &quot;New Setting&quot;
+End Function
+
+Function AddTest
+oConfigAccess = GetConfigAccess( &quot;/ooo.ext.ooosvn.Configuration/ProductInfo&quot;, True, True, True )
+
+
+oElement = oConfigAccess.getByName( &quot;Repositories&quot; ) 
+
+   If oElement.hasByName( &quot;t3&quot; ) Then
+      MsgBox( &quot;That repo exists.&quot; )
+      Exit Function
+   EndIf 
+
+oNewNode = oConfigAccess.createInstance()
+
+oConfigAccess.insertByName(&quot;newsetting&quot;, oNewNode)
+oConfigAccess.commitChanges() 
+
 End Function
 </script:module>
