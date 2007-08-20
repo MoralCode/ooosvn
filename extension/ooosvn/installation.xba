@@ -45,7 +45,9 @@ oFileAccessService = createUnoService(&quot;com.sun.star.ucb.SimpleFileAccess&qu
 oTextOutputStream = createUnoService(&quot;com.sun.star.io.TextOutputStream&quot;)
 
 &apos;commit.sh
+If FileExists(WorkingDir &amp; &quot;/commit.sh&quot;) then
 oFileAccessService.kill(WorkingDir &amp; &quot;/commit.sh&quot;)
+end if
 outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/commit.sh&quot;)
 oTextOutputStream.setOutputStream(outStream)
 
@@ -66,7 +68,9 @@ oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
 oTextOutputStream.closeOutput()
 
 &apos;import.sh
+If FileExists(WorkingDir &amp; &quot;/import.sh&quot;) then
 oFileAccessService.kill(WorkingDir &amp; &quot;/import.sh&quot;)
+end if
 outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/import.sh&quot;)
 oTextOutputStream.setOutputStream(outStream)
 
@@ -106,7 +110,9 @@ oTextOutputStream.setOutputStream(outStream)
 oTextOutputStream.closeOutput()
 
 &apos;listdocuments.sh
+If FileExists(WorkingDir &amp; &quot;/listdocuments.sh&quot;) then
 oFileAccessService.kill(WorkingDir &amp; &quot;/listdocuments.sh&quot;)
+end if
 outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/listdocuments.sh&quot;)
 oTextOutputStream.setOutputStream(outStream)
 
@@ -122,7 +128,9 @@ oTextOutputStream.setOutputStream(outStream)
 oTextOutputStream.closeOutput()
 
 &apos;listversions.sh
+If FileExists(WorkingDir &amp; &quot;/listversions.sh&quot;) then
 oFileAccessService.kill(WorkingDir &amp; &quot;/listversions.sh&quot;)
+end if
 outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/listversions.sh&quot;)
 oTextOutputStream.setOutputStream(outStream)
 
@@ -138,7 +146,9 @@ oTextOutputStream.setOutputStream(outStream)
 oTextOutputStream.closeOutput()
 
 &apos;revert.sh
+If FileExists(WorkingDir &amp; &quot;/revert.sh&quot;) then
 oFileAccessService.kill(WorkingDir &amp; &quot;/revert.sh&quot;)
+end if
 outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/revert.sh&quot;)
 oTextOutputStream.setOutputStream(outStream)
 
@@ -153,7 +163,9 @@ oTextOutputStream.setOutputStream(outStream)
 oTextOutputStream.closeOutput()
 
 &apos;thumbnails.sh
+If FileExists(WorkingDir &amp; &quot;/thumbnails.sh&quot;) then
 oFileAccessService.kill(WorkingDir &amp; &quot;/thumbnails.sh&quot;)
+end if
 outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/thumbnails.sh&quot;)
 oTextOutputStream.setOutputStream(outStream)
 
@@ -169,7 +181,9 @@ oTextOutputStream.setOutputStream(outStream)
 oTextOutputStream.closeOutput()
 
 &apos;userguide.sh
+If FileExists(WorkingDir &amp; &quot;/userguide.sh&quot;) then
 oFileAccessService.kill(WorkingDir &amp; &quot;/userguide.sh&quot;)
+end if
 outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/userguide.sh&quot;)
 oTextOutputStream.setOutputStream(outStream)
 

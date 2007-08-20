@@ -667,6 +667,9 @@ Sub OnSavedSVN()
   Dim oDoc
   Dim sDocURL
   oDoc = ThisComponent
+  If oDoc.supportsService( &quot;com.sun.star.chart.ChartDocument&quot; ) Then
+    oDoc = oDoc.getParent()
+  End If  
   LoadTools
   
   If (oDoc.hasLocation()) Then
