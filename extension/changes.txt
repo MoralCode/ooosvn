@@ -1,3 +1,15 @@
+0.3.8 :: 2007-08-20
+
+### New features ###
+Some exerimental configuration scripts which are not connected to anything but
+give some idea of what 0.4.0 might try to do.  Harmless, but don't run them
+unless you like error messages.
+
+### Bug Fixes ###
+1777843 - In 0.3.7 the installation script errors out when trying to remove a
+previous version of a script if there is no script already.  OOoSVN will now
+test to see if these files exist or not.
+
 0.3.7 :: 2007-08-04
 
 ### New Features ###
