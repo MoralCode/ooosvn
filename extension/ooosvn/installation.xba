@@ -7,27 +7,27 @@
    WorkingDir = getWorkingDir
 
 &apos; Create the home repository
-   ret = Shell(&quot;svnadmin create --fs-type fsfs&quot; &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;, 6, WorkingDir,true)
+   ret = Shell(&quot;svnadmin create --fs-type fsfs&quot; , 6, WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;,true)
 	if ret &lt;&gt; 0 then
 		CreateSVN = false
 		&apos;Error Log window
-			iNumber = Freefile
-	aFile = WorkingDir &amp; &quot;/operation.log&quot;
-Open aFile For Input As iNumber
-While not eof(iNumber)
-Line Input #iNumber, sLine
-If sLine &lt;&gt;&quot;&quot; then
-sMsg = sMsg &amp; sLine &amp; chr(13)
-end if
-wend
-Close #iNumber
+		&apos;	iNumber = Freefile
+	&apos;aFile = WorkingDir &amp; &quot;/operation.log&quot;
+&apos;Open aFile For Input As iNumber
+&apos;While not eof(iNumber)
+&apos;Line Input #iNumber, sLine
+&apos;If sLine &lt;&gt;&quot;&quot; then
+&apos;sMsg = sMsg &amp; sLine &amp; chr(13)
+&apos;end if
+&apos;wend
+&apos;Close #iNumber
 
-	txtLog.Text = sMsg
-	oDlgLog.Title = &quot;Failed to create SVN repository&quot;
-		oStatus.end()
-	oDlgLog.execute
+&apos;	txtLog.Text = sMsg
+&apos;	oDlgLog.Title = &quot;Failed to create SVN repository&quot;
+&apos;		oStatus.end()
+&apos;	oDlgLog.execute
 		
-	&apos;	MsgBox(&quot;Failed to create repository.&quot;,48,&quot;Error&quot;)
+		MsgBox(&quot;Failed to create repository.&quot;,48,&quot;Error&quot;)
 		end if
 
    If NOT FileExists(WorkingDir) Then
@@ -91,13 +91,13 @@ oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
 &quot;#rm -rf $4/$2/trunk/*&quot; &amp; chr(10) &amp; _
 &quot;unzip -o $1 -d $4/$2/trunk/ -x *.svn*&quot; &amp; chr(10) &amp; _
 &quot;cd $4/$2/trunk/&quot; &amp; chr(10) &amp; _
-&quot;echo changed directory to:&quot; &amp; chr(10) &amp; _
+&quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;svn status | grep ^\! | cut -c8- | xargs svn rm&quot; &amp; chr(10) &amp; _
 &quot;svn status | grep ^\? | cut -c8- | xargs svn add&quot; &amp; chr(10) &amp; _
 &quot;svn commit -m &quot; &amp; chr(34) &amp; &quot;$5&quot; &amp; chr(34) &amp; chr(10) &amp; _
 &quot;cd $4/&quot; &amp; chr(10) &amp; _
-&quot;echo changed directory to:&quot; &amp; chr(10) &amp; _
+&quot;echo Changed directory to::&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;svn checkout $3/$2/&quot; &amp; chr(10) &amp; _
 &quot;#cd $4/$2/trunk/&quot; &amp; chr(10) &amp; _
@@ -118,7 +118,7 @@ oTextOutputStream.setOutputStream(outStream)
 &quot;mkdir $4/$2/temp/&quot; &amp; chr(10) &amp; _
 &quot;unzip -o $1 -d $4/$2/temp/ -x *.svn*&quot; &amp; chr(10) &amp; _
 &quot;cd $4/$2/temp/&quot; &amp; chr(10) &amp; _
-&quot;echo changed directory to:&quot; &amp; chr(10) &amp; _
+&quot;echo Changed directory to::&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;# Get and write repo UUID&quot; &amp; chr(10) &amp; _
 &quot;repo_uuid=`svnlook uuid $4`&quot; &amp; chr(10) &amp; _
@@ -143,11 +143,11 @@ oTextOutputStream.setOutputStream(outStream)
 &quot;svn import . $3/$2/trunk/ -m &apos;Initial Import&apos;&quot; &amp; chr(10) &amp; _
 &quot;rm -rf $4/$2/temp/&quot; &amp; chr(10) &amp; _
 &quot;cd $4/&quot; &amp; chr(10) &amp; _
-&quot;echo changed directory to&quot; &amp; chr(10) &amp; _
+&quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;svn checkout $3/$2/&quot; &amp; chr(10) &amp; _
 &quot;cd $4/$2/trunk/&quot; &amp; chr(10) &amp; _
-&quot;echo changed directory to&quot; &amp; chr(10) &amp; _
+&quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;zip -rDX $1 * -x *.svn*&quot;)
 
@@ -199,12 +199,12 @@ oTextOutputStream.setOutputStream(outStream)
 
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
 &quot;cd $4/&quot; &amp; chr(10) &amp; _
-&quot;echo changed directory to&quot; &amp; chr(10) &amp; _
+&quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;rm -rf $4/$2/trunk&quot; &amp; chr(10) &amp; _
 &quot;svn checkout -r$5 $3/$2/&quot; &amp; chr(10) &amp; _
 &quot;cd $4/$2/trunk/&quot; &amp; chr(10) &amp; _
-&quot;echo changed directory to&quot; &amp; chr(10) &amp; _
+&quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;zip -rDX $1 * -x *.svn*&quot;)
 
@@ -238,12 +238,12 @@ oTextOutputStream.setOutputStream(outStream)
 
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
 &quot;cd $1/&quot; &amp; chr(10) &amp; _
-&quot;echo changed directory to&quot; &amp; chr(10) &amp; _
+&quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;rm -rf $1/userguide&quot; &amp; chr(10) &amp; _
 &quot;svn checkout $2&quot; &amp; chr(10) &amp; _
 &quot;cd $1/userguide&quot; &amp; chr(10) &amp; _
-&quot;echo changed directory to&quot; &amp; chr(10) &amp; _
+&quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;zip -rDX ../userguide.odt * -x *.svn*&quot;)
 
@@ -278,7 +278,7 @@ function CreateSVN() as integer
 	end if
 		
  	sSVNURL = PickFolder(sGetHomeURL(), &quot;Select a directory for the new repository&quot;, &quot;&quot;)
-	ret = Shell(&quot;svnadmin create --fs-type fsfs&quot; &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;, 6, sSVNURL,true)
+	ret = Shell(&quot;svnadmin create --fs-type fsfs&quot;, 6, sSVNURL,true)
 	if ret &lt;&gt; 0 then
 		CreateSVN = false
 		MsgBox(&quot;Failed to create repository.&quot;,48,&quot;Error&quot;)
