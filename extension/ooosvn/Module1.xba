@@ -666,6 +666,9 @@ Sub OnSavedSVN()
   
   Dim oDoc
   Dim sDocURL
+  
+  FirstRunCheck &apos;Check scripts are installed, if not, install them.
+  
   oDoc = ThisComponent
   If oDoc.supportsService( &quot;com.sun.star.chart.ChartDocument&quot; ) Then
     oDoc = oDoc.getParent()
@@ -712,6 +715,8 @@ Sub OnSavedAsSVN()
 
 dim document   as object
 dim dispatcher as object
+
+FirstRunCheck &apos;Check scripts are installed, if not, install them.
 
 document   = ThisComponent.CurrentController.Frame
 dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
