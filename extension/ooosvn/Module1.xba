@@ -63,11 +63,39 @@ End If
 
    Shell(&quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp;  sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote , &quot;&quot;,6,true)
 
-  if ret &lt;&gt; 0 then 
-  	ErrBox(&quot;Failed to put file in the repository.&quot;)
-  	ImportSVN = false
-  	exit sub
-  end if
+   &apos;Test for success
+   
+   If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
+   
+Dim oDlgLog As Object
+Dim txtLog As Object
+Dim sMsg As String
+   	oDlgLog = _
+		CreateUnoDialog(DialogLibraries.ooosvn.DlgLog)
+	
+	With oDlgLog
+		txtLog = .getControl(&quot;txtAbout&quot;)
+	End With
+   
+   	iNumber = Freefile
+	aFile = WorkingDir &amp; &quot;/operation.log&quot;
+Open aFile For Input As iNumber
+While not eof(iNumber)
+Line Input #iNumber, sLine
+If sLine &lt;&gt;&quot;&quot; then
+sMsg = sMsg &amp; sLine &amp; chr(13)
+end if
+wend
+Close #iNumber
+
+	txtLog.Text = sMsg
+	oDlgLog.Title = &quot;Failed importing file to SVN!  Are there invalid characters in the filename?  Log follows...&quot;
+		oStatus.end()
+	oDlgLog.execute
+	exit sub
+   end if
+   
+   &apos;If successful, reload the document
 
   dispatcher.executeDispatch(document, &quot;.uno:Reload&quot;, &quot;&quot;, 0, Array())
   oStatus.end()
@@ -91,7 +119,7 @@ Sub CommitSVN()
   End If
   
 	&apos; Test to see if file of same name is already under change control
-	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/&quot;) Then
+	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
 		MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Please import the file to change control to be able to commit changes.&quot;, 16, &quot;Commit error&quot;)
 		Exit Sub
 	End If
@@ -128,7 +156,7 @@ LoadTools
 End If
 
   &apos; Test to see if file of same name is already under change control
-	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/&quot;) Then
+	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
 		MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable statistics.&quot;, 16, &quot;Error&quot;)
 		Exit Sub
 	End If
@@ -182,7 +210,7 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
   End If
   
     &apos; Test to see if file of same name is already under change control
-	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/&quot;) Then
+	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
 		MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable version management.&quot;, 16, &quot;Error&quot;)
 		Exit Sub
 	End If
@@ -278,7 +306,7 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
   End If
   
     &apos; Test to see if file of same name is already under change control
-	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/&quot;) Then
+	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
 		MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable version management.&quot;, 16, &quot;Error&quot;)
 		Exit Sub
 	End If
@@ -502,6 +530,15 @@ If FileExists(outputfile) then
    		oStatus.end()
    		
    		&apos;Error Log window
+   		Dim oDlgLog As Object
+Dim txtLog As Object
+Dim sMsg As String
+   	oDlgLog = _
+		CreateUnoDialog(DialogLibraries.ooosvn.DlgLog)
+	
+	With oDlgLog
+		txtLog = .getControl(&quot;txtAbout&quot;)
+	End With
 			iNumber = Freefile
 	aFile = WorkingDir &amp; &quot;/operation.log&quot;
 Open aFile For Input As iNumber
@@ -597,7 +634,7 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
   End If
   
     &apos; Test to see if file of same name is already under change control
-	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/&quot;) Then
+	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
 		MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable version management.&quot;, 16, &quot;Error&quot;)
 		Exit Sub
 	End If
@@ -705,7 +742,7 @@ Sub OnSavedSVN()
   End If
 
 &apos; Test to see if file of same name is already under change control
-If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/&quot;) Then
+If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
 	Exit Sub
 End If
 
@@ -766,7 +803,7 @@ if validatefiletype(sDocURL)=&quot;false&quot; then
 end if
 
 &apos; Test to see if file of same name is already under change control
-If FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/&quot;) Then
+If FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
 MsgBox( &quot;A file named &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is already under version control.  Please save as a different file name before attempting import.&quot;, 16, &quot;Error&quot;)
 Exit Sub
 End If
@@ -781,6 +818,40 @@ End If
    oStatus.start( &quot;Importing &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
 
    Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+  
+   &apos;Test for success
+   
+   If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
+   
+Dim oDlgLog As Object
+Dim txtLog As Object
+Dim sMsg As String
+   	oDlgLog = _
+		CreateUnoDialog(DialogLibraries.ooosvn.DlgLog)
+	
+	With oDlgLog
+		txtLog = .getControl(&quot;txtAbout&quot;)
+	End With
+   
+   	iNumber = Freefile
+	aFile = WorkingDir &amp; &quot;/operation.log&quot;
+Open aFile For Input As iNumber
+While not eof(iNumber)
+Line Input #iNumber, sLine
+If sLine &lt;&gt;&quot;&quot; then
+sMsg = sMsg &amp; sLine &amp; chr(13)
+end if
+wend
+Close #iNumber
+
+	txtLog.Text = sMsg
+	oDlgLog.Title = &quot;Failed importing file to SVN!  Are there invalid characters in the filename?  Log follows...&quot;
+		oStatus.end()
+	oDlgLog.execute
+	exit sub
+   end if
+   
+   &apos;If successful, reload the document
      dispatcher.executeDispatch(document, &quot;.uno:Reload&quot;, &quot;&quot;, 0, Array())
 oStatus.end()  
 end sub
@@ -815,7 +886,7 @@ dispatcher.executeDispatch(document, &quot;.uno:Save&quot;, &quot;&quot;, 0, Arr
   End If
 
 &apos; Test to see if file of same name is already under change control
-If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/&quot;) Then
+If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
 	Exit Sub
 End If
 
@@ -860,7 +931,7 @@ End If
 	End With
 	
 &apos; Test to see if file of same name is already under change control
-	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/&quot;) Then
+	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
 		MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable version management.&quot;, 16, &quot;Error&quot;)
 		Exit Sub
 	End If
@@ -888,7 +959,7 @@ wend
 Close #iNumber
 
 	txtLog.Text = sMsg
-	oDlgLog.Title = &quot;Log for &quot; &amp;  FileNameoutofPath(sDocURL, &quot;/&quot;)
+	oDlgLog.Title = &quot;Log for &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;)
 		oStatus.end()
 	oDlgLog.execute
 
