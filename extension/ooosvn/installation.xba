@@ -23,7 +23,7 @@ wend
 Close #iNumber
 
 	txtLog.Text = sMsg
-	oDlgLog.Title = &quot;Failed to create SVN repository&quot;)
+	oDlgLog.Title = &quot;Failed to create SVN repository&quot;
 		oStatus.end()
 	oDlgLog.execute
 		
@@ -45,7 +45,7 @@ wend
 Close #iNumber
 
 	txtLog.Text = sMsg
-	oDlgLog.Title = &quot;Failed to create working directory&quot;)
+	oDlgLog.Title = &quot;Failed to create working directory&quot;
 		oStatus.end()
 	oDlgLog.execute
    
@@ -91,10 +91,14 @@ oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
 &quot;#rm -rf $4/$2/trunk/*&quot; &amp; chr(10) &amp; _
 &quot;unzip -o $1 -d $4/$2/trunk/ -x *.svn*&quot; &amp; chr(10) &amp; _
 &quot;cd $4/$2/trunk/&quot; &amp; chr(10) &amp; _
+&quot;echo changed directory to:&quot; &amp; chr(10) &amp; _
+&quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;svn status | grep ^\! | cut -c8- | xargs svn rm&quot; &amp; chr(10) &amp; _
 &quot;svn status | grep ^\? | cut -c8- | xargs svn add&quot; &amp; chr(10) &amp; _
 &quot;svn commit -m &quot; &amp; chr(34) &amp; &quot;$5&quot; &amp; chr(34) &amp; chr(10) &amp; _
 &quot;cd $4/&quot; &amp; chr(10) &amp; _
+&quot;echo changed directory to:&quot; &amp; chr(10) &amp; _
+&quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;svn checkout $3/$2/&quot; &amp; chr(10) &amp; _
 &quot;#cd $4/$2/trunk/&quot; &amp; chr(10) &amp; _
 &quot;#zip -rDX $1 * -x *.svn*&quot;)
@@ -114,6 +118,8 @@ oTextOutputStream.setOutputStream(outStream)
 &quot;mkdir $4/$2/temp/&quot; &amp; chr(10) &amp; _
 &quot;unzip -o $1 -d $4/$2/temp/ -x *.svn*&quot; &amp; chr(10) &amp; _
 &quot;cd $4/$2/temp/&quot; &amp; chr(10) &amp; _
+&quot;echo changed directory to:&quot; &amp; chr(10) &amp; _
+&quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;# Get and write repo UUID&quot; &amp; chr(10) &amp; _
 &quot;repo_uuid=`svnlook uuid $4`&quot; &amp; chr(10) &amp; _
 &quot;if grep &quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;Repository-UUID\&quot; &amp; chr(34) &amp; &quot; meta:value-type=\&quot; &amp; chr(34) &amp; &quot;string\&quot; &amp; chr(34) &amp; &quot;&gt;&quot; &amp; chr(34) &amp; &quot; meta.xml&quot; &amp; chr(10) &amp; _
@@ -137,8 +143,12 @@ oTextOutputStream.setOutputStream(outStream)
 &quot;svn import . $3/$2/trunk/ -m &apos;Initial Import&apos;&quot; &amp; chr(10) &amp; _
 &quot;rm -rf $4/$2/temp/&quot; &amp; chr(10) &amp; _
 &quot;cd $4/&quot; &amp; chr(10) &amp; _
+&quot;echo changed directory to&quot; &amp; chr(10) &amp; _
+&quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;svn checkout $3/$2/&quot; &amp; chr(10) &amp; _
 &quot;cd $4/$2/trunk/&quot; &amp; chr(10) &amp; _
+&quot;echo changed directory to&quot; &amp; chr(10) &amp; _
+&quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;zip -rDX $1 * -x *.svn*&quot;)
 
 &apos;close all streams
@@ -189,9 +199,13 @@ oTextOutputStream.setOutputStream(outStream)
 
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
 &quot;cd $4/&quot; &amp; chr(10) &amp; _
+&quot;echo changed directory to&quot; &amp; chr(10) &amp; _
+&quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;rm -rf $4/$2/trunk&quot; &amp; chr(10) &amp; _
 &quot;svn checkout -r$5 $3/$2/&quot; &amp; chr(10) &amp; _
 &quot;cd $4/$2/trunk/&quot; &amp; chr(10) &amp; _
+&quot;echo changed directory to&quot; &amp; chr(10) &amp; _
+&quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;zip -rDX $1 * -x *.svn*&quot;)
 
 &apos;close all streams
@@ -224,9 +238,13 @@ oTextOutputStream.setOutputStream(outStream)
 
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
 &quot;cd $1/&quot; &amp; chr(10) &amp; _
+&quot;echo changed directory to&quot; &amp; chr(10) &amp; _
+&quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;rm -rf $1/userguide&quot; &amp; chr(10) &amp; _
 &quot;svn checkout $2&quot; &amp; chr(10) &amp; _
 &quot;cd $1/userguide&quot; &amp; chr(10) &amp; _
+&quot;echo changed directory to&quot; &amp; chr(10) &amp; _
+&quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;zip -rDX ../userguide.odt * -x *.svn*&quot;)
 
 &apos;close all streams

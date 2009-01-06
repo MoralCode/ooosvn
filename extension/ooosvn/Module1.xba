@@ -514,7 +514,7 @@ wend
 Close #iNumber
 
 	txtLog.Text = sMsg
-	oDlgLog.Title = &quot;Failed to recover document&quot;)
+	oDlgLog.Title = &quot;Failed to recover document&quot;
 		oStatus.end()
 	oDlgLog.execute
 	&apos;MsgBox(&quot;File recovery somehow failed!  File not created.&quot;, 16, &quot;Error&quot;)

@@ -49,7 +49,7 @@ wend
 Close #iNumber
 
 	txtLog.Text = sMsg
-	oDlgLog.Title = &quot;Userguide checkout failed&quot;)
+	oDlgLog.Title = &quot;Userguide checkout failed&quot;
 		oStatus.end()
 	oDlgLog.execute
 	
