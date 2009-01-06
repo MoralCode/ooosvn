@@ -10,11 +10,46 @@
    ret = Shell(&quot;svnadmin create --fs-type fsfs&quot; &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;, 6, WorkingDir,true)
 	if ret &lt;&gt; 0 then
 		CreateSVN = false
-		MsgBox(&quot;Failed to create repository.&quot;,48,&quot;Error&quot;)
+		&apos;Error Log window
+			iNumber = Freefile
+	aFile = WorkingDir &amp; &quot;/operation.log&quot;
+Open aFile For Input As iNumber
+While not eof(iNumber)
+Line Input #iNumber, sLine
+If sLine &lt;&gt;&quot;&quot; then
+sMsg = sMsg &amp; sLine &amp; chr(13)
+end if
+wend
+Close #iNumber
+
+	txtLog.Text = sMsg
+	oDlgLog.Title = &quot;Failed to create SVN repository&quot;)
+		oStatus.end()
+	oDlgLog.execute
+		
+	&apos;	MsgBox(&quot;Failed to create repository.&quot;,48,&quot;Error&quot;)
 		end if
 
    If NOT FileExists(WorkingDir) Then
-     MsgBox(&quot;Creation of working directory &quot; &amp; WorkingDir &amp; &quot; failed.  Do you have adequate write permissions?&quot;, 16, &quot;Failed&quot;)
+   
+   	&apos;Error Log window
+			iNumber = Freefile
+	aFile = WorkingDir &amp; &quot;/operation.log&quot;
+Open aFile For Input As iNumber
+While not eof(iNumber)
+Line Input #iNumber, sLine
+If sLine &lt;&gt;&quot;&quot; then
+sMsg = sMsg &amp; sLine &amp; chr(13)
+end if
+wend
+Close #iNumber
+
+	txtLog.Text = sMsg
+	oDlgLog.Title = &quot;Failed to create working directory&quot;)
+		oStatus.end()
+	oDlgLog.execute
+   
+     &apos;MsgBox(&quot;Creation of working directory &quot; &amp; WorkingDir &amp; &quot; failed.  Do you have adequate write permissions?&quot;, 16, &quot;Failed&quot;)
      WorkingDirCreate = 0
      Exit Function
    End If
@@ -196,6 +231,13 @@ oTextOutputStream.setOutputStream(outStream)
 
 &apos;close all streams
 oTextOutputStream.closeOutput()
+
+&apos; test to make sure script creation worked
+If Not FileExists(WorkingDir &amp; &quot;/commit.sh&quot;) then
+
+MsgBox(&quot;Failed to create scripts in&quot; &amp; WorkingDir,48,&quot;Error&quot;)
+
+end if
 
 end Function
 

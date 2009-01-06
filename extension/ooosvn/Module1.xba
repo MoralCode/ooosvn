@@ -500,7 +500,24 @@ If FileExists(outputfile) then
 	oStatus.end()
    		else
    		oStatus.end()
-	MsgBox(&quot;File recovery somehow failed!  File not created.&quot;, 16, &quot;Error&quot;)
+   		
+   		&apos;Error Log window
+			iNumber = Freefile
+	aFile = WorkingDir &amp; &quot;/operation.log&quot;
+Open aFile For Input As iNumber
+While not eof(iNumber)
+Line Input #iNumber, sLine
+If sLine &lt;&gt;&quot;&quot; then
+sMsg = sMsg &amp; sLine &amp; chr(13)
+end if
+wend
+Close #iNumber
+
+	txtLog.Text = sMsg
+	oDlgLog.Title = &quot;Failed to recover document&quot;)
+		oStatus.end()
+	oDlgLog.execute
+	&apos;MsgBox(&quot;File recovery somehow failed!  File not created.&quot;, 16, &quot;Error&quot;)
 end if
 End sub
 
