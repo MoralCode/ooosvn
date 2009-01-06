@@ -21,3 +21,5 @@ zip -rDX ../ooosvn-beta-$1.zip * -x *.svn*
 #7za a -tzip -mfb=258 -mpass=15 ../ooosvn-beta-0.3.3.zip ./*
 #cd ..
 #rm -rf build
+echo ooosvn-beta-$1.zip created
+echo please update changelog 

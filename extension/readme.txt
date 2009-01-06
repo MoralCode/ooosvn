@@ -1,5 +1,5 @@
 Requirements:
-- OOo 1.1 or later, tested with 2.0.2 and 2.1
+- OOo 1.1 or later, tested with 2.x and 3.0.0
 - Subversion 1.3 or greater, latest stable version is recommended.
 - svnadmin, svnlook, zip, unzip, sed
 
@@ -12,9 +12,9 @@ are trusted by many thousands of people.
 This ZIP file is now the extension, unlike with older versions.  Installation
 should be more straight forward.
 
-1. Install the ooosvn-0.3.7.zip package using OOo's package manager, Tools >
+1. Install the ooosvn-0.3.9.zip package using OOo's package manager, Tools >
 Package Manager (Extension Manager after 2.1) .  This will install the BASIC
-module and will give you the SVN menu.
+modules and will give you the SVN menu.
 
 2. If doing an upgrade it is strongly recommended that you run Tools > Add-Ons >
 Install OOoSVN scripts to upgrade the scripts.  If this is a fresh install, use
@@ -23,7 +23,7 @@ repository, working directory and shell scripts will be created for you by the
 new wizard.
 
 Use:
-The SVN menu gives all of the options to carry out on a document.  They're safe
+The SVN menu gives all of the options to carry out on a document.  They're fairly safe
 in this version.
 
 If you want to automate use of OOoSVN, assign the macros OnSavedSVN and
