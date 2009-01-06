@@ -7,7 +7,7 @@
    WorkingDir = getWorkingDir
 
 &apos; Create the home repository
-   ret = Shell(&quot;svnadmin create --fs-type fsfs&quot;, 6, WorkingDir,true)
+   ret = Shell(&quot;svnadmin create --fs-type fsfs&quot; &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;, 6, WorkingDir,true)
 	if ret &lt;&gt; 0 then
 		CreateSVN = false
 		MsgBox(&quot;Failed to create repository.&quot;,48,&quot;Error&quot;)
@@ -218,7 +218,7 @@ function CreateSVN() as integer
 	end if
 		
  	sSVNURL = PickFolder(sGetHomeURL(), &quot;Select a directory for the new repository&quot;, &quot;&quot;)
-	ret = Shell(&quot;svnadmin create --fs-type fsfs&quot;, 6, sSVNURL,true)
+	ret = Shell(&quot;svnadmin create --fs-type fsfs&quot; &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;, 6, sSVNURL,true)
 	if ret &lt;&gt; 0 then
 		CreateSVN = false
 		MsgBox(&quot;Failed to create repository.&quot;,48,&quot;Error&quot;)
@@ -251,7 +251,7 @@ If NOT FileExists(WorkingDir) then
                &quot;Press OK to begin.&quot;,64, &quot;First run wizard&quot;)
 
                InstallScripts
-               MsgBox(&quot;Configuration complete.&quot;, 64, &quot;Complete&quot;)
+               MsgBox(&quot;Configuration complete.  OOoSVN will now continue with the function you requested.&quot;, 64, &quot;Complete&quot;)
           end if
 End Function
 

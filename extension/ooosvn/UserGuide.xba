@@ -30,7 +30,7 @@ UUID=&quot;2abb7df7-5d29-0410-912f-aa4066f74452&quot;
    
    oStatus.start( &quot;Downloading OOoSVN userguide from &quot; &amp; URL &amp; &quot;.  Please wait....&quot;, 10 )
 
-   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/userguide.sh &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; URL &amp; &quot;/userguide&quot; + cQuote , &quot;&quot;,6,true)
+   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/userguide.sh &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; URL &amp; &quot;/userguide&quot; &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote , &quot;&quot;,6,true)
       oStatus.end() 
 If FileExists(ConvertToURL(WorkingDir) &amp; &quot;/userguide.odt&quot;) then
 	StarDesktop.loadComponentfromURL(ConvertToURL(WorkingDir) &amp; &quot;/userguide.odt&quot;,&quot;_blank&quot;, 0, Array())
