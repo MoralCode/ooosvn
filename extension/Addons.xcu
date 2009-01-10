@@ -37,7 +37,7 @@
 					<value>SVN</value>
 				</prop>
 				<node oor:name="Submenu">
-				<node oor:name="m1" oor:op="replace">
+				<node oor:name="m01" oor:op="replace">
 					<prop oor:name="Context" oor:type="xs:string">
 						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.sdb.OfficeDatabaseDocument</value>
 					</prop>
@@ -54,7 +54,7 @@
 						<value>_self</value>
 					</prop>
 				</node>
-				<node oor:name="m2" oor:op="replace">
+				<node oor:name="m02" oor:op="replace">
 					<prop oor:name="Context" oor:type="xs:string">
 						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.sdb.OfficeDatabaseDocument</value>
 					</prop>
@@ -71,7 +71,7 @@
 						<value>_self</value>
 					</prop>
 				</node>
-				<node oor:name="m3" oor:op="replace">
+				<node oor:name="m03" oor:op="replace">
 					<prop oor:name="Context" oor:type="xs:string">
 						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.sdb.OfficeDatabaseDocument</value>
 					</prop>
@@ -79,7 +79,7 @@
 						<value>private:separator</value>
 					</prop>
 				</node>
-				<node oor:name="m4" oor:op="replace">
+				<node oor:name="m04" oor:op="replace">
 					<prop oor:name="Context" oor:type="xs:string">
 						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.sdb.OfficeDatabaseDocument</value>
 					</prop>
@@ -96,7 +96,7 @@
 						<value>_self</value>
 					</prop>
 				</node>
-				<node oor:name="m5" oor:op="replace">
+				<node oor:name="m05" oor:op="replace">
 					<prop oor:name="Context" oor:type="xs:string">
 						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.sdb.OfficeDatabaseDocument</value>
 					</prop>
@@ -113,7 +113,7 @@
 						<value>_self</value>
 					</prop>
 				</node>
-				<node oor:name="m6" oor:op="replace">
+				<node oor:name="m06" oor:op="replace">
 					<prop oor:name="Context" oor:type="xs:string">
 						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.sdb.OfficeDatabaseDocument</value>
 					</prop>
@@ -121,7 +121,7 @@
 						<value>private:separator</value>
 					</prop>
 				</node>
-				<node oor:name="m7" oor:op="replace">
+				<node oor:name="m07" oor:op="replace">
 					<prop oor:name="Context" oor:type="xs:string">
 						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.sdb.OfficeDatabaseDocument</value>
 					</prop>
@@ -138,7 +138,7 @@
 						<value>_self</value>
 					</prop>
 				</node>
-				<node oor:name="m8" oor:op="replace">
+				<node oor:name="m08" oor:op="replace">
 					<prop oor:name="Context" oor:type="xs:string">
 						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.sdb.OfficeDatabaseDocument</value>
 					</prop>
@@ -155,7 +155,7 @@
 						<value>_self</value>
 					</prop>
 				</node>
-				<node oor:name="m9" oor:op="replace">
+				<node oor:name="m09" oor:op="replace">
 					<prop oor:name="Context" oor:type="xs:string">
 						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.sdb.OfficeDatabaseDocument</value>
 					</prop>
@@ -184,6 +184,31 @@
 					</prop>
 					<prop oor:name="Title" oor:type="xs:string">
 						<value>Recover lost document</value>
+					</prop>
+					<prop oor:name="Target" oor:type="xs:string">
+						<value>_self</value>
+					</prop>
+				</node>
+				<node oor:name="m11" oor:op="replace">
+					<prop oor:name="Context" oor:type="xs:string">
+						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.sdb.OfficeDatabaseDocument</value>
+					</prop>
+					<prop oor:name="URL" oor:type="xs:string">
+						<value>private:separator</value>
+					</prop>
+				</node>
+				<node oor:name="m12" oor:op="replace">
+					<prop oor:name="Context" oor:type="xs:string">
+						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.sdb.OfficeDatabaseDocument</value>
+					</prop>
+					<prop oor:name="URL" oor:type="xs:string">
+						<value>macro:///ooosvn.Module1.LastOperationLog</value>
+					</prop>
+					<prop oor:name="ImageIdentifier" oor:type="xs:string">
+						<value>%origin%/icons/image12</value>
+					</prop>
+					<prop oor:name="Title" oor:type="xs:string">
+						<value>View last operation log</value>
 					</prop>
 					<prop oor:name="Target" oor:type="xs:string">
 						<value>_self</value>

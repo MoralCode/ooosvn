@@ -84,7 +84,7 @@ oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
 &quot;svn status | grep ^\? | cut -c8- | xargs svn add&quot; &amp; chr(10) &amp; _
 &quot;svn commit -m &quot; &amp; chr(34) &amp; &quot;$5&quot; &amp; chr(34) &amp; chr(10) &amp; _
 &quot;cd $4/&quot; &amp; chr(10) &amp; _
-&quot;echo Changed directory to::&quot; &amp; chr(10) &amp; _
+&quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;svn checkout $3/$2/&quot; &amp; chr(10) &amp; _
 &quot;#cd $4/$2/trunk/&quot; &amp; chr(10) &amp; _
@@ -105,7 +105,7 @@ oTextOutputStream.setOutputStream(outStream)
 &quot;mkdir $4/$2/temp/&quot; &amp; chr(10) &amp; _
 &quot;unzip -o $1 -d $4/$2/temp/ -x *.svn*&quot; &amp; chr(10) &amp; _
 &quot;cd $4/$2/temp/&quot; &amp; chr(10) &amp; _
-&quot;echo Changed directory to::&quot; &amp; chr(10) &amp; _
+&quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;# Get and write repo UUID&quot; &amp; chr(10) &amp; _
 &quot;repo_uuid=`svnlook uuid $4`&quot; &amp; chr(10) &amp; _
@@ -134,6 +134,13 @@ oTextOutputStream.setOutputStream(outStream)
 &quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;svn checkout $3/$2/&quot; &amp; chr(10) &amp; _
 &quot;cd $4/$2/trunk/&quot; &amp; chr(10) &amp; _
+&quot;pwd=`pwd`&quot; &amp; chr(10) &amp; _
+&quot;if [ $pwd != &quot; &amp; chr(34) &amp; &quot;${4}/${2}/temp&quot; &amp; chr(34) &amp; &quot; ]&quot; &amp; chr(10) &amp; _
+&quot;then&quot; &amp; chr(10) &amp; _
+&quot;echo &quot; &amp; chr(34) &amp; &quot;Error: Working copy is not where it should be!&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;echo &quot; &amp; chr(34) &amp; &quot;Most likely cause is disallowed characters in document filename.&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;exit&quot; &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
 &quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;zip -rDX $1 * -x *.svn*&quot;)

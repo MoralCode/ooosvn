@@ -971,7 +971,9 @@ End Function
 
 Function LastOperationLog
 
-OperationLog(&quot;Test&quot;)
+    WorkingDir = getWorkingDir
+
+OperationLog(WorkingDir &amp; &quot;/operation.log&quot;)
 
 End Function
 
