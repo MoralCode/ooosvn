@@ -66,32 +66,8 @@ End If
    &apos;Test for success
    
    If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
-   
-Dim oDlgLog As Object
-Dim txtLog As Object
-Dim sMsg As String
-   	oDlgLog = _
-		CreateUnoDialog(DialogLibraries.ooosvn.DlgLog)
-	
-	With oDlgLog
-		txtLog = .getControl(&quot;txtAbout&quot;)
-	End With
-   
-   	iNumber = Freefile
-	aFile = WorkingDir &amp; &quot;/operation.log&quot;
-Open aFile For Input As iNumber
-While not eof(iNumber)
-Line Input #iNumber, sLine
-If sLine &lt;&gt;&quot;&quot; then
-sMsg = sMsg &amp; sLine &amp; chr(13)
-end if
-wend
-Close #iNumber
-
-	txtLog.Text = sMsg
-	oDlgLog.Title = &quot;Failed importing file to SVN!  Are there invalid characters in the filename?  Log follows...&quot;
-		oStatus.end()
-	oDlgLog.execute
+    &apos; Display the log on failure
+     Operation Log(&quot;Failed importing file to SVN! Log follows...&quot;)
 	exit sub
    end if
    
@@ -530,31 +506,7 @@ If FileExists(outputfile) then
    		oStatus.end()
    		
    		&apos;Error Log window
-   		Dim oDlgLog As Object
-Dim txtLog As Object
-Dim sMsg As String
-   	oDlgLog = _
-		CreateUnoDialog(DialogLibraries.ooosvn.DlgLog)
-	
-	With oDlgLog
-		txtLog = .getControl(&quot;txtAbout&quot;)
-	End With
-			iNumber = Freefile
-	aFile = WorkingDir &amp; &quot;/operation.log&quot;
-Open aFile For Input As iNumber
-While not eof(iNumber)
-Line Input #iNumber, sLine
-If sLine &lt;&gt;&quot;&quot; then
-sMsg = sMsg &amp; sLine &amp; chr(13)
-end if
-wend
-Close #iNumber
-
-	txtLog.Text = sMsg
-	oDlgLog.Title = &quot;Failed to recover document&quot;
-		oStatus.end()
-	oDlgLog.execute
-	&apos;MsgBox(&quot;File recovery somehow failed!  File not created.&quot;, 16, &quot;Error&quot;)
+   	OperationLog(&quot;Failed to recover document! Log follows...&quot;)
 end if
 End sub
 
@@ -823,31 +775,7 @@ End If
    
    If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
    
-Dim oDlgLog As Object
-Dim txtLog As Object
-Dim sMsg As String
-   	oDlgLog = _
-		CreateUnoDialog(DialogLibraries.ooosvn.DlgLog)
-	
-	With oDlgLog
-		txtLog = .getControl(&quot;txtAbout&quot;)
-	End With
-   
-   	iNumber = Freefile
-	aFile = WorkingDir &amp; &quot;/operation.log&quot;
-Open aFile For Input As iNumber
-While not eof(iNumber)
-Line Input #iNumber, sLine
-If sLine &lt;&gt;&quot;&quot; then
-sMsg = sMsg &amp; sLine &amp; chr(13)
-end if
-wend
-Close #iNumber
-
-	txtLog.Text = sMsg
-	oDlgLog.Title = &quot;Failed importing file to SVN!  Are there invalid characters in the filename?  Log follows...&quot;
-		oStatus.end()
-	oDlgLog.execute
+OperationLog(&quot;Failed importing file to SVN! Log follows...&quot;)
 	exit sub
    end if
    
@@ -998,6 +926,54 @@ Dim sMsg As String
 	oDlgLog.execute
 		
 End Sub
+
+Function OperationLog(TitleBarMsg) as String
+
+Dim oDlgLog As Object
+Dim txtLog As Object
+Dim sMsg As String
+
+	Dim oDoc
+  Dim sDocURL
+  Dim repo
+
+  LoadTools
+    If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
+
+    WorkingDir = getWorkingDir
+
+
+	oDlgLog = _
+		CreateUnoDialog(DialogLibraries.ooosvn.DlgLog)
+	
+	With oDlgLog
+		txtLog = .getControl(&quot;txtAbout&quot;)
+	End With
+	
+	iNumber = Freefile
+	aFile = WorkingDir &amp; &quot;/operation.log&quot;
+Open aFile For Input As iNumber
+While not eof(iNumber)
+Line Input #iNumber, sLine
+If sLine &lt;&gt;&quot;&quot; then
+sMsg = sMsg &amp; sLine &amp; chr(13)
+end if
+wend
+Close #iNumber
+
+	txtLog.Text = sMsg
+	oDlgLog.Title = TitleBarMsg
+	oDlgLog.execute
+
+End Function
+
+Function LastOperationLog
+
+OperationLog(&quot;Test&quot;)
+
+End Function
 
 REM ========================================================
 &apos; PSEUDO CODE!

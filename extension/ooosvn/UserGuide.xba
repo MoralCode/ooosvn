@@ -36,33 +36,8 @@ If FileExists(ConvertToURL(WorkingDir) &amp; &quot;/userguide.odt&quot;) then
 	StarDesktop.loadComponentfromURL(ConvertToURL(WorkingDir) &amp; &quot;/userguide.odt&quot;,&quot;_blank&quot;, 0, Array())
 		else
 	
-	&apos;Error Log window
-	Dim oDlgLog As Object
-Dim txtLog As Object
-Dim sMsg As String
-   	oDlgLog = _
-		CreateUnoDialog(DialogLibraries.ooosvn.DlgLog)
-	
-	With oDlgLog
-		txtLog = .getControl(&quot;txtAbout&quot;)
-	End With
-			iNumber = Freefile
-	aFile = WorkingDir &amp; &quot;/operation.log&quot;
-Open aFile For Input As iNumber
-While not eof(iNumber)
-Line Input #iNumber, sLine
-If sLine &lt;&gt;&quot;&quot; then
-sMsg = sMsg &amp; sLine &amp; chr(13)
-end if
-wend
-Close #iNumber
+Operation Log(&quot;Userguide checkout failed! Log follows...&quot;)
 
-	txtLog.Text = sMsg
-	oDlgLog.Title = &quot;Userguide checkout failed&quot;
-		oStatus.end()
-	oDlgLog.execute
-	
-	&apos;MsgBox(&quot;Userguide checkout somehow failed!  File not created.&quot;, 16, &quot;Error&quot;)
 end if
 
 End Sub

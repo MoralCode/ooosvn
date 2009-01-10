@@ -12,21 +12,7 @@
 If ret &lt;&gt; 0 then 
 		CreateSVN = false
 		&apos;Error Log window
-&apos;			iNumber = Freefile
-&apos;	aFile = WorkingDir &amp; &quot;/operation.log&quot;
-&apos;Open aFile For Input As iNumber
-&apos;While not eof(iNumber)
-&apos;Line Input #iNumber, sLine
-&apos;If sLine &lt;&gt;&quot;&quot; then
-&apos;sMsg = sMsg &amp; sLine &amp; chr(13)
-&apos;end if
-&apos;wend
-&apos;Close #iNumber
-
-&apos;	txtLog.Text = sMsg
-&apos;	oDlgLog.Title = &quot;Failed to create SVN repository&quot;
-&apos;		oStatus.end()
-&apos;	oDlgLog.execute
+		&apos;OperationLog(&quot;Failed to create repository&quot;)
 		
 		MsgBox(&quot;Failed to create repository.&quot;,48,&quot;Error&quot;)
 		end if
