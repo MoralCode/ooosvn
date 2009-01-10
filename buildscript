@@ -7,6 +7,15 @@
 #mkdir build
 
 cd extension
+
+# Write version number to description.xml
+txtold="<version value=\".*\"\/>"
+echo $txtold
+txtnew="<version value=\"$1\"\/>"
+echo $txtnew
+sed s/"$txtold"/"$txtnew"/g description.xml > description2.xml
+mv description2.xml description.xml
+
 zip -rDX ../ooosvn-beta-$1.zip * -x *.svn*
 #7za a -tzip -mfb=258 -mpass=15 ../build/ooosvn-0.3.3.zip ./*
 
