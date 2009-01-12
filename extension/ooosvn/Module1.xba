@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="Module1" script:language="StarBasic">Sub ImportSVN()
+&apos; Subroutine for file import into SVN.
 
 ImportSVN = 1
 
@@ -79,6 +80,7 @@ End If
 end sub
   
 Sub CommitSVN()
+&apos; Sub for committing changes in a file that&apos;s already under version control.
 
   Dim oDoc
   Dim sDocURL
@@ -116,6 +118,7 @@ oStatus.end()
 end sub
 
 sub InfoSVN()
+&apos; Sub for displaying SVN info of the active document.
 
   Dim oDoc
   Dim sDocURL
@@ -164,6 +167,7 @@ Msgbox (sMsg, 64, &quot;SVN info for &quot; &amp; FileNameoutofPath(sDocURL, &qu
 end sub
 
 Sub ThumbnailsSVN()
+&apos;Sub for a version browser based upon the Thumbnail.png files in ODF documents
 
 dim document   as object
 dim dispatcher as object
@@ -190,6 +194,12 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
 		MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable version management.&quot;, 16, &quot;Error&quot;)
 		Exit Sub
 	End If
+	
+&apos; Now test we have an ODF file as sx* files do not have thumbnails
+	if validatefiletypeODF(sDocURL)=&quot;false&quot; then
+&apos;ImportSVN = 0
+	exit sub
+end if
          
             cQuote = Chr( 34 )
 
@@ -201,13 +211,19 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
    
    oStatus.start( &quot;Retrieving version thumbnails for &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;.  Please wait....&quot;, 10 )
 
-   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/thumbnails.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir + cQuote)
+   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/thumbnails.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir + cQuote, &quot;&quot;, 6, True)
 
-	do
-	wait 100
-	Loop until FileExists(ConvertToURL(WorkingDir) &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/preview/log.txt&quot;)   
+&apos;	do &apos;Obsolete finish check, could be useful if needed to display the file picker earlier and let all thumbnails load into view over time.
+&apos;	wait 100
+&apos;	Loop until FileExists(ConvertToURL(WorkingDir) &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/preview/log.txt&quot;)
 
-oStatus.end()   
+oStatus.end()
+
+&apos;Doesn&apos;t work just yet.  Intented to test for Thumbnails existing but wildcard doesn&apos;t seem to work.
+&apos;If Not FileExists(converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/preview/*.png&quot;) Then
+&apos;MsgBox(&quot;No thumbnails&quot;)
+&apos;End If
+
    &apos; The dialogue  
    Dim sFileURL as String
 
@@ -258,6 +274,7 @@ oStatus.end()
 End sub
 
 Sub RevertSVN()
+&apos; Sub to reload a previous version of a document.  Just like the Thumbnail.svn module but non-graphical
 
 rem ----------------------------------------------------------------------
 rem define variables
@@ -354,6 +371,7 @@ oStatus.end()
 End sub
 
 Sub RecoverSVN()
+&apos; Sub for reloading any version of any file under version control.
 
   Dim oDoc
   Dim sDocURL
@@ -512,6 +530,7 @@ End sub
 
 
 Function validatefiletype(sDocURL As String)
+&apos; Function to check that the active document is OOoSVN compatible
 
 oSFA       = createUNOService (&quot;com.sun.star.ucb.SimpleFileAccess&quot;)
 oInpStream = oSFA.openFileRead(sDocURL)
@@ -564,7 +583,52 @@ end if
 
 end function 
 
+Function validatefiletypeODF(sDocURL As String)
+&apos; Function to check that a file is ODF
+
+oSFA       = createUNOService (&quot;com.sun.star.ucb.SimpleFileAccess&quot;)
+oInpStream = oSFA.openFileRead(sDocURL)
+
+Dim aProps(0) as new  com.sun.star.beans.PropertyValue
+aProps(0).Name = &quot;InputStream&quot;
+aProps(0).Value = oInpStream
+
+oTD = createUnoService(&quot;com.sun.star.document.TypeDetection&quot;)
+
+bDeepDetection: true
+sType = oTD.queryTypeByDescriptor(aProps(), true)
+
+oInpStream.closeInput()
+
+if sType &lt;&gt; &quot;writer8&quot; then
+if sType &lt;&gt; &quot;writer8_template&quot; then
+if sType &lt;&gt; &quot;writerglobal8&quot; then
+if sType &lt;&gt; &quot;calc8&quot; then
+if sType &lt;&gt; &quot;calc8_template&quot; then
+if sType &lt;&gt; &quot;impress8&quot; then
+if sType &lt;&gt; &quot;impress8_template&quot; then
+if sType &lt;&gt; &quot;draw8&quot; then
+if sType &lt;&gt; &quot;draw8_template&quot; then
+if sType &lt;&gt; &quot;math8&quot; then
+if sType &lt;&gt; &quot;StarBase&quot; then
+msgbox (sDocURL &amp; &quot; is not an ODF file and does not contain a document Thumbnail.  Operation cancelled.&quot;, 16, &quot;Non-ODF document&quot;)
+validatefiletypeODF=&quot;false&quot;
+end if
+end if
+end if
+end if
+end if
+end if
+end if
+end if
+end if
+end if
+end if
+
+end function 
+
 sub DiffSVN() 
+&apos; Function to allow graphical comparison between two versions of a document
 
 dim document   as object
 dim dispatcher as object
@@ -669,6 +733,7 @@ oStatus.end()
 end sub
 
 Sub OnSavedSVN()
+  &apos; Commit function tailored for assigning to OnSaved event for automated checkins on save
   
   Dim oDoc
   Dim sDocURL
@@ -718,6 +783,7 @@ End If
 end sub
 
 Sub OnSavedAsSVN()
+&apos; Sub for to assign to OnSavedAs event for automated import
 
 dim document   as object
 dim dispatcher as object
@@ -785,12 +851,14 @@ oStatus.end()
 end sub
 
 Sub OnLaunch()
+&apos; Useless as yet
 
 &apos;msgbox(&quot;test&quot;)
 
 end sub
 
 Sub OnPrintSVN()
+&apos; Useless as yet
   
   &apos; Save the document first
 document   = ThisComponent.CurrentController.Frame
@@ -830,6 +898,7 @@ End If
 end sub
 
 Sub LogSVN()
+&apos;Generate a log file and display it on screen.  Limited to 65536 characters due to string length limitation.
 
 Dim oDlgLog As Object
 Dim txtLog As Object
@@ -895,19 +964,21 @@ Close #iNumber
 End Sub
 
 Function getRepo()
+&apos; Function used whenever we need to find the home repo URL
 	aService = CreateUnoService(&quot;com.sun.star.util.PathSubstitution&quot;)
 	sUserPath = aService.substituteVariables(&quot;$(home)&quot;, true)
 	getRepo = sUserPath &amp; &quot;/.ooosvn&quot;
 end Function
 
 Function getWorkingDir()
+&apos; Function used whenever we need to find the working directory path
 	aService = CreateUnoService(&quot;com.sun.star.util.PathSubstitution&quot;)
 	sUserPath = aService.substituteVariables(&quot;$(home)&quot;, true)
 	getWorkingDir = mid(sUserPath &amp; &quot;/.ooosvn&quot;, 8)
 end Function
 
 Sub HelpAbout()
-
+&apos; Function for loading the help dialogue.
 Dim oDlgLog As Object
 Dim txtLog As Object
 Dim sMsg As String
@@ -928,6 +999,7 @@ Dim sMsg As String
 End Sub
 
 Function OperationLog(TitleBarMsg) as String
+&apos; Function to display the operation log
 
 Dim oDlgLog As Object
 Dim txtLog As Object
@@ -970,6 +1042,7 @@ Close #iNumber
 End Function
 
 Function LastOperationLog
+&apos; Function to call the operation log function on its own
 
     WorkingDir = getWorkingDir
 

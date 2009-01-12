@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="installation" script:language="StarBasic">Function CreateWorkingDir
-
-
+&apos;Creates ~/.ooosvn/ and home repository
 
    WorkingDir = getWorkingDir
 
@@ -293,6 +292,7 @@ msgbox(uuid)
 end function
 
 Function FirstRunCheck
+&apos; Function to test if it is the first run or not.  If it is, the wiward runs.
 
 	WorkingDir = getWorkingDir	
 	
@@ -310,6 +310,7 @@ If NOT FileExists(WorkingDir) then
 End Function
 
 Function PackagesCheck
+&apos; Installation test to see if we&apos;ve got SVN installed
   Dim lSVN as Single
   packages = true
 

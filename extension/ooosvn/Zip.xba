@@ -4,6 +4,7 @@
 Option Explicit
 
 Sub testZip()
+ &apos; Some ZIP stuff for testing
  
   Dim sMyDir As String
   sMyDir = &quot;/home/tom/&quot;

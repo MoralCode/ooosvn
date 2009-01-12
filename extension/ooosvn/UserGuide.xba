@@ -3,6 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="UserGuide" script:language="StarBasic">REM  *****  BASIC  *****
 
 Sub GetUserguide
+&apos;Sub to get the userguide from Sourceforge SVN repo and build
 
 dim dispatcher as object
 
