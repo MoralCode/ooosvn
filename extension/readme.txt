@@ -13,8 +13,10 @@ This ZIP file is now the extension, unlike with older versions.  Installation
 should be more straight forward.
 
 1. Install the ooosvn-0.3.9.zip package using OOo's package manager, Tools >
-Package Manager (Extension Manager after 2.1) .  This will install the BASIC
-modules and will give you the SVN menu.
+Package Manager .  This will install the BASIC
+modules and will give you the SVN menu.  With OOo 2.4 or later and OOoSVN 0.3.10
+or later, the extension can be updated from within the Package Manager,
+including by checking packages against the OOo Extensions repository.
 
 2. If doing an upgrade it is strongly recommended that you run Tools > Add-Ons >
 Install OOoSVN scripts to upgrade the scripts.  If this is a fresh install, use
@@ -23,7 +25,8 @@ repository, working directory and shell scripts will be created for you by the
 new wizard.
 
 Use:
-The SVN menu gives all of the options to carry out on a document.  They're fairly safe
+The SVN menu gives all of the options to carry out on a document.  They're
+fairly safe
 in this version.
 
 If you want to automate use of OOoSVN, assign the macros OnSavedSVN and

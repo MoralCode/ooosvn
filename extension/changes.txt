@@ -1,3 +1,30 @@
+0.3.10 :: 2009-01-12
+
+### New features ###
+1805953 - Superseding versions will now be able to install as an upgrade via
+OOo's package manager in recent versions of OOo.  This will not work on top of
+pre-0.3.10 versions.  This will make upgrades much smoother and allow checking
+for updates on the OOo extension repository.
+
+User now has to agree to GPL during extension installation, not required on
+upgrade.
+
+Added 'Last Operation Log' feature to menu.  This allows the user to see the
+details of the last SVN operation.
+
+Graphical Revert now aborts with a message on *.sx* files as these don't have
+Thumbnails.
+
+Many more comments and a few bits of code changed round.
+
+### Bug Fixes ###
+Files with disallowed characters in their names no longer can be overwritten
+with a bloated ZIP file of everything in the repo that takes ages to build if
+import is attempted.  Instead a check for correct checkout will error at this
+stage and the process will stop.
+
+SVN Menu order fixed to how it was supposed to be.
+
 0.3.9 :: 2009-01-06
 
 ### New features ###
@@ -8,7 +35,7 @@ first run.
 Updated shell scripts to give PWD output after any cd.  Useful for debugging. 
 If installing on top of an earlier version please run Tools > Add-Ons >
 Install OOoSVN scripts.  If this is a fresh install, these will be setup on the
-firt run.
+first run.
 
 Output from most shell operations now goes to operation.log.  If you have any
 trouble, have a look through this to see what the shell scripts are doing.
@@ -30,7 +57,7 @@ problem characters such as spaces in them.
 0.3.8 :: 2007-08-20
 
 ### New features ###
-Some exerimental configuration scripts which are not connected to anything but
+Some experimental configuration scripts which are not connected to anything but
 give some idea of what 0.4.0 might try to do.  Harmless, but don't run them
 unless you like error messages.
 
@@ -61,7 +88,7 @@ what is going on.  Some messages will only flash up for an instant, others may
 stay for a few seconds.  Watch the status bar.
 
 ### Bug fixes ###
-OOoSVN will now delete any previous versions of shellscripts on shell script
+OOoSVN will now delete any previous versions of shell scripts on shell script
 installation, this will prevent breakages from overwriting existing scripts
 without clearing the code previously in those files.
 
@@ -71,7 +98,7 @@ without clearing the code previously in those files.
 1654579 - Added a check for SVN during first run wizard.  It currently requires
 1.3 (the
 oldest supported by Tigris) to pass though if anyone has any problem with this
-limit and a better suggestion for what the requirment should be, please get in
+limit and a better suggestion for what the requirement should be, please get in
 touch.
 
 Added a configuration complete dialogue to the end of the installation wizard.
