@@ -51,6 +51,10 @@ MsgBox( &quot;A file named &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;
 ImportSVN = 0
 Exit Sub
 End If
+
+&apos; generate Document-UUID
+docuUUID = getUUID
+
          
             cQuote = Chr( 34 )
 
