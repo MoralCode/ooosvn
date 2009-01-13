@@ -7,6 +7,8 @@ ImportSVN = 1
 
 dim document   as object
 dim dispatcher as object
+dim docuUUID as string
+dim parentUUID as string
 
 FirstRunCheck &apos;Check scripts are installed, if not, install them.
 
@@ -31,6 +33,7 @@ LoadTools
     sDocURL2 = mid(sDocURL, 8)
     repo = getRepo
 
+&apos;no longer needed duee to firstruncheck?
 	If NOT FileExists(repo &amp; &quot;/README.txt&quot;) then
                 msgbox (&quot;Repository not found. Create it using:&quot; &amp; chr(13) &amp; &quot;svnadmin create --fs-type fsfs &quot; &amp; mid(repo, 8) &amp; chr(13) &amp; &quot;Then all scripts should be placed in &quot; &amp; WorkingDir, 16, &quot;Repository Error&quot;)
             exit sub
@@ -52,9 +55,49 @@ ImportSVN = 0
 Exit Sub
 End If
 
-&apos; generate Document-UUID
+&apos; Start of docuUUID processing
+
+&apos; try to read Document-UUID from document
 docuUUID = getUUID
 
+If docuUUID &lt;&gt; &quot;&quot; Then
+
+If FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then
+
+&apos; Document already has been imported, what shall we do?
+&apos; Import as new file, Import as child (make docuUUID parentUUID) or cancel
+&apos; Window required.  Need to pass docuUUID and parentUUID to shell script
+
+&apos; If new file
+docuUUID = generateUUID
+
+&apos; If import as child
+parentUUID = docuUUID
+docuUUID = generateUUID
+
+&apos; If cancelled
+exit sub
+
+Else
+&apos; If file is not in working dir but has a UUID, it may be another users document, need to import it as a child.
+parentUUID = docuUUID
+docuUUID = generateUUID
+
+End If
+
+Else
+&apos; No docu-UUID so the file needs to be imported from scratch with a new docu-UUID
+docuUUID = generateUUID
+
+End If
+
+&apos;Docu-UUID Uniqueness check, just in case
+If FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then
+&apos; generate a new docuUUID if another document has the same one.
+docuUUID = generateUUID
+End If
+
+&apos; End of docuUUID processing
          
             cQuote = Chr( 34 )
 
@@ -66,7 +109,7 @@ docuUUID = getUUID
    
    oStatus.start( &quot;Importing &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
 
-   Shell(&quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp;  sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote , &quot;&quot;,6,true)
+   Shell(&quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp;  sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; docuUUID &amp; parentUUID &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote , &quot;&quot;,6,true)
 
    &apos;Test for success
    

@@ -8,4 +8,5 @@
  <library:element library:name="DlgRepoAdd"/>
  <library:element library:name="DlgRepoEdit"/>
  <library:element library:name="DlgRepoSelect2"/>
+ <library:element library:name="DlgImportUUID"/>
 </library:library>

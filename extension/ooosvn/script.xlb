@@ -6,5 +6,5 @@
  <library:element library:name="installation"/>
  <library:element library:name="Zip"/>
  <library:element library:name="Config"/>
- <library:element library:name="generateUUID"/>
+ <library:element library:name="UUID"/>
 </library:library>

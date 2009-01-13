@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dlg:window PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "dialog.dtd">
+<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="DlgImportUUID" dlg:left="302" dlg:top="183" dlg:width="158" dlg:height="147" dlg:closeable="true" dlg:moveable="true" dlg:title="Document Import Options">
+ <dlg:bulletinboard>
+  <dlg:text dlg:id="Label1" dlg:tab-index="0" dlg:left="11" dlg:top="11" dlg:width="133" dlg:height="36" dlg:value="This document already appears to have a Document-UUID that is in use.  How would you like to import the document?" dlg:multiline="true"/>
+  <dlg:button dlg:id="ImportNew" dlg:tab-index="1" dlg:left="13" dlg:top="53" dlg:width="72" dlg:height="14" dlg:value="Import as new document"/>
+  <dlg:button dlg:id="ImportAsChild" dlg:tab-index="2" dlg:left="13" dlg:top="74" dlg:width="73" dlg:height="12" dlg:value="Import as child"/>
+  <dlg:button dlg:id="Cancel" dlg:tab-index="3" dlg:left="13" dlg:top="93" dlg:width="72" dlg:height="12" dlg:value="Cancel Import"/>
+ </dlg:bulletinboard>
+</dlg:window>
