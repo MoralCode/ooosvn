@@ -68,15 +68,33 @@ If FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&q
 &apos; Import as new file, Import as child (make docuUUID parentUUID) or cancel
 &apos; Window required.  Need to pass docuUUID and parentUUID to shell script
 
-&apos; If new file
-docuUUID = generateUUID
+StoredURL = getstoredURL
 
+&apos; test to see if this exact file is already under version control, if so, exit.
+If StoredURL = sDocURL then
+MsgBox( &quot;A file named &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is already under version control.  Please save as a different file name before reattempting.&quot;, 16, &quot;File not imported&quot;)
+Exit Sub
+End If
+
+ImportType = Msgbox (&quot;A document with the same UUID (&quot; &amp; docuUUID &amp; &quot;) appears to already be under version control.&quot; &amp; chr(10) &amp;_
+		&quot;Would you like to import the file as a child of &quot; &amp; docuUUID &amp; &quot;?&quot; &amp; chr(10) &amp;_
+		&quot;Click No to Import as a new document or Cancel to end the import process.&quot;, 35, &quot;Import mode requested&quot;)
+
+If ImportType = 6 Then
 &apos; If import as child
 parentUUID = docuUUID
 docuUUID = generateUUID
+End If
 
+If ImportType = 7 Then
+&apos; If new file
+docuUUID = generateUUID
+End If
+
+If ImportType = 2 Then
 &apos; If cancelled
 exit sub
+End If
 
 Else
 &apos; If file is not in working dir but has a UUID, it may be another users document, need to import it as a child.
@@ -88,6 +106,7 @@ End If
 Else
 &apos; No docu-UUID so the file needs to be imported from scratch with a new docu-UUID
 docuUUID = generateUUID
+&apos;msgbox(docuUUID) &apos; uncomment to display UUID
 
 End If
 
@@ -109,13 +128,13 @@ End If
    
    oStatus.start( &quot;Importing &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
 
-   Shell(&quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp;  sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; docuUUID &amp; parentUUID &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote , &quot;&quot;,6,true)
+   Shell(&quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp;  sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; docuUUID &amp; &quot; &quot; &amp; parentUUID &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote , &quot;&quot;,6,true)
 
    &apos;Test for success
    
-   If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
+   If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then
     &apos; Display the log on failure
-     Operation Log(&quot;Failed importing file to SVN! Log follows...&quot;)
+     OperationLog(&quot;Failed importing file to SVN! Log follows...&quot;)
 	exit sub
    end if
    
@@ -777,171 +796,6 @@ oStatus.end()
 	
 	oStatus.end()
    
-end sub
-
-Sub OnSavedSVN()
-  &apos; Commit function tailored for assigning to OnSaved event for automated checkins on save
-  
-  Dim oDoc
-  Dim sDocURL
-  
-  FirstRunCheck &apos;Check scripts are installed, if not, install them.
-  
-  oDoc = ThisComponent
-  If oDoc.supportsService( &quot;com.sun.star.chart.ChartDocument&quot; ) Then
-    oDoc = oDoc.getParent()
-  End If  
-  LoadTools
-  
-  If (oDoc.hasLocation()) Then
-    sDocURL = oDoc.getURL()
-    sDocURL2 = mid(sDocURL, 8)
-    repo = getRepo
-    WorkingDir = getWorkingDir  
-
-    Else
-    &apos; If file has not been saved, it can&apos;t be imported.
-    MsgBox(&quot;File not successfully saved so can not be committed to version control.&quot;, 16, &quot;Error&quot;)
-    Exit Sub
-  End If
-
-&apos; Test to see if file of same name is already under change control
-If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
-	Exit Sub
-End If
-
-	Comment = &quot;Incremental-save&quot;
-    
-    &apos; Commit any changes     
-    cQuote = Chr( 34 )
-    
-    &apos;  Status Bar Message
-   oDocCtrl = oDoc.getCurrentController()
-   oDocFrame = oDocCtrl.getFrame()
-   
-   oStatus = oDocFrame.createStatusIndicator()
-   
-   oStatus.start( &quot;Committing &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
-   
-	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/commit.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; Comment &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote)
-	
-	oStatus.end()
-  
-end sub
-
-Sub OnSavedAsSVN()
-&apos; Sub for to assign to OnSavedAs event for automated import
-
-dim document   as object
-dim dispatcher as object
-
-FirstRunCheck &apos;Check scripts are installed, if not, install them.
-
-document   = ThisComponent.CurrentController.Frame
-dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
-  
-  Dim oDoc
-  Dim sDocURL
-  oDoc = ThisComponent
- LoadTools
-  If (oDoc.hasLocation()) Then
-    sDocURL = oDoc.getURL()
-    sDocURL2 = mid(sDocURL, 8)
-    repo = getRepo
-    WorkingDir = getWorkingDir
-    
-    &apos; Test for repo existence.
-If NOT FileExists(repo &amp; &quot;/README.txt&quot;) then
-msgbox (&quot;Repository not found. Create it using:&quot; &amp; chr(13) &amp; &quot;svnadmin create --fs-type fsfs &quot; &amp; repo, 16, &quot;Repository error&quot;)
-exit sub
-end if
-
-    Else
-    &apos; If file has not been saved, it can&apos;t be imported.
-    MsgBox(&quot;File has not been successfully saved so can not be placed under version control.&quot;, 16, &quot;Error&quot;)
-    Exit Sub
-  End If
-
-&apos; Test for wrong file type
-if validatefiletype(sDocURL)=&quot;false&quot; then
-	exit sub
-end if
-
-&apos; Test to see if file of same name is already under change control
-If FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
-MsgBox( &quot;A file named &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is already under version control.  Please save as a different file name before attempting import.&quot;, 16, &quot;Error&quot;)
-Exit Sub
-End If
-         
-            cQuote = Chr( 34 )
-&apos;  Status Bar Message
-   oDocCtrl = oDoc.getCurrentController()
-   oDocFrame = oDocCtrl.getFrame()
-   
-   oStatus = oDocFrame.createStatusIndicator()
-   
-   oStatus.start( &quot;Importing &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
-
-   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
-  
-   &apos;Test for success
-   
-   If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
-   
-OperationLog(&quot;Failed importing file to SVN! Log follows...&quot;)
-	exit sub
-   end if
-   
-   &apos;If successful, reload the document
-     dispatcher.executeDispatch(document, &quot;.uno:Reload&quot;, &quot;&quot;, 0, Array())
-oStatus.end()  
-end sub
-
-Sub OnLaunch()
-&apos; Useless as yet
-
-&apos;msgbox(&quot;test&quot;)
-
-end sub
-
-Sub OnPrintSVN()
-&apos; Useless as yet
-  
-  &apos; Save the document first
-document   = ThisComponent.CurrentController.Frame
-dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
-dispatcher.executeDispatch(document, &quot;.uno:Save&quot;, &quot;&quot;, 0, Array())
-  
-  Dim oDoc
-  Dim sDocURL
-  oDoc = ThisComponent
-  LoadTools
-  If (oDoc.hasLocation()) Then
-    sDocURL = oDoc.getURL()
-    sDocURL2 = mid(sDocURL, 8)
-    repo = getRepo
-    WorkingDir = getWorkingDir  
-
-    Else
-    &apos; If file has not been saved, it can&apos;t be imported.
-    MsgBox(&quot;File not successfully saved so can not be committed to version control.&quot;, 16, &quot;Error&quot;)
-    Exit Sub
-  End If
-
-&apos; Test to see if file of same name is already under change control
-If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
-	Exit Sub
-End If
-
-        copytype = &quot;tag&quot;
-    copyname = &quot;tagtest&quot;
-    comment = &quot;tagtest&quot;
-    &apos; tag the active version     
-    cQuote = Chr( 34 )
-	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/tag.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; copytype &amp; &quot; &quot; &amp; copyname &amp; &quot; &quot; &amp; comment &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote )
-  
-
-  
 end sub
 
 Sub LogSVN()

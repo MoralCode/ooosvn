@@ -25,11 +25,7 @@ Function GetDocumentUUID
    oDoc = thisComponent
    oInfo = oDoc.DocumentInfo()
    sDocURL = oDoc.getURL()
-UUID = oDoc.DocumentInfo.getPropertyValue(&quot;Document-UUID&quot;)
-If Len(UUID) &lt; 32 Then
-&apos;MsgBox(&quot;No Document-UUID stored in document.&quot;) &apos;Place holder.
-End If
-&apos;msgbox(UUID)
+GetDocumentUUID = oDoc.DocumentInfo.getPropertyValue(&quot;Document-UUID&quot;)
 End Function
 
 Function GetParentUUID
@@ -37,11 +33,15 @@ Function GetParentUUID
    oDoc = thisComponent
    oInfo = oDoc.DocumentInfo()
    sDocURL = oDoc.getURL()
-UUID = oDoc.DocumentInfo.getPropertyValue(&quot;Parent-UUID&quot;)
-If Len(UUID) &lt; 32 Then
-MsgBox(&quot;No Parent-UUID stored in document.&quot;) &apos;Place holder.
-End If
-&apos;msgbox(UUID)
+GetParentUUID = oDoc.DocumentInfo.getPropertyValue(&quot;Parent-UUID&quot;)
+End Function
+
+Function GetStoredURL
+&apos; A function to find the correct URL from the documents Repo UUID in meta.xml
+   oDoc = thisComponent
+   oInfo = oDoc.DocumentInfo()
+   sDocURL = oDoc.getURL()
+GetStoredURL = oDoc.DocumentInfo.getPropertyValue(&quot;Doc-URL&quot;)
 End Function
 
 Function generateUUID
@@ -75,7 +75,7 @@ Dim iVar8 As String
  Randomize
  iVar8 = Hex(( keyBase * Rnd) )
  
- getUUID = iVar1 &amp; iVar2 &amp; &quot;-&quot; &amp; iVar3 &amp; &quot;-&quot; &amp; iVar4 &amp; &quot;-&quot; &amp; iVar5 &amp; &quot;-&quot; &amp;  iVar6 &amp; iVar7 &amp; iVar8
+ generateUUID = iVar1 &amp; iVar2 &amp; &quot;-&quot; &amp; iVar3 &amp; &quot;-&quot; &amp; iVar4 &amp; &quot;-&quot; &amp; iVar5 &amp; &quot;-&quot; &amp;  iVar6 &amp; iVar7 &amp; iVar8
 
 End Function
 
