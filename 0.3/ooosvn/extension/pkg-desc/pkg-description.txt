@@ -1,0 +1,7 @@
+OOoSVN
+
+Copyright (c) 2007  Edward Holness
+Licensed under the GNU GPL
+
+A project to provide change control for OpenOffice.org documents (OpenDocument and *.sx*) via subversion. Transparently checks in internal changes in files and allows users to recover any previous version, view logs and compare with older versions.
+Visit: http://sourceforge.net/projects/ooosvn/

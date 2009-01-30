@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Config" script:language="StarBasic">Sub Main
+&apos; Test for getting URL from a specified UUID
+   UUID=&quot;2abb7df7-5d29-0410-912f-aa4066f74452&quot;
+   URL = GetURLfromUUID(UUID)
+   If Len(URL) &lt; 10 Then
+   Msgbox(&quot;Repository &quot; &amp; UUID &amp; &quot; not found in your database.&quot;)
+   Else
+   Msgbox(URL)
+   End IF
+End Sub
+
+Function GetRepoUUID
+&apos; A function to find the correct URL from the documents Repo UUID in meta.xml
+   oDoc = thisComponent
+   oInfo = oDoc.DocumentInfo()
+   sDocURL = oDoc.getURL()
+&apos;   oDoc.DocumentInfo.AddProperty(&quot;Repository-UUID&quot;,0,&quot;Test&quot;)
+UUID = oDoc.DocumentInfo.getPropertyValue(&quot;Repository-UUID&quot;)
+If Len(UUID) &lt; 32 Then
+MsgBox(&quot;No repo-UUID stored in document.&quot;) &apos;Place holder.  Needs bespoke dialogue for repo selection.
+End If
+&apos;msgbox(UUID)
+URL = GetURLfromUUID(UUID)
+   If Len(URL) &lt; 10 Then
+   Msgbox(&quot;Repository &quot; &amp; UUID &amp; &quot; not found in your database.&quot;)
+   Else
+   Msgbox(URL)
+   End IF
+
+End Function
+
+Function GetURLfromUUID(ByVal UUID As String)
+&apos; Function to find URL from UUID
+oConfigData_UserProfile = GetConfigAccess( &quot;/ooo.ext.ooosvn.Configuration/ProductInfo/Repositories&quot;, False )
+&apos;
+	mKeys() = oConfigData_UserProfile.ElementNames
+	
+	For I = LBound(mKeys()) To UBound(mKeys())
+		sKey = mKeys(I)
+		Repo = oConfigData_UserProfile.getByname(sKey)
+		With Repo
+			sUUID = .UUID 
+			sURL = .URL
+			If sUUID = UUID Then
+			GetURLfromUUID = sURL
+			End If
+		End With 
+	Next I
+
+End Function
+
+Sub ShowUserProfile()
+   &apos;oConfigData_UserProfile = GetConfigAccess( &quot;/org.openoffice.UserProfile/Data&quot;, False )
+   oConfigData_UserProfile = GetConfigAccess( &quot;/ooo.ext.ooosvn.Configuration/ProductInfo/Repositories&quot;, False )
+   &apos;oConfigData_UserProfile = GetConfigAccess( &quot;/ooo.ext.ooosvn.Configuration/Repositories&quot;, False )
+   
+   &apos;cCR = Chr(13)
+   MsgBox      &quot;Country: &quot; + oConfigData_UserProfile.t1.URL
+End Sub
+
+Sub ChangeUserProfile()
+   &apos;oConfigData_UserProfile = GetConfigAccess( &quot;/org.openoffice.UserProfile/Data&quot;, True, True, False )
+   oConfigData_UserProfile = GetConfigAccess( &quot;/ooo.ext.ooosvn.Configuration/ProductInfo&quot;, True, True, False )
+   
+   &apos; Change the user&apos;s country.
+   &apos;oConfigData_UserProfile.c = &quot;United States of America&quot;
+   oConfigData_UserProfile.ProductName = &quot;OOoSVN&quot;
+   
+   &apos; You must quit and re-launch the office to see the changes take effect.
+   oConfigData_UserProfile.commitChanges()
+   
+End Sub
+
+Function GetConfigAccess( ByVal cNodePath As String,_
+                     ByVal bWriteAccess As Boolean,_
+                     Optional bEnableSync,_
+                     Optional bLazyWrite ) As Object
+   If IsMissing( bEnableSync ) Then
+      bEnableSync = True
+   EndIf
+   If IsMissing( bLazyWrite ) Then
+      bLazyWrite = False
+   EndIf
+
+&apos;   If bWriteAccess  And  bEnableSync Then
+      oConfigProvider = GetProcessServiceManager().createInstanceWithArguments(_
+                     &quot;com.sun.star.configuration.ConfigurationProvider&quot;,_
+                     Array( MakePropertyValue( &quot;enableasync&quot;, bEnableSync ) ) )
+&apos;   Else
+&apos;      oConfigProvider = createUnoService( &quot;com.sun.star.configuration.ConfigurationProvider&quot; )
+&apos;   EndIf
+   
+   If bWriteAccess Then
+      cServiceName = &quot;com.sun.star.configuration.ConfigurationUpdateAccess&quot;
+   Else
+      cServiceName = &quot;com.sun.star.configuration.ConfigurationAccess&quot;
+   EndIf
+   
+   oConfigAccess = oConfigProvider.createInstanceWithArguments( cServiceName,_
+      Array( MakePropertyValue( &quot;nodepath&quot;, cNodePath ),_
+            MakePropertyValue( &quot;lazywrite&quot;, bLazyWrite ) ) )
+   
+   GetConfigAccess = oConfigAccess
+End Function
+
+
+Function MakePropertyValue( Optional cName As String, Optional uValue ) As com.sun.star.beans.PropertyValue
+   oPropertyValue = createUnoStruct( &quot;com.sun.star.beans.PropertyValue&quot; )
+   If Not IsMissing( cName ) Then
+      oPropertyValue.Name = cName
+   EndIf
+   If Not IsMissing( uValue ) Then
+      oPropertyValue.Value = uValue
+   EndIf
+   MakePropertyValue() = oPropertyValue
+End Function
+
+&apos;#################
+&apos;Const BASE_KEY As String = &quot;/ooo.ext.BasicAddonBuilder.Configuration/&quot;
+Const BASE_KEY As String = &quot;/ooo.ext.ooosvn.Configuration/&quot;
+
+&apos;__________________________________________________________________________________________________________
+Function GetAppName() As String
+Dim oRegKey As Object
+	oRegKey = GetRegistryKeyContent( BASE_KEY &amp; &quot;ProductInfo&quot; )
+	
+	GetAppName = oRegKey.ProductName
+	msgbox(GetAppName)
+End Function
+
+&apos;################
+
+Sub ExistsMetadata()
+
+   oDoc = thisComponent
+   oInfo = oDoc.DocumentInfo()
+   if oInfo.getPropertySetInfo().hasPropertyByName(&quot;Info 2&quot;) then
+      print &quot;Exists.&quot;
+   Else
+      print &quot;Doesn&apos;t exist.&quot;
+   End if
+
+End Sub
+
+Function getMyPropertyAttributes(oInfo,myName)
+
+   aProps() = oInfo.getPropertySetInfo.getProperties()
+   for i = uBound(aProps()) to 0 step -1
+      prop = aProps(i)
+      if prop.Name = myName then exit for
+   next
+   if i &gt; -1 then getMyPropertyAttributes = prop.Attributes
+end function
+
+Function setMyPropertyAttributes(oInfo,myName,iAttribute)
+
+   aProps() = oInfo.getPropertySetInfo.getProperties()
+   for i = uBound(aProps()) to 0 step -1
+      prop = aProps(i)
+      if prop.Name = myName then exit for
+   next
+   if i &gt; -1 then
+      &apos;RemoveMetadata(myName)
+      &apos;NewMetadata(myName,iAttribute)
+      prop.Attributes = iAttribute
+      setMyPropertyAttributes = prop.Attributes
+   End if
+End Function
+
+Sub CallSetMyPropertyAttributes()
+
+   oDoc = thisComponent
+   oInfo = oDoc.DocumentInfo()
+  &apos; myName = &quot;test&quot;
+&apos;   oDoc.DocumentInfo.AddProperty(&quot;Repository-UUID&quot;,0,&quot;test&quot;)
+   if oInfo.getPropertySetInfo().hasPropertyByName(&quot;Repository-UUID&quot;) then
+      print &quot;Exists.&quot;
+      oDoc.DocumentInfo.setPropertyValue(&quot;Repository-UUID&quot;, &quot;2abb7df7-5d29-0410-912f-aa4066f74452&quot;)
+      msgbox getMyPropertyAttributes(oInfo,myName),0,&quot;ATTRIBUTES of &quot;&amp; myName
+
+   Else
+   oDoc.DocumentInfo.AddProperty(&quot;Repository-UUID&quot;,0,&quot;2abb7df7-5d29-0410-912f-aa4066f74452&quot;)
+   oDoc.DocumentInfo.setPropertyValue(&quot;Repository-UUID&quot;, &quot;2abb7df7-5d29-0410-912f-aa4066f74452&quot;)
+      msgbox getMyPropertyAttributes(oInfo,myName),0,&quot;ATTRIBUTES of &quot;&amp; myName
+
+   End if
+
+End Sub
+
+&apos; #######################
+&apos; Add a node
+&apos; #########################
+Function AddConfigNode( xAccess as Variant, sName as String, optional bForce as Boolean)
+   
+   If IsMissing( bEnableSync ) Then
+      bEnableSync = False
+   EndIf
+   
+   if xAccess.supportsService(&quot;com.sun.star.configuration.ConfigurationUpdateAccess&quot;) AND NOT isEmpty(sName) then
+      
+      if NOT (xAccess.hasByName(sName) AND bForce) then
+         oNewNode = xAccess.createInstance()
+         xAccess.insertByName(sName, oNewNode)
+      
+         AddConfigNode() = oNewNode
+      end if
+   end if
+   
+End Function
+
+Function AddConfigNodeTest
+oConfigAccess = GetConfigAccess( &quot;/ooo.ext.ooosvn.Configuration/ProductInfo&quot;, true )
+&apos;oConfigAccess = GetConfigAccess( &quot;/nom.DannyBrewer.Example.DannyExample/DannysConfig/Settings&quot;, true )
+
+oInsertedNode = AddConfigNode(oConfigAccess, &quot;my.newSetting&quot;)
+oInsertedNode.Setting = &quot;New Setting&quot;
+&apos;oConfigAccess = GetConfigAccess( &quot;/ooo.ext.ooosvn.Configuration/ProductInfo&quot;, True )
+
+&apos;oInsertedNode = AddConfigNode(oConfigAccess, &quot;my.newSetting&quot;)
+&apos;oInsertedNode.Setting = &quot;New Setting&quot;
+End Function
+
+Function AddTest
+oConfigAccess = GetConfigAccess( &quot;/ooo.ext.ooosvn.Configuration/ProductInfo&quot;, True, True, True )
+
+
+oElement = oConfigAccess.getByName( &quot;Repositories&quot; ) 
+
+   If oElement.hasByName( &quot;t3&quot; ) Then
+      MsgBox( &quot;That repo exists.&quot; )
+      Exit Function
+   EndIf 
+
+oNewNode = oConfigAccess.createInstance()
+
+oConfigAccess.insertByName(&quot;newsetting&quot;, oNewNode)
+oConfigAccess.commitChanges() 
+
+End Function
+</script:module>

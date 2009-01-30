@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Zip" script:language="StarBasic">REM  *****  BASIC  *****
+Option Explicit
+
+Sub testZip()
+ &apos; Some ZIP stuff for testing
+ 
+  Dim sMyDir As String
+  sMyDir = &quot;/home/tom/&quot;
+  REM #################################################
+  REM zip&apos;ing example
+ 
+  Dim sFileToZipUrl As String
+  sFileToZipUrl = ConvertToUrl( sMyDir &amp; &quot;test.txt&quot; )
+
+  Dim sZipPackageUrl As String
+&apos;  sZipPackageUrl = ConvertToUrl( sMyDir &amp; &quot;test.odt&quot; )
+  sZipPackageUrl = ConvertToUrl( sMyDir &amp; &quot;myZipArchive.zip&quot; )
+
+  Dim bRemoveFile As Boolean
+  bRemoveFile = FALSE  &apos;remove the source file when done?
+ 
+  Zip( sZipPackageUrl, sFileToZipUrl, bRemoveFile )
+
+  REM #################################################
+  REM unzip&apos;ing example
+ 
+  sZipPackageUrl = ConvertToUrl( sMyDir &amp; &quot;test.odt&quot; )
+
+  Dim sPkgSourceFile As String, sDestination As String
+
+  sPkgSourceFile = &quot;Thumbnails/thumbnail.png&quot;
+  sDestination = sMyDir &amp; sPkgSourceFile
+
+  UnZip( sZipPackageUrl, sPkgSourceFile, sDestination )
+
+  sPkgSourceFile = &quot;settings.xml&quot;
+  sDestination = sMyDir &amp; sPkgSourceFile
+
+  UnZip( sZipPackageUrl, sPkgSourceFile, sDestination )
+  REM #################################################
+
+End Sub
+
+REM ###################################################
+
+Sub Zip( sZipPackageUrl As String, sFileToZipUrl As String, Optional bRemoveFile As Boolean )
+
+  If isMissing( bRemoveFile ) Then bRemove = FALSE
+ 
+  Dim xSimpleFileAccess As Variant
+  xSimpleFileAccess = createUnoService( &quot;com.sun.star.ucb.SimpleFileAccess&quot; )
+
+  Dim xInputStream As Variant
+  xInputStream = xSimpleFileAccess.OpenFileRead( sFileToZipUrl )
+
+  Dim oZipPackage As Variant
+  oZipPackage = createUnoService( &quot;com.sun.star.packages.Package&quot; )
+  oZipPackage.initialize( Array( sZipPackageUrl ) )
+   
+  Dim oZipPackageStream As Variant
+  oZipPackageStream = oZipPackage.createInstance()
+  oZipPackageStream.setInputStream( xInputStream )
+
+  Dim oZipPackageFolder As Variant
+  oZipPackageFolder = oZipPackage.getByHierarchicalName( &quot;&quot; )
+ 
+  Dim sDestName As String
+  sDestName = fnUrlParser( sFileToZipUrl ).Name &apos;this is the basename of the source url
+   
+  If oZipPackageFolder.hasByName( sDestName ) Then
+    oZipPackageFolder.replaceByName( sDestName, oZipPackageStream )
+  Else
+    oZipPackageFolder.insertByName( sDestName, oZipPackageStream )
+  End If
+
+  oZipPackage.commitChanges()
+
+  If bRemoveFile Then Kill sFileToZipUrl
+
+End Sub
+
+REM ###################################################
+
+Sub UnZip( sZipPackageUrl As String, sPkgSourceFile As String, sDestFile As String )   
+
+  Dim oZipPackage As Variant
+  oZipPackage = createUnoService(&quot;com.sun.star.packages.Package&quot;)
+  oZipPackage.initialize( Array( sZipPackageUrl ) )
+
+  Dim oZipPackageStream As Variant
+  oZipPackageStream = oZipPackage.getByHierarchicalName( sPkgSourceFile )
+
+  Dim xInputStream As Variant
+  xInputStream = oZipPackageStream.getInputStream()
+
+  Dim xSimpleFileAccess As Variant
+  xSimpleFileAccess = createUnoService( &quot;com.sun.star.ucb.SimpleFileAccess&quot; )
+
+  xSimpleFileAccess.WriteFile( ConvertToUrl( sDestFile ), xInputStream )
+
+End Sub
+
+REM ###################################################
+
+Function fnUrlParser( sUrl As String ) As com.sun.star.util.URL
+
+  Dim xURLTransformer As Variant
+  Dim aUrl As New com.sun.star.util.URL
+ 
+  xURLTransformer = CreateUnoService( &quot;com.sun.star.util.URLTransformer&quot; )
+  aUrl.Complete = sUrl
+  xURLTransformer.parseStrict( aUrl )
+
+  fnUrlParser = aUrl
+ 
+End Function
+
+REM ###################################################
+</script:module>
