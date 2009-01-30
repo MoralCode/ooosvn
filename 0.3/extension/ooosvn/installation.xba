@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="installation" script:language="StarBasic">Function CreateWorkingDir
+&apos;Creates ~/.ooosvn/ and home repository
+
+   WorkingDir = getWorkingDir
+
+&apos; Create the home repository
+&apos;   Shell(&quot;bash -c &quot; + cQuote + &quot;svnadmin create --fs-type fsfs&quot; &amp; WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote , &quot;&quot;,6,true)
+   ret = Shell(&quot;svnadmin create --fs-type fsfs&quot; , 6, WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;,true)
+If ret &lt;&gt; 0 then 
+		CreateSVN = false
+		&apos;Error Log window
+		&apos;OperationLog(&quot;Failed to create repository&quot;)
+		
+		MsgBox(&quot;Failed to create repository.&quot;,48,&quot;Error&quot;)
+		end if
+
+   If NOT FileExists(WorkingDir) Then
+   
+   	&apos;Error Log window
+			iNumber = Freefile
+	aFile = WorkingDir &amp; &quot;/operation.log&quot;
+Open aFile For Input As iNumber
+While not eof(iNumber)
+Line Input #iNumber, sLine
+If sLine &lt;&gt;&quot;&quot; then
+sMsg = sMsg &amp; sLine &amp; chr(13)
+end if
+wend
+Close #iNumber
+
+	txtLog.Text = sMsg
+	oDlgLog.Title = &quot;Failed to create working directory&quot;
+		oStatus.end()
+	oDlgLog.execute
+   
+     &apos;MsgBox(&quot;Creation of working directory &quot; &amp; WorkingDir &amp; &quot; failed.  Do you have adequate write permissions?&quot;, 16, &quot;Failed&quot;)
+     WorkingDirCreate = 0
+     Exit Function
+   End If
+   
+                  PackagesCheck
+ &apos;              If Packages = false then
+  &apos;             exit function
+              &apos; else
+
+   Installscripts
+
+&apos;end if
+
+end Function
+
+Function InstallScripts
+&apos; Installs/upgrades scripts.  It is strongly recommended that after any upgrade, this macro is run.
+  WorkingDir = getWorkingDir
+
+          If NOT FileExists(WorkingDir) then
+               CreateWorkingDir
+            exit function
+          end if
+          
+  &apos;now open the file..
+oFileAccessService = createUnoService(&quot;com.sun.star.ucb.SimpleFileAccess&quot;)
+&apos;oTextInputStream = createUnoService(&quot;com.sun.star.io.TextInputStream&quot;)
+oTextOutputStream = createUnoService(&quot;com.sun.star.io.TextOutputStream&quot;)
+
+&apos;commit.sh
+If FileExists(WorkingDir &amp; &quot;/commit.sh&quot;) then
+oFileAccessService.kill(WorkingDir &amp; &quot;/commit.sh&quot;)
+end if
+outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/commit.sh&quot;)
+oTextOutputStream.setOutputStream(outStream)
+
+oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+&quot;rm -f $4/$2/trunk/Pictures/*&quot; &amp; chr(10) &amp; _
+&quot;#rm -rf $4/$2/trunk/*&quot; &amp; chr(10) &amp; _
+&quot;unzip -o $1 -d $4/$2/trunk/ -x *.svn*&quot; &amp; chr(10) &amp; _
+&quot;cd $4/$2/trunk/&quot; &amp; chr(10) &amp; _
+&quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
+&quot;pwd&quot; &amp; chr(10) &amp; _
+&quot;svn status | grep ^\! | cut -c8- | xargs svn rm&quot; &amp; chr(10) &amp; _
+&quot;svn status | grep ^\? | cut -c8- | xargs svn add&quot; &amp; chr(10) &amp; _
+&quot;svn commit -m &quot; &amp; chr(34) &amp; &quot;$5&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;cd $4/&quot; &amp; chr(10) &amp; _
+&quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
+&quot;pwd&quot; &amp; chr(10) &amp; _
+&quot;svn checkout $3/$2/&quot; &amp; chr(10) &amp; _
+&quot;#cd $4/$2/trunk/&quot; &amp; chr(10) &amp; _
+&quot;#zip -rDX $1 * -x *.svn*&quot;)
+
+&apos;close all streams
+oTextOutputStream.closeOutput()
+
+&apos;import.sh
+If FileExists(WorkingDir &amp; &quot;/import.sh&quot;) then
+oFileAccessService.kill(WorkingDir &amp; &quot;/import.sh&quot;)
+end if
+outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/import.sh&quot;)
+oTextOutputStream.setOutputStream(outStream)
+
+ oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+&quot;mkdir $4/$2/&quot; &amp; chr(10) &amp; _
+&quot;mkdir $4/$2/temp/&quot; &amp; chr(10) &amp; _
+&quot;unzip -o $1 -d $4/$2/temp/ -x *.svn*&quot; &amp; chr(10) &amp; _
+&quot;cd $4/$2/temp/&quot; &amp; chr(10) &amp; _
+&quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
+&quot;pwd&quot; &amp; chr(10) &amp; _
+&quot;# Get and write repo UUID&quot; &amp; chr(10) &amp; _
+&quot;repo_uuid=`svnlook uuid $4`&quot; &amp; chr(10) &amp; _
+&quot;if grep &quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;Repository-UUID\&quot; &amp; chr(34) &amp; &quot; meta:value-type=\&quot; &amp; chr(34) &amp; &quot;string\&quot; &amp; chr(34) &amp; &quot;&gt;&quot; &amp; chr(34) &amp; &quot; meta.xml&quot; &amp; chr(10) &amp; _
+&quot;then&quot; &amp; chr(10) &amp; _
+&quot;echo old repo found&quot; &amp; chr(10) &amp; _
+&quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;Repository-UUID\&quot; &amp; chr(34) &amp; &quot; meta:value-type=\&quot; &amp; chr(34) &amp; &quot;string\&quot; &amp; chr(34) &amp; &quot;&gt;.*&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; &quot;&quot; &amp; chr(10) &amp; _
+&quot;echo $txtold&quot; &amp; chr(10) &amp; _
+&quot;txtnew=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;Repository-UUID\&quot; &amp; chr(34) &amp; &quot; meta:value-type=\&quot; &amp; chr(34) &amp; &quot;string\&quot; &amp; chr(34) &amp; &quot;&gt;$repo_uuid&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; &quot;&quot; &amp; chr(10) &amp; _
+&quot;echo $txtnew&quot; &amp; chr(10) &amp; _
+&quot;sed s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/g meta.xml &gt; meta2.xml&quot; &amp; chr(10) &amp; _
+&quot;else&quot; &amp; chr(10) &amp; _
+&quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;\/office:meta&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;#echo $txtold&quot; &amp; chr(10) &amp; _
+&quot;txtnew=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;Repository-UUID\&quot; &amp; chr(34) &amp; &quot; meta:value-type=\&quot; &amp; chr(34) &amp; &quot;string\&quot; &amp; chr(34) &amp; &quot;&gt;$repo_uuid&lt;\/meta:user-defined&gt;&lt;\/office:meta&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;#echo $txtnew&quot; &amp; chr(10) &amp; _
+&quot;#echo s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/g&quot; &amp; chr(10) &amp; _
+&quot;sed s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/g meta.xml &gt; meta2.xml&quot; &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
+&quot;mv meta2.xml meta.xml&quot; &amp; chr(10) &amp; _
+&quot;# Import&quot; &amp; chr(10) &amp; _
+&quot;svn import . $3/$2/trunk/ -m &apos;Initial Import&apos;&quot; &amp; chr(10) &amp; _
+&quot;rm -rf $4/$2/temp/&quot; &amp; chr(10) &amp; _
+&quot;cd $4/&quot; &amp; chr(10) &amp; _
+&quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
+&quot;pwd&quot; &amp; chr(10) &amp; _
+&quot;svn checkout $3/$2/&quot; &amp; chr(10) &amp; _
+&quot;cd $4/$2/trunk/&quot; &amp; chr(10) &amp; _
+&quot;pwd=`pwd`&quot; &amp; chr(10) &amp; _
+&quot;if [ $pwd != &quot; &amp; chr(34) &amp; &quot;${4}/${2}/temp&quot; &amp; chr(34) &amp; &quot; ]&quot; &amp; chr(10) &amp; _
+&quot;then&quot; &amp; chr(10) &amp; _
+&quot;echo &quot; &amp; chr(34) &amp; &quot;Error: Working copy is not where it should be!&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;echo &quot; &amp; chr(34) &amp; &quot;Most likely cause is disallowed characters in document filename.&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;exit&quot; &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
+&quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
+&quot;pwd&quot; &amp; chr(10) &amp; _
+&quot;zip -rDX $1 * -x *.svn*&quot;)
+
+&apos;close all streams
+oTextOutputStream.closeOutput()
+
+&apos;listdocuments.sh
+If FileExists(WorkingDir &amp; &quot;/listdocuments.sh&quot;) then
+oFileAccessService.kill(WorkingDir &amp; &quot;/listdocuments.sh&quot;)
+end if
+outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/listdocuments.sh&quot;)
+oTextOutputStream.setOutputStream(outStream)
+
+ oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+&quot;mkdir $1/documentlist/&quot; &amp; chr(10) &amp; _
+&quot;for document in `find $1 -maxdepth 2 -mindepth 2 -iname trunk | cut -d&apos;/&apos; -f5`&quot; &amp; chr(10) &amp; _
+&quot;do&quot; &amp; chr(10) &amp; _
+&quot;svn &gt;&gt; $1/documentlist/$document&quot; &amp; chr(10) &amp; _
+&quot;#svn &gt;&gt; $1/documentlist/log.txt&quot; &amp; chr(10) &amp; _
+&quot;done&quot;)
+
+&apos;close all streams
+oTextOutputStream.closeOutput()
+
+&apos;listversions.sh
+If FileExists(WorkingDir &amp; &quot;/listversions.sh&quot;) then
+oFileAccessService.kill(WorkingDir &amp; &quot;/listversions.sh&quot;)
+end if
+outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/listversions.sh&quot;)
+oTextOutputStream.setOutputStream(outStream)
+
+ oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+&quot;mkdir $4/$2/versions/&quot; &amp; chr(10) &amp; _
+&quot;for version in `svn log -q $3/$2 | grep r | cut -c2- | cut -d&apos; &apos; -f1`&quot; &amp; chr(10) &amp; _
+&quot;do&quot; &amp; chr(10) &amp; _
+&quot;svn &gt;&gt; $4/$2/versions/$version.version&quot; &amp; chr(10) &amp; _
+&quot;#svn &gt;&gt; $4/$2/versions/log.txt&quot; &amp; chr(10) &amp; _
+&quot;done&quot;)
+
+&apos;close all streams
+oTextOutputStream.closeOutput()
+
+&apos;revert.sh
+If FileExists(WorkingDir &amp; &quot;/revert.sh&quot;) then
+oFileAccessService.kill(WorkingDir &amp; &quot;/revert.sh&quot;)
+end if
+outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/revert.sh&quot;)
+oTextOutputStream.setOutputStream(outStream)
+
+ oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+&quot;cd $4/&quot; &amp; chr(10) &amp; _
+&quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
+&quot;pwd&quot; &amp; chr(10) &amp; _
+&quot;rm -rf $4/$2/trunk&quot; &amp; chr(10) &amp; _
+&quot;svn checkout -r$5 $3/$2/&quot; &amp; chr(10) &amp; _
+&quot;cd $4/$2/trunk/&quot; &amp; chr(10) &amp; _
+&quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
+&quot;pwd&quot; &amp; chr(10) &amp; _
+&quot;zip -rDX $1 * -x *.svn*&quot;)
+
+&apos;close all streams
+oTextOutputStream.closeOutput()
+
+&apos;thumbnails.sh
+If FileExists(WorkingDir &amp; &quot;/thumbnails.sh&quot;) then
+oFileAccessService.kill(WorkingDir &amp; &quot;/thumbnails.sh&quot;)
+end if
+outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/thumbnails.sh&quot;)
+oTextOutputStream.setOutputStream(outStream)
+
+ oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+&quot;for version in `svn log -q $3/$2 | grep r | cut -c2- | cut -d&apos; &apos; -f1`&quot; &amp; chr(10) &amp; _
+&quot;do&quot; &amp; chr(10) &amp; _
+&quot;svn checkout -r$version $3/$2/trunk/Thumbnails/ $4/$2/preview/.$version/&quot; &amp; chr(10) &amp; _
+&quot;mv $4/$2/preview/.$version/thumbnail.png $4/$2/preview/$version.png &gt;&gt; $4/$2/preview/log.txt&quot; &amp; chr(10) &amp; _
+&quot;rm -rf $4/$2/preview/$version/&quot; &amp; chr(10) &amp; _
+&quot;done&quot;)
+
+&apos;close all streams
+oTextOutputStream.closeOutput()
+
+&apos;userguide.sh
+If FileExists(WorkingDir &amp; &quot;/userguide.sh&quot;) then
+oFileAccessService.kill(WorkingDir &amp; &quot;/userguide.sh&quot;)
+end if
+outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/userguide.sh&quot;)
+oTextOutputStream.setOutputStream(outStream)
+
+ oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+&quot;cd $1/&quot; &amp; chr(10) &amp; _
+&quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
+&quot;pwd&quot; &amp; chr(10) &amp; _
+&quot;rm -rf $1/userguide&quot; &amp; chr(10) &amp; _
+&quot;svn checkout $2&quot; &amp; chr(10) &amp; _
+&quot;cd $1/userguide&quot; &amp; chr(10) &amp; _
+&quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
+&quot;pwd&quot; &amp; chr(10) &amp; _
+&quot;zip -rDX ../userguide.odt * -x *.svn*&quot;)
+
+&apos;close all streams
+oTextOutputStream.closeOutput()
+
+&apos; test to make sure script creation worked
+If Not FileExists(WorkingDir &amp; &quot;/commit.sh&quot;) then
+
+MsgBox(&quot;Failed to create scripts in&quot; &amp; WorkingDir,48,&quot;Error&quot;)
+
+end if
+
+end Function
+
+function CreateSVN() as integer
+	CreateSVN = True
+	
+	&apos; If no working directory, it needs to be created for a repository to exist.
+	WorkingDir = getWorkingDir	
+	If NOT FileExists(WorkingDir) Then
+       InstallScripts
+     Exit Function
+   End If
+	
+	&apos;&apos; need to make sure we have SVN, and get path to svn and svnadmin executables
+	ret = Shell(&quot;svn --help&quot;, 6,&quot;&quot;,true)
+	if ret &lt;&gt; 0 then
+		CreateSVN = false
+		MsgBox(&quot;Could not find svn. Please install Subversion first.&quot; &amp; chr$(13) &amp; &quot;See http://subversion.tigris.org&quot;,48,&quot;Error&quot;)
+		exit function
+	end if
+		
+ 	sSVNURL = PickFolder(sGetHomeURL(), &quot;Select a directory for the new repository&quot;, &quot;&quot;)
+	ret = Shell(&quot;svnadmin create --fs-type fsfs&quot;, 6, sSVNURL,true)
+	if ret &lt;&gt; 0 then
+		CreateSVN = false
+		MsgBox(&quot;Failed to create repository.&quot;,48,&quot;Error&quot;)
+		exit function
+	end if
+	
+&apos;	ConnectToSVN(sSVNURL)
+
+If NOT FileExists(sSVNURL &amp; &quot;/README.txt&quot;) then
+msgbox (&quot;Repository creation failed.&quot; &amp; repo, 16, &quot;Error&quot;)
+exit function
+end if
+
+uuid = shell(&quot;svn info &quot; &amp; converttourl(sSVNURL) &amp; &quot;| grep UUID | cut -c18-&quot;)
+msgbox(sSVNURL)
+msgbox(uuid)
+
+end function
+
+Function FirstRunCheck
+&apos; Function to test if it is the first run or not.  If it is, the wiward runs.
+
+	WorkingDir = getWorkingDir	
+	
+If NOT FileExists(WorkingDir) then
+               MsgBox(&quot;This appears to be the first time you have run OOoSVN.&quot; &amp; chr(10) &amp; chr(10) &amp; _
+               &quot;There are several configuration steps we must do:&quot; &amp; chr(10) &amp; _
+               &quot;1. Create a working directory, &quot; &amp; WorkingDir &amp; &quot;, which will be used for file operations.&quot; &amp; chr(10) &amp; _
+               &quot;2. Check you have the required packages&quot; &amp; chr(10) &amp; _
+               &quot;3. Configure a repository for documents to be checked into.&quot; &amp; chr(10) &amp; chr(10) &amp; _
+               &quot;Press OK to begin.&quot;,64, &quot;First run wizard&quot;)
+
+               InstallScripts
+               MsgBox(&quot;Configuration complete.  OOoSVN will now continue with the function you requested.&quot;, 64, &quot;Complete&quot;)
+          end if
+End Function
+
+Function PackagesCheck
+&apos; Installation test to see if we&apos;ve got SVN installed
+  Dim lSVN as Single
+  packages = true
+
+    WorkingDir = getWorkingDir
+
+cQuote = Chr( 34 )
+
+	Shell( &quot;bash -c &quot; + cQuote + &quot;svn --version -q &gt; &quot; &amp; WorkingDir &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
+		
+	iNumber = Freefile
+	aFile = WorkingDir &amp; &quot;/test.txt&quot;
+Open aFile For Input As iNumber
+While not eof(iNumber)
+Line Input #iNumber, sLine
+If sLine &lt;&gt;&quot;&quot; then
+sSVN = sSVN &amp; sLine &amp; chr(13)
+end if
+wend
+Close #iNumber
+lSVN=left(sSVN,3)
+if lSVN &lt; 1.3 then
+msgbox(&quot;OOoSVN is supported for use with SVN &gt;= 1.3.&quot; &amp; chr(13) &amp; &quot;You either have too early a version or don&apos;t have it installed.&quot; &amp; chr(13) &amp; chr(13) &amp; &quot;Using the latest stable version of SVN available is recommended. Please check your distros package manager.&quot; &amp; chr(10) &amp; &quot;Setup will continue but OOoSVN may not function correctly.&quot;, 16, &quot;SVN error&quot;)
+packages=false
+else
+&apos;Msgbox (&quot;SVN version: &quot; &amp; sSVN, 64, &quot;Checking package versions&quot;)
+end if
+
+End Function
+</script:module>

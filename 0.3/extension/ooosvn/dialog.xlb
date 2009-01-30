@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE library:library PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "library.dtd">
+<library:library xmlns:library="http://openoffice.org/2000/library" library:name="ooosvn" library:readonly="false" library:passwordprotected="false">
+ <library:element library:name="DlgLog"/>
+ <library:element library:name="DlgRepoSelect"/>
+ <library:element library:name="DlgRepoManager"/>
+ <library:element library:name="DlgHelp"/>
+ <library:element library:name="DlgRepoAdd"/>
+ <library:element library:name="DlgRepoEdit"/>
+ <library:element library:name="DlgRepoSelect2"/>
+ <library:element library:name="DlgImportUUID"/>
+</library:library>
