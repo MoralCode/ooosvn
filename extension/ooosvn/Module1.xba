@@ -382,6 +382,12 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
 oStatus.end()
    &apos; The dialogue
    
+   &apos; If no versions directory exists, there must be a problem.
+If Not FileExists (converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; documentname &amp; &quot;/versions/&quot;) Then
+Msgbox(&quot;Version files do not exist in the repository.  Operation cancelled.&quot;)
+Exit Sub
+End If
+   
    Dim sFileURL as String
 
 &apos; Set the Dialog Arguments to a Template for FILESAVE
@@ -507,6 +513,12 @@ oStatus.end()
    Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/listversions.sh &quot; &amp; documentname &amp; &quot; &quot; &amp; documentname &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir + cQuote, &quot;&quot;,6,true)
 oStatus.end()
 
+&apos; If no versions directory exists, there must be a problem.
+If Not FileExists (converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; documentname &amp; &quot;/versions/&quot;) Then
+Msgbox(&quot;Version files do not exist in the repository.  Operation cancelled.&quot;)
+Exit Sub
+End If
+
    &apos; The version dialogue
 
 &apos; Set the Dialog Arguments to a Template for FILEOPEN
@@ -562,7 +574,7 @@ oStatus.end()
 
    If oFilePicker.execute() Then
       sFiles = oFilePicker.getDirectory()
-      outputURL = mid(sFiles, 8) &amp; documentname
+      outputURL = mid(sFiles, 8) &amp; &quot;/&quot; &amp; documentname
       else
 	exit sub
 
@@ -828,8 +840,17 @@ End If
 		txtLog = .getControl(&quot;txtAbout&quot;)
 	End With
 	
-&apos; Test to see if file of same name is already under change control
+	docuUUID = GetDocumentUUID
+	
+&apos; Test to see if file of same name is already under change control, also docu-UUID compliant
 	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
+	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then
+		MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable version management.&quot;, 16, &quot;Error&quot;)
+		Exit Sub
+	End If
+	End If
+	
+	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then
 		MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable version management.&quot;, 16, &quot;Error&quot;)
 		Exit Sub
 	End If
