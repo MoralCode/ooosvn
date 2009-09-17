@@ -73,6 +73,8 @@ outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/commit.sh&q
 oTextOutputStream.setOutputStream(outStream)
 
 oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+&quot;#Script to commit changes to an updated document into SVN.&quot; &amp; chr(10) &amp; _
+&quot;#Usage: commit.sh [document path] [document filename] [full repository URL] [working directory path] [commit comment]&quot; &amp; chr(10) &amp; _
 &quot;rm -f $4/$2/trunk/Pictures/*&quot; &amp; chr(10) &amp; _
 &quot;#rm -rf $4/$2/trunk/*&quot; &amp; chr(10) &amp; _
 &quot;unzip -o $1 -d $4/$2/trunk/ -x *.svn*&quot; &amp; chr(10) &amp; _
@@ -100,6 +102,8 @@ outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/import.sh&q
 oTextOutputStream.setOutputStream(outStream)
 
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+&quot;#Script to carry out initial import of document in SVN.&quot; &amp; chr(10) &amp; _
+&quot;#Usage: import.sh [document path] [document filename] [full repository URL] [working directory path] [Document UUID to assign] [Optional Document UUID of parent document to make child document]&quot; &amp; chr(10) &amp; _
 &quot;mkdir $4/$2/&quot; &amp; chr(10) &amp; _
 &quot;mkdir $4/$2/temp/&quot; &amp; chr(10) &amp; _
 &quot;unzip -o $1 -d $4/$2/temp/ -x *.svn*&quot; &amp; chr(10) &amp; _
@@ -155,6 +159,8 @@ outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/listdocumen
 oTextOutputStream.setOutputStream(outStream)
 
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+&quot;#Script to list all documents within a working dir&quot; &amp; chr(10) &amp; _
+&quot;#Usage: listdocuments.sh [working directory path]&quot; &amp; chr(10) &amp; _
 &quot;mkdir $1/documentlist/&quot; &amp; chr(10) &amp; _
 &quot;for document in `find $1 -maxdepth 2 -mindepth 2 -iname trunk | cut -d&apos;/&apos; -f5`&quot; &amp; chr(10) &amp; _
 &quot;do&quot; &amp; chr(10) &amp; _
@@ -173,6 +179,8 @@ outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/listversion
 oTextOutputStream.setOutputStream(outStream)
 
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+&quot;#Script to list all revisions of a document in SVN&quot; &amp; chr(10) &amp; _
+&quot;#Usage: listversions.sh [document path] [document file name] [repository URL] [Working directory path]&quot; &amp; chr(10) &amp; _
 &quot;mkdir $4/$2/versions/&quot; &amp; chr(10) &amp; _
 &quot;for version in `svn log -q $3/$2 | grep r | cut -c2- | cut -d&apos; &apos; -f1`&quot; &amp; chr(10) &amp; _
 &quot;do&quot; &amp; chr(10) &amp; _
@@ -191,6 +199,8 @@ outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/revert.sh&q
 oTextOutputStream.setOutputStream(outStream)
 
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+&quot;#Script to revert document to another version&quot; &amp; chr(10) &amp; _
+&quot;#Usage: revert.sh [document path] [document filename] [repository URL] [Working directory path] [version number in SVN]&quot; &amp; chr(10) &amp; _
 &quot;cd $4/&quot; &amp; chr(10) &amp; _
 &quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
@@ -212,6 +222,8 @@ outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/thumbnails.
 oTextOutputStream.setOutputStream(outStream)
 
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+&quot;#Script to generate version thumbnails for a document&quot; &amp; chr(10) &amp; _
+&quot;#Usage: thumbnails.sh [document path] [document file name] [repository URL] [Working directory path]&quot; &amp; chr(10) &amp; _
 &quot;for version in `svn log -q $3/$2 | grep r | cut -c2- | cut -d&apos; &apos; -f1`&quot; &amp; chr(10) &amp; _
 &quot;do&quot; &amp; chr(10) &amp; _
 &quot;svn checkout -r$version $3/$2/trunk/Thumbnails/ $4/$2/preview/.$version/&quot; &amp; chr(10) &amp; _
@@ -230,6 +242,8 @@ outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/userguide.s
 oTextOutputStream.setOutputStream(outStream)
 
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+&quot;#Script toload user guide from development SVN repository&quot; &amp; chr(10) &amp; _
+&quot;#Usage: userguide.sh [Working directory path] [repostitory URL that the userguide resides in]&quot; &amp; chr(10) &amp; _
 &quot;cd $1/&quot; &amp; chr(10) &amp; _
 &quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _

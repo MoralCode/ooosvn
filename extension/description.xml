@@ -4,7 +4,7 @@
  xmlns:dep="http://openoffice.org/extensions/description/2006"
  xmlns:xlink="http://www.w3.org/1999/xlink">
 	<identifier value="vnd.basicaddonbuilder.ooosvn"/>
-	<version value="0.3.11"/>
+	<version value="0.3.110"/>
 	<!-- <dependencies>
 		<OpenOffice.org-minimal-version value="2.1" dep:name="OpenOffice.org 2.1"/>
 	</dependencies> -->
