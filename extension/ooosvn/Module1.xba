@@ -33,7 +33,7 @@ LoadTools
     sDocURL2 = mid(sDocURL, 8)
     repo = getRepo
 
-&apos;no longer needed duee to firstruncheck?
+&apos;no longer needed due to firstruncheck?
 	If NOT FileExists(repo &amp; &quot;/README.txt&quot;) then
                 msgbox (&quot;Repository not found. Create it using:&quot; &amp; chr(13) &amp; &quot;svnadmin create --fs-type fsfs &quot; &amp; mid(repo, 8) &amp; chr(13) &amp; &quot;Then all scripts should be placed in &quot; &amp; WorkingDir, 16, &quot;Repository Error&quot;)
             exit sub
@@ -58,7 +58,7 @@ End If
 &apos; Start of docuUUID processing
 
 &apos; try to read Document-UUID from document
-docuUUID = getUUID
+docuUUID = GetDocumentUUID
 
 If docuUUID &lt;&gt; &quot;&quot; Then
 
@@ -162,11 +162,25 @@ Sub CommitSVN()
 
   End If
   
+  docuUUID = GetDocumentUUID
+  
+If docuUUID = &quot;&quot; then &apos;follow 0.3 path
+  
 	&apos; Test to see if file of same name is already under change control
-	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
-		MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Please import the file to change control to be able to commit changes.&quot;, 16, &quot;Commit error&quot;)
-		Exit Sub
-	End If
+		If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
+			MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Please import the file to change control to be able to commit changes.&quot;, 16, &quot;Commit error&quot;)
+			Exit Sub
+		End If
+	CommitDir = FileNameoutofPath(sDocURL, &quot;/&quot;) &apos; Set the directory for import to the filename
+	
+else &apos; follow 0.4 path
+	&apos; Test to see if file of same docUUID is already under change control
+		If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then
+			MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Please import the file to change control to be able to commit changes.&quot;, 16, &quot;Commit error&quot;)
+			Exit Sub
+		End If
+	CommitDir = docuUUID &apos;Set the directory for import into SVN tree to docuUUID.
+End If
 	
 	Comment = &quot;Manual-commit&quot;
 
@@ -179,7 +193,7 @@ cQuote = Chr( 34 )
    oStatus = oDocFrame.createStatusIndicator()
    
    oStatus.start( &quot;Committing &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
-	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/commit.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; Comment &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote)
+	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/commit.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; CommitDir &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; Comment &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote)
 oStatus.end()	
 end sub
 
@@ -605,105 +619,6 @@ If FileExists(outputfile) then
    	OperationLog(&quot;Failed to recover document! Log follows...&quot;)
 end if
 End sub
-
-
-Function validatefiletype(sDocURL As String)
-&apos; Function to check that the active document is OOoSVN compatible
-
-oSFA       = createUNOService (&quot;com.sun.star.ucb.SimpleFileAccess&quot;)
-oInpStream = oSFA.openFileRead(sDocURL)
-
-Dim aProps(0) as new  com.sun.star.beans.PropertyValue
-aProps(0).Name = &quot;InputStream&quot;
-aProps(0).Value = oInpStream
-
-oTD = createUnoService(&quot;com.sun.star.document.TypeDetection&quot;)
-
-bDeepDetection: true
-sType = oTD.queryTypeByDescriptor(aProps(), true)
-
-oInpStream.closeInput()
-
-if sType &lt;&gt; &quot;writer8&quot; then
-if sType &lt;&gt; &quot;writer8_template&quot; then
-if sType &lt;&gt; &quot;writer_StarOffice_XML_Writer&quot; then
-if sType &lt;&gt; &quot;writerglobal8&quot; then
-if sType &lt;&gt; &quot;calc8&quot; then
-if sType &lt;&gt; &quot;calc8_template&quot; then
-if sType &lt;&gt; &quot;calc_StarOffice_XML_Calc&quot; then
-if sType &lt;&gt; &quot;impress8&quot; then
-if sType &lt;&gt; &quot;impress8_template&quot; then
-if sType &lt;&gt; &quot;impress_StarOffice_XML_Impress&quot; then
-if sType &lt;&gt; &quot;draw8&quot; then
-if sType &lt;&gt; &quot;draw8_template&quot; then
-if sType &lt;&gt; &quot;draw_StarOffice_XML_Draw&quot; then
-if sType &lt;&gt; &quot;math8&quot; then
-if sType &lt;&gt; &quot;math_StarOffice_XML_Math&quot; then
-if sType &lt;&gt; &quot;StarBase&quot; then
-msgbox (sDocURL &amp; &quot; is of file type &quot; &amp; sType &amp; &quot; and is not supported by OOoSVN.  Save in OpenDocument format if you wish to put your work under change control.&quot;, 16, &quot;Unsupported file type&quot;)
-validatefiletype=&quot;false&quot;
-end if
-end if
-end if
-end if
-end if
-end if
-end if
-end if
-end if
-end if
-end if
-end if
-end if
-end if
-end if
-end if
-
-end function 
-
-Function validatefiletypeODF(sDocURL As String)
-&apos; Function to check that a file is ODF
-
-oSFA       = createUNOService (&quot;com.sun.star.ucb.SimpleFileAccess&quot;)
-oInpStream = oSFA.openFileRead(sDocURL)
-
-Dim aProps(0) as new  com.sun.star.beans.PropertyValue
-aProps(0).Name = &quot;InputStream&quot;
-aProps(0).Value = oInpStream
-
-oTD = createUnoService(&quot;com.sun.star.document.TypeDetection&quot;)
-
-bDeepDetection: true
-sType = oTD.queryTypeByDescriptor(aProps(), true)
-
-oInpStream.closeInput()
-
-if sType &lt;&gt; &quot;writer8&quot; then
-if sType &lt;&gt; &quot;writer8_template&quot; then
-if sType &lt;&gt; &quot;writerglobal8&quot; then
-if sType &lt;&gt; &quot;calc8&quot; then
-if sType &lt;&gt; &quot;calc8_template&quot; then
-if sType &lt;&gt; &quot;impress8&quot; then
-if sType &lt;&gt; &quot;impress8_template&quot; then
-if sType &lt;&gt; &quot;draw8&quot; then
-if sType &lt;&gt; &quot;draw8_template&quot; then
-if sType &lt;&gt; &quot;math8&quot; then
-if sType &lt;&gt; &quot;StarBase&quot; then
-msgbox (sDocURL &amp; &quot; is not an ODF file and does not contain a document Thumbnail.  Operation cancelled.&quot;, 16, &quot;Non-ODF document&quot;)
-validatefiletypeODF=&quot;false&quot;
-end if
-end if
-end if
-end if
-end if
-end if
-end if
-end if
-end if
-end if
-end if
-
-end function 
 
 sub DiffSVN() 
 &apos; Function to allow graphical comparison between two versions of a document

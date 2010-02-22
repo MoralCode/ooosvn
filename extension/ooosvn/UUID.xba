@@ -75,7 +75,7 @@ Dim iVar8 As String
  Randomize
  iVar8 = Hex(( keyBase * Rnd) )
  
- generateUUID = iVar1 &amp; iVar2 &amp; &quot;-&quot; &amp; iVar3 &amp; &quot;-&quot; &amp; iVar4 &amp; &quot;-&quot; &amp; iVar5 &amp; &quot;-&quot; &amp;  iVar6 &amp; iVar7 &amp; iVar8
+ generateUUID = iVar1 &amp; iVar2 &amp; &quot;-&quot; &amp; iVar3 &amp; &quot;-&quot; &amp; iVar4 &amp; &quot;-&quot; &amp; iVar5 &amp; &quot;-&quot; &amp;  iVar6 &amp; iVar7 &amp; iVar8 &apos;strings together all of the hex values
 
 End Function
 
