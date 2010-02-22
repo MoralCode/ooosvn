@@ -89,10 +89,13 @@ if validatefiletype(sDocURL)=&quot;false&quot; then
 end if
 
 &apos; Test to see if file of same name is already under change control
-If FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
-MsgBox( &quot;A file named &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is already under version control.  Please save as a different file name before attempting import.&quot;, 16, &quot;Error&quot;)
-Exit Sub
-End If
+&apos;If FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
+&apos;MsgBox( &quot;A file named &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is already under version control.  Please save as a different file name before attempting import.&quot;, 16, &quot;Error&quot;)
+&apos;Exit Sub
+&apos;End If
+
+docuUUID = generateUUID &apos;put together a 128-bit key as we know this is a new document, otherwise the user wouldn&apos;t have hit Save As!
+parentUUID = getdocumentUUID &apos;If the document currently has a docUUID, make the new document a child of it
          
             cQuote = Chr( 34 )
 &apos;  Status Bar Message
@@ -103,11 +106,11 @@ End If
    
    oStatus.start( &quot;Importing &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
 
-   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; DocuUUID &amp; &quot; &quot; &amp; parentUUID &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
   
    &apos;Test for success
    
-   If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
+   If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then
    
 OperationLog(&quot;Failed importing file to SVN! Log follows...&quot;)
 	exit sub

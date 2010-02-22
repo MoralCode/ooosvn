@@ -6,7 +6,10 @@
    oInfo = oDoc.DocumentInfo()
    sDocURL = oDoc.getURL()
 &apos;   oDoc.DocumentInfo.AddProperty(&quot;Repository-UUID&quot;,0,&quot;Test&quot;)
+If oDoc.DocumentInfo.PropertySetInfo.HasPropertyByName(&quot;Repository-UUID&quot;) Then
 UUID = oDoc.DocumentInfo.getPropertyValue(&quot;Repository-UUID&quot;)
+Else UUID = &quot;&quot;
+End If
 If Len(UUID) &lt; 32 Then
 MsgBox(&quot;No repo-UUID stored in document.&quot;) &apos;Place holder.  Needs bespoke dialogue for repo selection.
 End If
@@ -21,27 +24,39 @@ URL = GetURLfromUUID(UUID)
 End Function
 
 Function GetDocumentUUID
-&apos; A function to find the correct URL from the documents Repo UUID in meta.xml
+&apos; A function to find the documents UUID in meta.xml
    oDoc = thisComponent
    oInfo = oDoc.DocumentInfo()
    sDocURL = oDoc.getURL()
+   If oDoc.DocumentInfo.PropertySetInfo.HasPropertyByName(&quot;Document-UUID&quot;) Then
 GetDocumentUUID = oDoc.DocumentInfo.getPropertyValue(&quot;Document-UUID&quot;)
+Else
+GetDocumentUUID=&quot;&quot;
+End If
 End Function
 
 Function GetParentUUID
-&apos; A function to find the correct URL from the documents Repo UUID in meta.xml
+&apos; A function to find the parent documents UUID in meta.xml
    oDoc = thisComponent
    oInfo = oDoc.DocumentInfo()
    sDocURL = oDoc.getURL()
+      If oDoc.DocumentInfo.PropertySetInfo.HasPropertyByName(&quot;Parent-UUID&quot;) Then
 GetParentUUID = oDoc.DocumentInfo.getPropertyValue(&quot;Parent-UUID&quot;)
+Else
+GetParentUUID=&quot;&quot;
+End If
 End Function
 
 Function GetStoredURL
-&apos; A function to find the correct URL from the documents Repo UUID in meta.xml
+&apos; A function to find a location from meta.xml (unused?)
    oDoc = thisComponent
    oInfo = oDoc.DocumentInfo()
    sDocURL = oDoc.getURL()
+      If oDoc.DocumentInfo.PropertySetInfo.HasPropertyByName(&quot;Doc-URL&quot;) Then
 GetStoredURL = oDoc.DocumentInfo.getPropertyValue(&quot;Doc-URL&quot;)
+Else
+GetStoredURL=&quot;&quot;
+End If
 End Function
 
 Function generateUUID

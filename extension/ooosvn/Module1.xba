@@ -164,23 +164,24 @@ Sub CommitSVN()
   
   docuUUID = GetDocumentUUID
   
-If docuUUID = &quot;&quot; then &apos;follow 0.3 path
-  
-	&apos; Test to see if file of same name is already under change control
-		If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
-			MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Please import the file to change control to be able to commit changes.&quot;, 16, &quot;Commit error&quot;)
-			Exit Sub
-		End If
-	CommitDir = FileNameoutofPath(sDocURL, &quot;/&quot;) &apos; Set the directory for import to the filename
-	
-else &apos; follow 0.4 path
-	&apos; Test to see if file of same docUUID is already under change control
-		If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then
-			MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Please import the file to change control to be able to commit changes.&quot;, 16, &quot;Commit error&quot;)
-			Exit Sub
-		End If
-	CommitDir = docuUUID &apos;Set the directory for import into SVN tree to docuUUID.
+If VerifyDocInSVN(sDocURL) = &quot;0.3&quot; then &apos; in case of old 0.3 document
+
+	CommitDir = FileNameoutofPath(sDocURL, &quot;/&quot;) 
+
 End If
+
+If VerifyDocInSVN(sDocURL) = &quot;0.4&quot; then &apos; in case of 0.4 docuUUID referenced document
+
+	CommitDir = docuUUID
+
+End If
+
+If VerifyDocInSVN(sDocURL) = &quot;false&quot; then &apos;in case document not found in repo
+
+	MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable file commits.&quot;, 16, &quot;Commit Error&quot;)
+	Exit Sub 
+End If
+
 	
 	Comment = &quot;Manual-commit&quot;
 
@@ -214,11 +215,26 @@ LoadTools
     else sDocURL = &quot;[no name]&quot;
 End If
 
-  &apos; Test to see if file of same name is already under change control
-	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
-		MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable statistics.&quot;, 16, &quot;Error&quot;)
-		Exit Sub
-	End If
+docuUUID = GetDocumentUUID
+parentUUID = GetParentUUID
+
+If VerifyDocInSVN(sDocURL) = &quot;0.3&quot; then &apos; in case of old 0.3 document
+
+	CommitDir = FileNameoutofPath(sDocURL, &quot;/&quot;) 
+
+End If
+
+If VerifyDocInSVN(sDocURL) = &quot;0.4&quot; then &apos; in case of 0.4 docuUUID referenced document
+
+	CommitDir = docuUUID
+
+End If
+
+If VerifyDocInSVN(sDocURL) = &quot;false&quot; then &apos;in case document not found in repo
+
+	MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable file commits.&quot;, 16, &quot;Commit Error&quot;)
+	Exit Sub 
+End If
 
 cQuote = Chr( 34 )
 
@@ -229,10 +245,10 @@ cQuote = Chr( 34 )
    oStatus = oDocFrame.createStatusIndicator()
    
    oStatus.start( &quot;Retrieving SVN information for &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;.  Please wait....&quot;, 10 )
-	Shell( &quot;bash -c &quot; + cQuote + &quot;cd &quot; &amp; WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/ &amp;&amp; svn info &gt; &quot; &amp; WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/info.txt&quot; + cQuote, &quot;&quot;,6,true)
+	Shell( &quot;bash -c &quot; + cQuote + &quot;cd &quot; &amp; WorkingDir &amp; &quot;/&quot; &amp; documentDir &amp; &quot;/ &amp;&amp; svn info &gt; &quot; &amp; WorkingDir &amp; &quot;/&quot; &amp; documentDir &amp; &quot;/info.txt&quot; + cQuote, &quot;&quot;,6,true)
 		
 	iNumber = Freefile
-	aFile = WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/info.txt&quot;
+	aFile = WorkingDir &amp; &quot;/&quot; &amp; documentDir &amp; &quot;/info.txt&quot;
 Open aFile For Input As iNumber
 While not eof(iNumber)
 Line Input #iNumber, sLine
@@ -241,6 +257,12 @@ sMsg = sMsg &amp; sLine &amp; chr(13)
 end if
 wend
 Close #iNumber
+if docuUUID &lt;&gt; &quot;&quot; then
+sMsg = sMsg &amp; chr(13) &amp; &quot;Document UUID: &quot; &amp; docuUUID &apos; append a line for docuUUID if it exists
+end if
+if parentUUID &lt;&gt; &quot;&quot; then
+sMsg = sMsg &amp; chr(13) &amp; &quot;Parent Document UUID: &quot; &amp; parentUUID &apos; same for parentUUID
+end if
 oStatus.end()
 Msgbox (sMsg, 64, &quot;SVN info for &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;))
 
@@ -269,17 +291,27 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
     else sDocURL = &quot;[no name]&quot;
   End If
   
-    &apos; Test to see if file of same name is already under change control
-	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
-		MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable version management.&quot;, 16, &quot;Error&quot;)
-		Exit Sub
-	End If
-	
-&apos; Now test we have an ODF file as sx* files do not have thumbnails
+  &apos; Now test we have an ODF file as sx* files do not have thumbnails
 	if validatefiletypeODF(sDocURL)=&quot;false&quot; then
 &apos;ImportSVN = 0
 	exit sub
 end if
+  
+  docuUUID = GetDocumentUUID
+  
+    &apos; Test to see if file of same name is already under change control
+	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then &apos;v0.3 check
+	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then &apos;v0.4 check
+		MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable version management.&quot;, 16, &quot;Error&quot;)
+		Exit Sub
+	
+	Else documentDir = docuUUID
+	
+	End If
+	
+	Else documentDir = FileNameoutofPath(sDocURL, &quot;/&quot;)
+	
+	End If
          
             cQuote = Chr( 34 )
 
@@ -291,7 +323,7 @@ end if
    
    oStatus.start( &quot;Retrieving version thumbnails for &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;.  Please wait....&quot;, 10 )
 
-   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/thumbnails.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir + cQuote, &quot;&quot;, 6, True)
+   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/thumbnails.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; documentDir &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir + cQuote, &quot;&quot;, 6, True)
 
 &apos;	do &apos;Obsolete finish check, could be useful if needed to display the file picker earlier and let all thumbnails load into view over time.
 &apos;	wait 100
@@ -316,7 +348,7 @@ oStatus.end()
 &apos; Pass some arguments to it
    With oFilePicker
            .Initialize( sFilePickerArgs() )
-           .setDisplayDirectory( converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/preview/&quot; )
+           .setDisplayDirectory( converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; documentDir &amp; &quot;/preview/&quot; )
            .setTitle( &quot;Select version to revert to &quot; )
            .appendFilter(&quot;Document Thumbnails&quot;, &quot;*.png&quot; ) 
            
@@ -345,7 +377,7 @@ oStatus.end()
    
    oStatus.start( &quot;Reverting &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to version &quot; &amp; version &amp; &quot;.  Please wait....&quot;, 10 )
 
-	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; documentDir &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
 	
 	&apos; Reload
 	dispatcher.executeDispatch(document, &quot;.uno:Reload&quot;, &quot;&quot;, 0, Array())
