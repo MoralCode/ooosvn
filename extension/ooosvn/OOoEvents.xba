@@ -105,8 +105,10 @@ parentUUID = getdocumentUUID &apos;If the document currently has a docUUID, make
    oStatus = oDocFrame.createStatusIndicator()
    
    oStatus.start( &quot;Importing &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
+   
+command = &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; &quot;&apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; DocuUUID &amp; &quot; &quot; &amp; parentUUID &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
 
-   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; DocuUUID &amp; &quot; &quot; &amp; parentUUID &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+   Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)
   
    &apos;Test for success
    

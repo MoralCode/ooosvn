@@ -217,24 +217,36 @@ End If
 
 docuUUID = GetDocumentUUID
 parentUUID = GetParentUUID
+&apos;documentDir =  FileNameoutofPath(sDocURL, &quot;/&quot;)
 
-If VerifyDocInSVN(sDocURL) = &quot;0.3&quot; then &apos; in case of old 0.3 document
+&apos;If VerifyDocInSVN(sDocURL) = &quot;0.3&quot; then &apos; in case of old 0.3 document
 
-	CommitDir = FileNameoutofPath(sDocURL, &quot;/&quot;) 
+&apos;	CommitDir = FileNameoutofPath(sDocURL, &quot;/&quot;) 
 
-End If
+&apos;End If
 
-If VerifyDocInSVN(sDocURL) = &quot;0.4&quot; then &apos; in case of 0.4 docuUUID referenced document
+&apos;If VerifyDocInSVN(sDocURL) = &quot;0.4&quot; then &apos; in case of 0.4 docuUUID referenced document
 
-	CommitDir = docuUUID
+&apos;	CommitDir = docuUUID
 
-End If
+&apos;End If
 
-If VerifyDocInSVN(sDocURL) = &quot;false&quot; then &apos;in case document not found in repo
-
-	MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable file commits.&quot;, 16, &quot;Commit Error&quot;)
-	Exit Sub 
-End If
+&apos;If VerifyDocInSVN(sDocURL) = &quot;false&quot; then &apos;in case document not found in repo
+&apos;	MsgBox( ConvertFromURL(sDocURL) &amp; &quot; is not under version control.  Import the file to change control to enable file commits.&quot;, 16, &quot;Commit Error&quot;)
+&apos;	Exit Sub 
+&apos;End If
+If FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then
+			documentDir = docuUUID
+			
+			ElseIf FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
+			documentDir = FileNameoutofPath(sDocURL, &quot;/&quot;)
+			
+			Else
+			
+			MsgBox( ConvertFromURL(sDocURL) &amp; &quot; is not under version control.  Import the file to change control to enable file commits.&quot;, 16, &quot;Commit Error&quot;)
+			Exit Sub
+			
+		End If
 
 cQuote = Chr( 34 )
 
