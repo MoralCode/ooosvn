@@ -3,7 +3,7 @@
 # Usage: sh buildscript [version]
 # eg.    sh buildscript 0.3.4
 
-#rm -rf build
+rm ooosvn-beta-$1.oxt
 #mkdir build
 
 cd extension
@@ -16,19 +16,5 @@ echo $txtnew
 sed s/"$txtold"/"$txtnew"/g description.xml > description2.xml
 mv description2.xml description.xml
 
-zip -rDX ../ooosvn-beta-$1.zip * -x *.svn*
-#7za a -tzip -mfb=258 -mpass=15 ../build/ooosvn-0.3.3.zip ./*
-
-#cd ..
-#cp shellscripts/* build
-#cp gpl.txt build
-#cp readme.txt build
-#cp changes.txt build
-
-#cd build
-#zip -rDX ../ooosvn-beta-$1.zip * -x *.svn*
-#7za a -tzip -mfb=258 -mpass=15 ../ooosvn-beta-0.3.3.zip ./*
-#cd ..
-#rm -rf build
-echo ooosvn-beta-$1.zip created
-echo please update changelog 
+zip -rDX ../ooosvn-beta-$1.oxt * -x *.svn*
+#For some reason I can't get file exclusion working with 7za, otherwise I'd use it for smaller file sizes
