@@ -104,49 +104,122 @@ oTextOutputStream.setOutputStream(outStream)
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
 &quot;#Script to carry out initial import of document in SVN.&quot; &amp; chr(10) &amp; _
 &quot;#Usage: import.sh [document path] [document filename] [full repository URL] [working directory path] [Document UUID to assign] [Optional Document UUID of parent document to make child document]&quot; &amp; chr(10) &amp; _
-&quot;mkdir $4/$2/&quot; &amp; chr(10) &amp; _
-&quot;mkdir $4/$2/temp/&quot; &amp; chr(10) &amp; _
-&quot;unzip -o $1 -d $4/$2/temp/ -x *.svn*&quot; &amp; chr(10) &amp; _
-&quot;cd $4/$2/temp/&quot; &amp; chr(10) &amp; _
+&quot;echo Document Path: $1 &quot; &amp; chr(10) &amp; _
+&quot;echo Document filename: $2 &quot; &amp; chr(10) &amp; _
+&quot;echo Repository URL: $3 &quot; &amp; chr(10) &amp; _
+&quot;echo Working directory path: $4 &quot; &amp; chr(10) &amp; _
+&quot;echo Document UUID: $5 &quot; &amp; chr(10) &amp; _
+&quot;echo Parent Document UUID: $6&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
+&quot;mkdir -v $4/$5/&quot; &amp; chr(10) &amp; _
+&quot;mkdir -v $4/$5/temp/&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
+&quot;if test -f &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; 		# test that file exists&quot; &amp; chr(10) &amp; _
+&quot;	then echo &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; found		# confirmation of file existence&quot; &amp; chr(10) &amp; _
+&quot;else&quot; &amp; chr(10) &amp; _
+&quot;	echo &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; not found.	# warn that file doesn&apos;t exist&quot; &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
+&quot;unzip -o &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; -d $4/$5/temp/ -x *.svn* # Spaces in filename fixed&quot; &amp; chr(10) &amp; _
+&quot;cd $4/$5/temp/&quot; &amp; chr(10) &amp; _
 &quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;# Get and write repo UUID&quot; &amp; chr(10) &amp; _
 &quot;repo_uuid=`svnlook uuid $4`&quot; &amp; chr(10) &amp; _
-&quot;if grep &quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;Repository-UUID\&quot; &amp; chr(34) &amp; &quot; meta:value-type=\&quot; &amp; chr(34) &amp; &quot;string\&quot; &amp; chr(34) &amp; &quot;&gt;&quot; &amp; chr(34) &amp; &quot; meta.xml&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;if grep -q &quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;Repository-UUID\&quot; &amp; chr(34) &amp; &quot; meta:value-type=\&quot; &amp; chr(34) &amp; &quot;string\&quot; &amp; chr(34) &amp; &quot;&gt;&quot; &amp; chr(34) &amp; &quot; meta.xml&quot; &amp; chr(10) &amp; _
+&quot;# in case of 0.3 repo format&quot; &amp; chr(10) &amp; _
 &quot;then&quot; &amp; chr(10) &amp; _
-&quot;echo old repo found&quot; &amp; chr(10) &amp; _
-&quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;Repository-UUID\&quot; &amp; chr(34) &amp; &quot; meta:value-type=\&quot; &amp; chr(34) &amp; &quot;string\&quot; &amp; chr(34) &amp; &quot;&gt;.*&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; &quot;&quot; &amp; chr(10) &amp; _
-&quot;echo $txtold&quot; &amp; chr(10) &amp; _
-&quot;txtnew=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;Repository-UUID\&quot; &amp; chr(34) &amp; &quot; meta:value-type=\&quot; &amp; chr(34) &amp; &quot;string\&quot; &amp; chr(34) &amp; &quot;&gt;$repo_uuid&lt;\/meta:user-defined&gt;&quot; &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;Document-UUID\&quot; &amp; chr(34) &amp; &quot; meta:value-type=\&quot; &amp; chr(34) &amp; &quot;string\&quot; &amp; chr(34) &amp; &quot;&gt;$5&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; &quot;&quot; &amp; chr(10) &amp; _
-&quot;echo $txtnew&quot; &amp; chr(10) &amp; _
-&quot;sed s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/g meta.xml &gt; meta2.xml&quot; &amp; chr(10) &amp; _
+&quot;echo Updating repository UUID version 0.3 to 0.4&quot; &amp; chr(10) &amp; _
+&quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;RepositoryUUID\&quot; &amp; chr(34) &amp; &quot; meta:value-type=\&quot; &amp; chr(34) &amp; &quot;string\&quot; &amp; chr(34) &amp; &quot;&gt;.\{36\}&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;txtnew=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;RepositoryUUID\&quot; &amp; chr(34) &amp; &quot;&gt;$repo_uuid&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;sed -i s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/ meta.xml&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;elif grep -q &quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;RepositoryUUID\&quot; &amp; chr(34) &amp; &quot;&gt;&quot; &amp; chr(34) &amp; &quot; meta.xml&quot; &amp; chr(10) &amp; _
+&quot;# in case of 0.4 repo format&quot; &amp; chr(10) &amp; _
+&quot;then&quot; &amp; chr(10) &amp; _
+&quot;echo Updating Repository UUID&quot; &amp; chr(10) &amp; _
+&quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;RepositoryUUID\&quot; &amp; chr(34) &amp; &quot;&gt;.\{36\}&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;txtnew=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;RepositoryUUID\&quot; &amp; chr(34) &amp; &quot;&gt;$repo_uuid&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;sed -i s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/ meta.xml&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
 &quot;else&quot; &amp; chr(10) &amp; _
+&quot;echo Inserting Repository UUID&quot; &amp; chr(10) &amp; _
 &quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;\/office:meta&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
-&quot;#echo $txtold&quot; &amp; chr(10) &amp; _
-&quot;txtnew=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;Repository-UUID\&quot; &amp; chr(34) &amp; &quot; meta:value-type=\&quot; &amp; chr(34) &amp; &quot;string\&quot; &amp; chr(34) &amp; &quot;&gt;$repo_uuid&lt;\/meta:user-defined&gt;&quot; &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;Document-UUID\&quot; &amp; chr(34) &amp; &quot; meta:value-type=\&quot; &amp; chr(34) &amp; &quot;string\&quot; &amp; chr(34) &amp; &quot;&gt;$5&lt;\/meta:user-defined&gt;&lt;\/office:meta&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
-&quot;#echo $txtnew&quot; &amp; chr(10) &amp; _
-&quot;#echo s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/g&quot; &amp; chr(10) &amp; _
-&quot;sed s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/g meta.xml &gt; meta2.xml&quot; &amp; chr(10) &amp; _
+&quot;txtnew=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;RepositoryUUID\&quot; &amp; chr(34) &amp; &quot;&gt;$repo_uuid&lt;\/meta:user-defined&gt;&lt;\/office:meta&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;sed -i s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/ meta.xml&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
 &quot;fi&quot; &amp; chr(10) &amp; _
-&quot;mv meta2.xml meta.xml&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;if grep -q &quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;DocumentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;&quot; &amp; chr(34) &amp; &quot; meta.xml&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;then&quot; &amp; chr(10) &amp; _
+&quot;echo Updating Document UUID&quot; &amp; chr(10) &amp; _
+&quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;DocumentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;.\{36\}&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;txtnew=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;DocumentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;$5&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;sed -i s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/ meta.xml&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;else&quot; &amp; chr(10) &amp; _
+&quot;echo Inserting Document UUID&quot; &amp; chr(10) &amp; _
+&quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;\/office:meta&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;txtnew=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;DocumentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;$5&lt;\/meta:user-defined&gt;&lt;\/office:meta&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;sed -i s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/ meta.xml&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;if grep -q &quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;ParentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;&quot; &amp; chr(34) &amp; &quot; meta.xml&quot; &amp; chr(10) &amp; _
+&quot;# test if parent UUID exists&quot; &amp; chr(10) &amp; _
+&quot;then&quot; &amp; chr(10) &amp; _
+&quot;echo Old Parent UUID found&quot; &amp; chr(10) &amp; _
+&quot;if test -z $6 #test if parent UUID is given&quot; &amp; chr(10) &amp; _
+&quot;then&quot; &amp; chr(10) &amp; _
+&quot;echo Deleting old Parent UUID&quot; &amp; chr(10) &amp; _
+&quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;ParentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;.\{36\}&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;sed -i 1/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/d meta.xml&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;else&quot; &amp; chr(10) &amp; _
+&quot;echo Updating Parent UUID&quot; &amp; chr(10) &amp; _
+&quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;ParentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;.\{36\}&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;txtnew=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;ParentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;$6&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;sed -i s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/ meta.xml&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
+&quot;elif test -z $6 #test if parent UUID is given&quot; &amp; chr(10) &amp; _
+&quot;then&quot; &amp; chr(10) &amp; _
+&quot;echo No Parent UUID given&quot; &amp; chr(10) &amp; _
+&quot;else&quot; &amp; chr(10) &amp; _
+&quot;echo Inserting Parent UUID&quot; &amp; chr(10) &amp; _
+&quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;\/office:meta&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;txtnew=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;ParentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;$6&lt;\/meta:user-defined&gt;&lt;\/office:meta&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;sed -i s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/ meta.xml&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;echo updated metadata&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
 &quot;# Import&quot; &amp; chr(10) &amp; _
-&quot;svn import . $3/$2/trunk/ -m &apos;Initial Import&apos;&quot; &amp; chr(10) &amp; _
-&quot;rm -rf $4/$2/temp/&quot; &amp; chr(10) &amp; _
+&quot;svn import . $3/$5/trunk/ -m &apos;Initial Import&apos;&quot; &amp; chr(10) &amp; _
+&quot;rm -rf $4/$5/temp/&quot; &amp; chr(10) &amp; _
 &quot;cd $4/&quot; &amp; chr(10) &amp; _
 &quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
-&quot;svn checkout $3/$2/&quot; &amp; chr(10) &amp; _
-&quot;cd $4/$2/trunk/&quot; &amp; chr(10) &amp; _
+&quot;svn checkout $3/$5/&quot; &amp; chr(10) &amp; _
+&quot;cd $4/$5/trunk/&quot; &amp; chr(10) &amp; _
+&quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
+&quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;pwd=`pwd`&quot; &amp; chr(10) &amp; _
-&quot;if [ $pwd != &quot; &amp; chr(34) &amp; &quot;${4}/${2}/temp&quot; &amp; chr(34) &amp; &quot; ]&quot; &amp; chr(10) &amp; _
+&quot;if [ $pwd != &quot; &amp; chr(34) &amp; &quot;${4}/${5}/trunk&quot; &amp; chr(34) &amp; &quot; ]&quot; &amp; chr(10) &amp; _
 &quot;then&quot; &amp; chr(10) &amp; _
-&quot;echo &quot; &amp; chr(34) &amp; &quot;Error: Working copy is not where it should be!&quot; &amp; chr(34) &amp; chr(10) &amp; _
-&quot;echo &quot; &amp; chr(34) &amp; &quot;Most likely cause is disallowed characters in document filename.&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;echo &quot;&amp; chr(34) &amp; &quot;Error: Working copy is not where it should be!&quot;&amp; chr(34) &amp; chr(10) &amp; _
+&quot;echo &quot;&amp; chr(34) &amp; &quot;Most likely cause is disallowed characters in document filename.&quot;&amp; chr(34) &amp; chr(10) &amp; _
 &quot;exit&quot; &amp; chr(10) &amp; _
 &quot;fi&quot; &amp; chr(10) &amp; _
 &quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
-&quot;zip -rDX $1 * -x *.svn*&quot;)
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
+&quot;zip -rDX &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; * -x *.svn*)&quot;
 
 &apos;close all streams
 oTextOutputStream.closeOutput()
