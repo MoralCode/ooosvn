@@ -640,7 +640,7 @@ End If
    
    oStatus.start( &quot;Recovering &quot; &amp; documentname &amp; &quot;, version &quot; &amp; version &amp; &quot; to &quot; &amp; outputURL &amp; &quot;.  Please wait....&quot;, 10 )
    &apos;Output
-	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &quot; &amp; outputURL &amp; &quot; &quot; &amp; documentname &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &quot; &amp; outputURL &amp; &quot; &quot; &amp; documentname &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
 
 	outputfile = ConvertToURL(outputURL)
 
@@ -678,11 +678,22 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
     else sDocURL = &quot;[no name]&quot;
   End If
   
-    &apos; Test to see if file of same name is already under change control
-	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
-		MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable version management.&quot;, 16, &quot;Error&quot;)
-		Exit Sub
-	End If
+  docuUUID = GetDocumentUUID
+  
+&apos; Test to see if file of same name is already under change control
+If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then &apos;Version 0.3
+	
+		If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then &apos; Version 0.4
+		MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable version management.&quot;, 16, &quot;Error&quot;)		
+			Exit Sub &apos; File not under version control so stop.
+		
+			Else docpath = docuUUID
+
+		End If
+	
+	Else docpath = FileNameoutofPath(sDocURL, &quot;/&quot;)
+		
+End If
          
             cQuote = Chr( 34 )
 &apos;  Status Bar Message
@@ -693,7 +704,7 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
    
    oStatus.start( &quot;Listing versions for &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; in repository &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
    
-   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/listversions.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir + cQuote, &quot;&quot;,6,true)
+   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/listversions.sh &quot; &amp; &quot; &quot; &amp; docpath &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
 
 oStatus.end()
    &apos; The dialogue
@@ -712,7 +723,8 @@ oStatus.end()
 
    With oFilePicker
            .Initialize( sFilePickerArgs() )
-           .setDisplayDirectory( converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/versions/&quot; )
+&apos;           .setDisplayDirectory( converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/versions/&quot; )
+		   .setDisplayDirectory( converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; docpath &amp; &quot;/versions/&quot; )
            .setTitle( &quot;Select version of &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to compare with active version &quot; )
            .appendFilter(&quot;Document versions&quot;, &quot;*.version&quot; ) 
            
@@ -726,7 +738,8 @@ oStatus.end()
       version = FileNameoutofPath(sFileURL, &quot;/&quot;)
       sCut = Right ( version, 9 )
       version = Left ( version, InStr( 1, version, sCut ) )
-      OutputURL = WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/tempdiff.zip&quot;
+&apos;      OutputURL = WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/tempdiff.zip&quot;
+      OutputURL = WorkingDir &amp; &quot;/&quot; &amp; docpath &amp; &quot;/tempdiff.zip&quot;
       else
 	exit sub
 
@@ -743,7 +756,7 @@ oStatus.end()
    
    oStatus.start( &quot;Comparing latest version of &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; with version &quot; &amp; version &amp; &quot;.  Please wait....&quot;, 10 )
    
-	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &quot; &amp; OutputURL &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &quot; &amp; OutputURL &amp; &quot; &quot; &amp; docpath &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
 
 &apos;	Compare documents
 	dim xFrame   as object

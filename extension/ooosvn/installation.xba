@@ -240,7 +240,9 @@ oTextOutputStream.setOutputStream(outStream)
 &apos;close all streams
 oTextOutputStream.closeOutput()
 
+&apos;###################################################
 &apos;listdocuments.sh
+&apos;###################################################
 If FileExists(WorkingDir &amp; &quot;/listdocuments.sh&quot;) then
 oFileAccessService.kill(WorkingDir &amp; &quot;/listdocuments.sh&quot;)
 end if
@@ -260,7 +262,9 @@ oTextOutputStream.setOutputStream(outStream)
 &apos;close all streams
 oTextOutputStream.closeOutput()
 
-&apos;listversions.sh
+&apos;###################################################
+&apos;install listversions.sh
+&apos;###################################################
 If FileExists(WorkingDir &amp; &quot;/listversions.sh&quot;) then
 oFileAccessService.kill(WorkingDir &amp; &quot;/listversions.sh&quot;)
 end if
@@ -269,18 +273,28 @@ oTextOutputStream.setOutputStream(outStream)
 
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
 &quot;#Script to list all revisions of a document in SVN&quot; &amp; chr(10) &amp; _
-&quot;#Usage: listversions.sh [document path] [document file name] [repository URL] [Working directory path]&quot; &amp; chr(10) &amp; _
-&quot;mkdir $4/$2/versions/&quot; &amp; chr(10) &amp; _
-&quot;for version in `svn log -q $3/$2 | grep r | cut -c2- | cut -d&apos; &apos; -f1`&quot; &amp; chr(10) &amp; _
+&quot;#Usage: listversions.sh [document UUID] [repository URL] [Working directory path]&quot; &amp; chr(10) &amp; _
+&quot;echo Listing Versions&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
+&quot;echo Document UUID: $1 &quot; &amp; chr(10) &amp; _
+&quot;echo Repository URL: $2 &quot; &amp; chr(10) &amp; _
+&quot;echo Working directory path: $3&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
+&quot;mkdir $3/$1/versions/&quot; &amp; chr(10) &amp; _
+&quot;echo Versions found: &quot; &amp; chr(10) &amp; _
+&quot;for version in `svn log -q $2/$1 | grep r | cut -c2- | cut -d&apos; &apos; -f1`&quot; &amp; chr(10) &amp; _
 &quot;do&quot; &amp; chr(10) &amp; _
-&quot;svn &gt;&gt; $4/$2/versions/$version.version&quot; &amp; chr(10) &amp; _
-&quot;#svn &gt;&gt; $4/$2/versions/log.txt&quot; &amp; chr(10) &amp; _
-&quot;done&quot;)
+&quot;svn &gt;&gt; $3/$1/versions/$version.version&quot; &amp; chr(10) &amp; _
+&quot;echo $version&quot; &amp; chr(10) &amp; _
+&quot;done&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot;)
 
 &apos;close all streams
 oTextOutputStream.closeOutput()
 
+&apos;###################################################
 &apos;revert.sh
+&apos;###################################################
 If FileExists(WorkingDir &amp; &quot;/revert.sh&quot;) then
 oFileAccessService.kill(WorkingDir &amp; &quot;/revert.sh&quot;)
 end if
@@ -289,16 +303,30 @@ oTextOutputStream.setOutputStream(outStream)
 
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
 &quot;#Script to revert document to another version&quot; &amp; chr(10) &amp; _
-&quot;#Usage: revert.sh [document path] [document filename] [repository URL] [Working directory path] [version number in SVN]&quot; &amp; chr(10) &amp; _
+&quot;#Usage: revert.sh [output path] [document UUID] [repository URL] [Working directory path] [version number in SVN]&quot; &amp; chr(10) &amp; _
+&quot;echo Reverting document&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
+&quot;echo Document path: $1&quot; &amp; chr(10) &amp; _
+&quot;echo Document UUID: $2&quot; &amp; chr(10) &amp; _
+&quot;echo Repository URL: $3 &quot; &amp; chr(10) &amp; _
+&quot;echo Working directory path: $4&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
+&quot;echo Version number to rebuild: $5&quot; &amp; chr(10) &amp; _
+&quot;rm &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
 &quot;cd $4/&quot; &amp; chr(10) &amp; _
 &quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
 &quot;rm -rf $4/$2/trunk&quot; &amp; chr(10) &amp; _
 &quot;svn checkout -r$5 $3/$2/&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
 &quot;cd $4/$2/trunk/&quot; &amp; chr(10) &amp; _
 &quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
-&quot;zip -rDX $1 * -x *.svn*&quot;)
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
+&quot;zip -rDX &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; * -x *.svn*&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot;)
 
 &apos;close all streams
 oTextOutputStream.closeOutput()
