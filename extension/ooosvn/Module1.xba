@@ -521,7 +521,7 @@ Sub RecoverSVN()
    oStatus.start( &quot;Listing documents in working directory.  Please wait....&quot;, 10 )
 
 	&apos; Get document list
-   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/listdocuments.sh &quot; &amp; WorkingDir + cQuote, &quot;&quot;,6,true)
+   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/listdocuments.sh &quot; &amp; WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
 
 oStatus.end()
 
@@ -542,7 +542,7 @@ oStatus.end()
    With oFilePicker
            .Initialize( sFilePickerArgs() )
            .setDisplayDirectory( converttoURL(WorkingDir) &amp; &quot;/documentlist/&quot;)
-           .setTitle( &quot;Step 1/3: Select Document to recover&quot; )
+           .setTitle( &quot;Step 1/4: Select Document to recover&quot; )
            .appendFilter(&quot;All files&quot;, &quot;*.*&quot; ) 
            
    End With
@@ -568,7 +568,7 @@ oStatus.end()
    
    oStatus.start( &quot;Listing versions for &quot; &amp; documentname &amp; &quot; in repository &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
 	&apos; Get version list
-   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/listversions.sh &quot; &amp; documentname &amp; &quot; &quot; &amp; documentname &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir + cQuote, &quot;&quot;,6,true)
+   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/listversions.sh &quot;  &amp; documentname &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
 oStatus.end()
 
 &apos; If no versions directory exists, there must be a problem.
@@ -592,7 +592,7 @@ End If
    With oFilePicker
            .Initialize( sFilePickerArgs() )
            .setDisplayDirectory( converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; documentname &amp; &quot;/versions/&quot; )
-           .setTitle( &quot;Step 2/3: Select version of &quot; &amp; documentname &amp; &quot; to revert to &quot; )
+           .setTitle( &quot;Step 2/4: Select version of &quot; &amp; documentname &amp; &quot; to revert to &quot; )
            .appendFilter(&quot;Document versions&quot;, &quot;*.version&quot; ) 
            
    End With
@@ -612,34 +612,36 @@ End If
 &apos; Close the Dialog
    oFilePicker.Dispose()
    
-   &apos;Select output directory
+&apos;Select output directory
    
-      sFilePickerArgs = Array( com.sun.star.ui.dialogs.TemplateDescription.FILEOPEN_SIMPLE)
-
-&apos; register the Service for Filepicker
-   
-   oFilePicker = CreateUnoService( &quot;com.sun.star.ui.dialogs.FolderPicker&quot; )
+  oFilePicker = CreateUnoService( &quot;com.sun.star.ui.dialogs.FolderPicker&quot; )
+	      sFilePickerArgs = com.sun.star.ui.dialogs.TemplateDescription.FILEOPEN_SIMPLE
 
 &apos; Pass some arguments to it
-
    With oFilePicker
-           .Initialize( sFilePickerArgs() )
-           .setTitle( &quot;Step 3/3: Select directory to save version &quot; &amp; version &amp; &quot; of &quot; &amp; documentname &amp; &quot; in&quot; )
-           
+           &apos;.Initialize( sFilePickerArgs() )
+           .setTitle( &quot;Step 3/4: Select directory to save version &quot; &amp; version &amp; &quot; of &quot; &amp; documentname &amp; &quot; in&quot; )
+          &apos; .Execute( sFilePickerArgs() )
+                      
    End With
 
 &apos; If the savepath is selected return the complete path and display it in an messagebox   
 
    If oFilePicker.execute() Then
       sFiles = oFilePicker.getDirectory()
-      outputURL = mid(sFiles, 8) &amp; &quot;/&quot; &amp; documentname
       else
 	exit sub
-
   End If
+  
+dim newfilename  
 
-&apos; Close the Dialog
-   oFilePicker.Dispose()
+newFileName = InputBox(ConvertFromURL(sFiles) &amp; &quot;/&quot;, &quot;Step 4/4: Enter filename for recovered file:&quot;, documentname)
+
+if newFileName =&quot;&quot; then
+exit sub &apos; exit if cancelled
+end if
+      outputURL = ConvertFromURL(sFiles) &amp; &quot;/&quot; &amp; newFileName
+
    &apos;  Status Bar Message
    oDocCtrl = oDoc.getCurrentController()
    oDocFrame = oDocCtrl.getFrame()
@@ -648,7 +650,7 @@ End If
    
    oStatus.start( &quot;Recovering &quot; &amp; documentname &amp; &quot;, version &quot; &amp; version &amp; &quot; to &quot; &amp; outputURL &amp; &quot;.  Please wait....&quot;, 10 )
    &apos;Output
-	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &quot; &amp; outputURL &amp; &quot; &quot; &amp; documentname &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &apos;&quot; &amp; outputURL &amp; &quot;&apos; &quot; &amp; documentname &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
 
 	outputfile = ConvertToURL(outputURL)
 

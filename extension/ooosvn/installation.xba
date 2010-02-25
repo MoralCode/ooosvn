@@ -252,12 +252,17 @@ oTextOutputStream.setOutputStream(outStream)
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
 &quot;#Script to list all documents within a working dir&quot; &amp; chr(10) &amp; _
 &quot;#Usage: listdocuments.sh [working directory path]&quot; &amp; chr(10) &amp; _
+&quot;echo &quot; &amp; chr(34) &amp; &quot;Listing Documents in $1&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
 &quot;mkdir $1/documentlist/&quot; &amp; chr(10) &amp; _
+&quot;count = 0&quot; &amp; chr(10) &amp; _
 &quot;for document in `find $1 -maxdepth 2 -mindepth 2 -iname trunk | cut -d&apos;/&apos; -f5`&quot; &amp; chr(10) &amp; _
 &quot;do&quot; &amp; chr(10) &amp; _
 &quot;svn &gt;&gt; $1/documentlist/$document&quot; &amp; chr(10) &amp; _
-&quot;#svn &gt;&gt; $1/documentlist/log.txt&quot; &amp; chr(10) &amp; _
-&quot;done&quot;)
+&quot;count=$((count+1))&quot; &amp; chr(10) &amp; _
+&quot;done&quot; &amp; chr(10) &amp; _
+&quot;echo $count found&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot;)
 
 &apos;close all streams
 oTextOutputStream.closeOutput()
