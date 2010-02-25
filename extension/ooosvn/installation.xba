@@ -178,7 +178,7 @@ oTextOutputStream.setOutputStream(outStream)
 &quot;then&quot; &amp; chr(10) &amp; _
 &quot;echo Deleting old Parent UUID&quot; &amp; chr(10) &amp; _
 &quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;ParentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;.\{36\}&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
-&quot;sed -i 1/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/d meta.xml&quot; &amp; chr(10) &amp; _
+&quot;sed -i s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;// meta.xml&quot; &amp; chr(10) &amp; _
 &quot;&quot; &amp; chr(10) &amp; _
 &quot;else&quot; &amp; chr(10) &amp; _
 &quot;echo Updating Parent UUID&quot; &amp; chr(10) &amp; _

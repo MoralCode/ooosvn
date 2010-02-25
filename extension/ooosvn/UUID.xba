@@ -45,7 +45,7 @@ Function GetParentUUID
    sDocURL = oDoc.getURL()
 
 if ThisComponent.DocumentInfo.PropertySetInfo.HasPropertyByName(&quot;ParentUUID&quot;) then
-	GetDocumentUUID = oDoc.DocumentInfo.getPropertyValue(&quot;ParentUUID&quot;)
+	GetParentUUID = oDoc.DocumentInfo.getPropertyValue(&quot;ParentUUID&quot;)
 &apos;	GetParentUUID = ThisComponent.DocumentInfo.ParentUUID
 else   
    GetParentUUID = &quot;&quot;

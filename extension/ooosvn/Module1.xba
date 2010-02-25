@@ -68,13 +68,13 @@ If FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&q
 &apos; Import as new file, Import as child (make docuUUID parentUUID) or cancel
 &apos; Window required.  Need to pass docuUUID and parentUUID to shell script
 
-StoredURL = getstoredURL
+&apos;StoredURL = getstoredURL &apos; Not used right now, maybe never.
 
 &apos; test to see if this exact file is already under version control, if so, exit.
-If StoredURL = sDocURL then
-MsgBox( &quot;A file named &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is already under version control.  Please save as a different file name before reattempting.&quot;, 16, &quot;File not imported&quot;)
-Exit Sub
-End If
+&apos;If StoredURL = sDocURL then
+&apos;MsgBox( &quot;A file named &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is already under version control.  Please save as a different file name before reattempting.&quot;, 16, &quot;File not imported&quot;)
+&apos;Exit Sub
+&apos;End If
 
 ImportType = Msgbox (&quot;A document with the same UUID (&quot; &amp; docuUUID &amp; &quot;) appears to already be under version control.&quot; &amp; chr(10) &amp;_
 		&quot;Would you like to import the file as a child of &quot; &amp; docuUUID &amp; &quot;?&quot; &amp; chr(10) &amp;_
@@ -110,7 +110,7 @@ docuUUID = generateUUID
 
 End If
 
-&apos;Docu-UUID Uniqueness check, just in case
+&apos;Docu-UUID Uniqueness check, just in case a 128 bit key isn&apos;t long enough
 If FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then
 &apos; generate a new docuUUID if another document has the same one.
 docuUUID = generateUUID
@@ -128,7 +128,9 @@ End If
    
    oStatus.start( &quot;Importing &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
 
-   Shell(&quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp;  sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; docuUUID &amp; &quot; &quot; &amp; parentUUID &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote , &quot;&quot;,6,true)
+command = &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; &quot;&apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; DocuUUID &amp; &quot; &quot; &amp; parentUUID &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
+
+   Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)
 
    &apos;Test for success
    
@@ -217,24 +219,7 @@ End If
 
 docuUUID = GetDocumentUUID
 parentUUID = GetParentUUID
-&apos;documentDir =  FileNameoutofPath(sDocURL, &quot;/&quot;)
 
-&apos;If VerifyDocInSVN(sDocURL) = &quot;0.3&quot; then &apos; in case of old 0.3 document
-
-&apos;	CommitDir = FileNameoutofPath(sDocURL, &quot;/&quot;) 
-
-&apos;End If
-
-&apos;If VerifyDocInSVN(sDocURL) = &quot;0.4&quot; then &apos; in case of 0.4 docuUUID referenced document
-
-&apos;	CommitDir = docuUUID
-
-&apos;End If
-
-&apos;If VerifyDocInSVN(sDocURL) = &quot;false&quot; then &apos;in case document not found in repo
-&apos;	MsgBox( ConvertFromURL(sDocURL) &amp; &quot; is not under version control.  Import the file to change control to enable file commits.&quot;, 16, &quot;Commit Error&quot;)
-&apos;	Exit Sub 
-&apos;End If
 If FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then
 			documentDir = docuUUID
 			
@@ -262,6 +247,7 @@ cQuote = Chr( 34 )
 	iNumber = Freefile
 	aFile = WorkingDir &amp; &quot;/&quot; &amp; documentDir &amp; &quot;/info.txt&quot;
 Open aFile For Input As iNumber
+
 While not eof(iNumber)
 Line Input #iNumber, sLine
 If sLine &lt;&gt;&quot;&quot; then
@@ -269,12 +255,15 @@ sMsg = sMsg &amp; sLine &amp; chr(13)
 end if
 wend
 Close #iNumber
+
 if docuUUID &lt;&gt; &quot;&quot; then
 sMsg = sMsg &amp; chr(13) &amp; &quot;Document UUID: &quot; &amp; docuUUID &apos; append a line for docuUUID if it exists
 end if
+
 if parentUUID &lt;&gt; &quot;&quot; then
 sMsg = sMsg &amp; chr(13) &amp; &quot;Parent Document UUID: &quot; &amp; parentUUID &apos; same for parentUUID
 end if
+
 oStatus.end()
 Msgbox (sMsg, 64, &quot;SVN info for &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;))
 
