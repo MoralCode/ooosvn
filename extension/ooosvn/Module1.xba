@@ -300,20 +300,21 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
 end if
   
   docuUUID = GetDocumentUUID
-  
-    &apos; Test to see if file of same name is already under change control
-	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then &apos;v0.3 check
-	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then &apos;v0.4 check
-		MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable version management.&quot;, 16, &quot;Error&quot;)
-		Exit Sub
+
+&apos; Test to see if file of same name is already under change control
+If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then &apos;Version 0.3
 	
-	Else documentDir = docuUUID
+		If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then &apos; Version 0.4
+			MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable version management.&quot;, 16, &quot;Error&quot;)
+			Exit Sub &apos; File not under version control so stop.
+		
+			Else docpath = docuUUID
+
+		End If
 	
-	End If
-	
-	Else documentDir = FileNameoutofPath(sDocURL, &quot;/&quot;)
-	
-	End If
+	Else docpath = FileNameoutofPath(sDocURL, &quot;/&quot;)
+		
+End If
          
             cQuote = Chr( 34 )
 
@@ -325,11 +326,7 @@ end if
    
    oStatus.start( &quot;Retrieving version thumbnails for &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;.  Please wait....&quot;, 10 )
 
-   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/thumbnails.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; documentDir &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir + cQuote, &quot;&quot;, 6, True)
-
-&apos;	do &apos;Obsolete finish check, could be useful if needed to display the file picker earlier and let all thumbnails load into view over time.
-&apos;	wait 100
-&apos;	Loop until FileExists(ConvertToURL(WorkingDir) &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/preview/log.txt&quot;)
+   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/thumbnails.sh &quot; &amp; docpath &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;, 6, True)
 
 oStatus.end()
 
@@ -350,7 +347,7 @@ oStatus.end()
 &apos; Pass some arguments to it
    With oFilePicker
            .Initialize( sFilePickerArgs() )
-           .setDisplayDirectory( converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; documentDir &amp; &quot;/preview/&quot; )
+           .setDisplayDirectory( converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; docpath &amp; &quot;/preview/&quot; )
            .setTitle( &quot;Select version to revert to &quot; )
            .appendFilter(&quot;Document Thumbnails&quot;, &quot;*.png&quot; ) 
            
@@ -379,7 +376,7 @@ oStatus.end()
    
    oStatus.start( &quot;Reverting &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to version &quot; &amp; version &amp; &quot;.  Please wait....&quot;, 10 )
 
-	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; documentDir &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &quot; &amp; docpath &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
 	
 	&apos; Reload
 	ThisComponent.setModified(False) &apos;Tell OOo not to check for external file modificiations.  This avoids the &quot;Cancel all changes?&quot; dialogue in OOo 3.
@@ -413,11 +410,22 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
     else sDocURL = &quot;[no name]&quot;
   End If
   
-    &apos; Test to see if file of same name is already under change control
-	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
-		MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable version management.&quot;, 16, &quot;Error&quot;)
-		Exit Sub
-	End If
+  docuUUID = getDocumentUUID
+  
+  &apos; Test to see if file of same name is already under change control
+If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then &apos;Version 0.3
+	
+		If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then &apos; Version 0.4
+			MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable version management.&quot;, 16, &quot;Error&quot;)
+			Exit Sub &apos; File not under version control so stop.
+		
+			Else docpath = docuUUID
+
+		End If
+	
+	Else docpath = FileNameoutofPath(sDocURL, &quot;/&quot;)
+		
+End If
          
             cQuote = Chr( 34 )
 &apos;  Status Bar Message
@@ -427,12 +435,12 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
    oStatus = oDocFrame.createStatusIndicator()
    
    oStatus.start( &quot;Listing versions for &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;.  Please wait....&quot;, 10 )
-   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/listversions.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir + cQuote, &quot;&quot;,6,true)
+   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/listversions.sh &quot; &amp; docpath &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
 oStatus.end()
    &apos; The dialogue
    
    &apos; If no versions directory exists, there must be a problem.
-If Not FileExists (converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; documentname &amp; &quot;/versions/&quot;) Then
+If Not FileExists (converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; docpath &amp; &quot;/versions/&quot;) Then
 Msgbox(&quot;Version files do not exist in the repository.  Operation cancelled.&quot;)
 Exit Sub
 End If
@@ -451,7 +459,7 @@ End If
 
    With oFilePicker
            .Initialize( sFilePickerArgs() )
-           .setDisplayDirectory( converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/versions/&quot; )
+           .setDisplayDirectory( converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; docpath &amp; &quot;/versions/&quot; )
            .setTitle( &quot;Select version of &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to revert to &quot; )
            .appendFilter(&quot;Document versions&quot;, &quot;*.version&quot; ) 
            
@@ -482,7 +490,7 @@ End If
    
    oStatus.start( &quot;Reverting &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to version &quot; &amp; version &amp; &quot;.  Please wait....&quot;, 10 )
 
-	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &quot; &amp; docpath &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
 	
 	&apos; Reload
 	ThisComponent.setModified(False) &apos;Tell OOo not to check for external file modificiations.  This avoids the &quot;Cancel all changes?&quot; dialogue in OOo 3.

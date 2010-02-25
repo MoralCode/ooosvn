@@ -331,7 +331,9 @@ oTextOutputStream.setOutputStream(outStream)
 &apos;close all streams
 oTextOutputStream.closeOutput()
 
+&apos;###################################################
 &apos;thumbnails.sh
+&apos;###################################################
 If FileExists(WorkingDir &amp; &quot;/thumbnails.sh&quot;) then
 oFileAccessService.kill(WorkingDir &amp; &quot;/thumbnails.sh&quot;)
 end if
@@ -340,13 +342,22 @@ oTextOutputStream.setOutputStream(outStream)
 
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
 &quot;#Script to generate version thumbnails for a document&quot; &amp; chr(10) &amp; _
-&quot;#Usage: thumbnails.sh [document path] [document file name] [repository URL] [Working directory path]&quot; &amp; chr(10) &amp; _
-&quot;for version in `svn log -q $3/$2 | grep r | cut -c2- | cut -d&apos; &apos; -f1`&quot; &amp; chr(10) &amp; _
+&quot;#Usage: thumbnails.sh [document file name] [repository URL] [Working directory path]&quot; &amp; chr(10) &amp; _
+&quot;echo Generating thumbnails&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
+&quot;echo Document UUID: $1 &quot; &amp; chr(10) &amp; _
+&quot;echo Repository URL: $2 &quot; &amp; chr(10) &amp; _
+&quot;echo Working directory path: $3&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
+&quot;echo Versions found: &quot; &amp; chr(10) &amp; _
+&quot;for version in `svn log -q $2/$1 | grep r | cut -c2- | cut -d&apos; &apos; -f1`&quot; &amp; chr(10) &amp; _
 &quot;do&quot; &amp; chr(10) &amp; _
-&quot;svn checkout -r$version $3/$2/trunk/Thumbnails/ $4/$2/preview/.$version/&quot; &amp; chr(10) &amp; _
-&quot;mv $4/$2/preview/.$version/thumbnail.png $4/$2/preview/$version.png &gt;&gt; $4/$2/preview/log.txt&quot; &amp; chr(10) &amp; _
-&quot;rm -rf $4/$2/preview/$version/&quot; &amp; chr(10) &amp; _
-&quot;done&quot;)
+&quot;svn checkout -q -r$version $2/$1/trunk/Thumbnails/ $3/$1/preview/.$version/&quot; &amp; chr(10) &amp; _
+&quot;mv $3/$1/preview/.$version/thumbnail.png $3/$1/preview/$version.png &gt;&gt; $3/$1/preview/log.txt&quot; &amp; chr(10) &amp; _
+&quot;rm -rf $3/$1/preview/$version/&quot; &amp; chr(10) &amp; _
+&quot;echo $version&quot; &amp; chr(10) &amp; _
+&quot;done&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot;)
 
 &apos;close all streams
 oTextOutputStream.closeOutput()
