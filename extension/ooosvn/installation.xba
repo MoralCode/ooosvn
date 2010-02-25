@@ -65,7 +65,9 @@ oFileAccessService = createUnoService(&quot;com.sun.star.ucb.SimpleFileAccess&qu
 &apos;oTextInputStream = createUnoService(&quot;com.sun.star.io.TextInputStream&quot;)
 oTextOutputStream = createUnoService(&quot;com.sun.star.io.TextOutputStream&quot;)
 
-&apos;commit.sh
+&apos;###################################################
+&apos;install commit.sh
+&apos;###################################################
 If FileExists(WorkingDir &amp; &quot;/commit.sh&quot;) then
 oFileAccessService.kill(WorkingDir &amp; &quot;/commit.sh&quot;)
 end if
@@ -75,21 +77,34 @@ oTextOutputStream.setOutputStream(outStream)
 oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
 &quot;#Script to commit changes to an updated document into SVN.&quot; &amp; chr(10) &amp; _
 &quot;#Usage: commit.sh [document path] [document filename] [full repository URL] [working directory path] [commit comment]&quot; &amp; chr(10) &amp; _
+&quot;echo Document Path: $1 &quot; &amp; chr(10) &amp; _
+&quot;echo Document UUID: $2 &quot; &amp; chr(10) &amp; _
+&quot;echo Repository URL: $3 &quot; &amp; chr(10) &amp; _
+&quot;echo Working directory path: $4 &quot; &amp; chr(10) &amp; _
+&quot;echo Commit comment: $5 &quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
+&quot;if test -f &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; 		# test that file exists&quot; &amp; chr(10) &amp; _
+&quot;	then echo &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; found		# confirmation of file existence&quot; &amp; chr(10) &amp; _
+&quot;else&quot; &amp; chr(10) &amp; _
+&quot;	echo &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; not found.	# warn that file doesn&apos;t exist&quot; &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
 &quot;rm -f $4/$2/trunk/Pictures/*&quot; &amp; chr(10) &amp; _
-&quot;#rm -rf $4/$2/trunk/*&quot; &amp; chr(10) &amp; _
-&quot;unzip -o $1 -d $4/$2/trunk/ -x *.svn*&quot; &amp; chr(10) &amp; _
+&quot;unzip -o &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; -d $4/$2/trunk/ -x *.svn*&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
 &quot;cd $4/$2/trunk/&quot; &amp; chr(10) &amp; _
 &quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
 &quot;svn status | grep ^\! | cut -c8- | xargs svn rm&quot; &amp; chr(10) &amp; _
 &quot;svn status | grep ^\? | cut -c8- | xargs svn add&quot; &amp; chr(10) &amp; _
 &quot;svn commit -m &quot; &amp; chr(34) &amp; &quot;$5&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
 &quot;cd $4/&quot; &amp; chr(10) &amp; _
 &quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
-&quot;svn checkout $3/$2/&quot; &amp; chr(10) &amp; _
-&quot;#cd $4/$2/trunk/&quot; &amp; chr(10) &amp; _
-&quot;#zip -rDX $1 * -x *.svn*&quot;)
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
+&quot;svn checkout $3/$2/&quot;)
 
 &apos;close all streams
 oTextOutputStream.closeOutput()
@@ -220,7 +235,7 @@ oTextOutputStream.setOutputStream(outStream)
 &quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;echo ================================================&quot; &amp; chr(10) &amp; _
-&quot;zip -rDX &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; * -x *.svn*&quot;
+&quot;zip -rDX &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; * -x *.svn*&quot;)
 
 &apos;close all streams
 oTextOutputStream.closeOutput()

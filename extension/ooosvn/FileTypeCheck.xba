@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="FileTypeCheck" script:language="StarBasic">Function validatefiletype(sDocURL As String)
+&apos; Function to check that the active document is OOoSVN compatible
+
+oSFA       = createUNOService (&quot;com.sun.star.ucb.SimpleFileAccess&quot;)
+oInpStream = oSFA.openFileRead(sDocURL)
+
+Dim aProps(0) as new  com.sun.star.beans.PropertyValue
+aProps(0).Name = &quot;InputStream&quot;
+aProps(0).Value = oInpStream
+
+oTD = createUnoService(&quot;com.sun.star.document.TypeDetection&quot;)
+
+bDeepDetection: true
+sType = oTD.queryTypeByDescriptor(aProps(), true)
+
+oInpStream.closeInput()
+
+if sType &lt;&gt; &quot;writer8&quot; then
+if sType &lt;&gt; &quot;writer8_template&quot; then
+if sType &lt;&gt; &quot;writer_StarOffice_XML_Writer&quot; then
+if sType &lt;&gt; &quot;writerglobal8&quot; then
+if sType &lt;&gt; &quot;calc8&quot; then
+if sType &lt;&gt; &quot;calc8_template&quot; then
+if sType &lt;&gt; &quot;calc_StarOffice_XML_Calc&quot; then
+if sType &lt;&gt; &quot;impress8&quot; then
+if sType &lt;&gt; &quot;impress8_template&quot; then
+if sType &lt;&gt; &quot;impress_StarOffice_XML_Impress&quot; then
+if sType &lt;&gt; &quot;draw8&quot; then
+if sType &lt;&gt; &quot;draw8_template&quot; then
+if sType &lt;&gt; &quot;draw_StarOffice_XML_Draw&quot; then
+if sType &lt;&gt; &quot;math8&quot; then
+if sType &lt;&gt; &quot;math_StarOffice_XML_Math&quot; then
+if sType &lt;&gt; &quot;StarBase&quot; then
+msgbox (sDocURL &amp; &quot; is of file type &quot; &amp; sType &amp; &quot; and is not supported by OOoSVN.  Save in OpenDocument format if you wish to put your work under change control.&quot;, 16, &quot;Unsupported file type&quot;)
+validatefiletype=&quot;false&quot;
+end if
+end if
+end if
+end if
+end if
+end if
+end if
+end if
+end if
+end if
+end if
+end if
+end if
+end if
+end if
+end if
+
+end function 
+
+Function validatefiletypeODF(sDocURL As String)
+&apos; Function to check that a file is ODF
+
+oSFA       = createUNOService (&quot;com.sun.star.ucb.SimpleFileAccess&quot;)
+oInpStream = oSFA.openFileRead(sDocURL)
+
+Dim aProps(0) as new  com.sun.star.beans.PropertyValue
+aProps(0).Name = &quot;InputStream&quot;
+aProps(0).Value = oInpStream
+
+oTD = createUnoService(&quot;com.sun.star.document.TypeDetection&quot;)
+
+bDeepDetection: true
+sType = oTD.queryTypeByDescriptor(aProps(), true)
+
+oInpStream.closeInput()
+
+if sType &lt;&gt; &quot;writer8&quot; then
+if sType &lt;&gt; &quot;writer8_template&quot; then
+if sType &lt;&gt; &quot;writerglobal8&quot; then
+if sType &lt;&gt; &quot;calc8&quot; then
+if sType &lt;&gt; &quot;calc8_template&quot; then
+if sType &lt;&gt; &quot;impress8&quot; then
+if sType &lt;&gt; &quot;impress8_template&quot; then
+if sType &lt;&gt; &quot;draw8&quot; then
+if sType &lt;&gt; &quot;draw8_template&quot; then
+if sType &lt;&gt; &quot;math8&quot; then
+if sType &lt;&gt; &quot;StarBase&quot; then
+msgbox (sDocURL &amp; &quot; is not an ODF file and does not contain a document Thumbnail.  Operation cancelled.&quot;, 16, &quot;Non-ODF document&quot;)
+validatefiletypeODF=&quot;false&quot;
+end if
+end if
+end if
+end if
+end if
+end if
+end if
+end if
+end if
+end if
+end if
+
+end function 
+
+Function PrintFileType
+
+
+  Dim oDoc
+  Dim sDocURL
+  oDoc = ThisComponent
+
+ LoadTools
+  If (oDoc.hasLocation()) Then
+    sDocURL = oDoc.getURL()
+    else sDocURL = &quot;[no name]&quot;
+
+  End If
+
+oSFA       = createUNOService (&quot;com.sun.star.ucb.SimpleFileAccess&quot;)
+oInpStream = oSFA.openFileRead(sDocURL)
+
+Dim aProps(0) as new  com.sun.star.beans.PropertyValue
+aProps(0).Name = &quot;InputStream&quot;
+aProps(0).Value = oInpStream
+
+oTD = createUnoService(&quot;com.sun.star.document.TypeDetection&quot;)
+
+bDeepDetection: true
+sType = oTD.queryTypeByDescriptor(aProps(), true)
+
+msgbox(sType)
+
+end function 
+</script:module>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="VerifyDocStatus" script:language="StarBasic">Function VerifyDocInSVN(sDocURL As String)
+
+&apos; Used to distinguish between 0.3 and 0.4 repositories
+
+VerifyDocInSVN = &quot;false&quot;
+
+docUUID = getDocumentUUID
+WorkingDir = getWorkingDir
+msgbox(docuUUID)
+If docuUUID = &quot;&quot; then &apos;follow 0.3 path
+  
+	&apos; Test to see if file of same name is already under change control
+		If FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
+			VerifyDocInSVN = &quot;0.3&quot;
+		End If
+		End If
+&apos; follow 0.4 path
+	&apos; Test to see if file of same docUUID is already under change control
+		If FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then
+			VerifyDocInSVN = &quot;0.4&quot;
+		End If
+	&apos;	msgbox(verifydocinsvn)
+End Function
+</script:module>

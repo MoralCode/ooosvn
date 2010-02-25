@@ -166,24 +166,20 @@ Sub CommitSVN()
   
   docuUUID = GetDocumentUUID
   
-If VerifyDocInSVN(sDocURL) = &quot;0.3&quot; then &apos; in case of old 0.3 document
+&apos; Test to see if file of same name is already under change control
+If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then &apos;Version 0.3
+	
+		If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then &apos; Version 0.4
+			MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable file commits.&quot;, 16, &quot;Commit Error&quot;)
+			Exit Sub &apos; File not under version control so stop.
+		
+			Else docpath = docuUUID
 
-	CommitDir = FileNameoutofPath(sDocURL, &quot;/&quot;) 
-
+		End If
+	
+	Else docpath = FileNameoutofPath(sDocURL, &quot;/&quot;)
+		
 End If
-
-If VerifyDocInSVN(sDocURL) = &quot;0.4&quot; then &apos; in case of 0.4 docuUUID referenced document
-
-	CommitDir = docuUUID
-
-End If
-
-If VerifyDocInSVN(sDocURL) = &quot;false&quot; then &apos;in case document not found in repo
-
-	MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable file commits.&quot;, 16, &quot;Commit Error&quot;)
-	Exit Sub 
-End If
-
 	
 	Comment = &quot;Manual-commit&quot;
 
@@ -196,7 +192,12 @@ cQuote = Chr( 34 )
    oStatus = oDocFrame.createStatusIndicator()
    
    oStatus.start( &quot;Committing &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
-	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/commit.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; CommitDir &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; Comment &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote)
+
+	command =  &quot;sh &quot; &amp; WorkingDir &amp; &quot;/commit.sh &quot; &amp; &quot;&apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &quot; &amp; docpath &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; Comment &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
+
+	Shell( &quot;bash -c &quot; + cQuote + command + cQuote)  
+
+	&apos;End the status bar
 oStatus.end()	
 end sub
 
@@ -792,17 +793,19 @@ End If
 	
 	docuUUID = GetDocumentUUID
 	
-&apos; Test to see if file of same name is already under change control, also docu-UUID compliant
-	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
-	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then
-		MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable version management.&quot;, 16, &quot;Error&quot;)
-		Exit Sub
-	End If
-	End If
+&apos; Test to see if file of same name is already under change control
+	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then &apos;Version 0.3
 	
-	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then
-		MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable version management.&quot;, 16, &quot;Error&quot;)
-		Exit Sub
+		If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then &apos; Version 0.4
+			MsgBox( FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is not under version control.  Import the file to change control to enable version management.&quot;, 16, &quot;Error&quot;)
+			Exit Sub
+		
+			Else docpath = docuUUID
+
+		End If
+	
+		Else docpath = FileNameoutofPath(sDocURL, &quot;/&quot;)
+		
 	End If
 
 cQuote = Chr( 34 )
@@ -814,10 +817,10 @@ cQuote = Chr( 34 )
    
    oStatus.start( &quot;Loading log for &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;.  Please wait....&quot;, 10 )
 
-	Shell( &quot;bash -c &quot; + cQuote + &quot;cd &quot; &amp; WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/ &amp;&amp; svn log -v &gt; log.txt&quot; + cQuote, &quot;&quot;,6,true)
+	Shell( &quot;bash -c &quot; + cQuote + &quot;cd &quot; &amp; WorkingDir &amp; &quot;/&quot; &amp; docpath &amp; &quot;/ &amp;&amp; svn log -v &gt; log.txt&quot; + cQuote, &quot;&quot;,6,true)
 	
 	iNumber = Freefile
-	aFile = WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/log.txt&quot;
+	aFile = WorkingDir &amp; &quot;/&quot; &amp; docpath &amp; &quot;/log.txt&quot;
 Open aFile For Input As iNumber
 While not eof(iNumber)
 Line Input #iNumber, sLine
