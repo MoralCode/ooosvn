@@ -93,8 +93,9 @@ oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
 
 &apos;close all streams
 oTextOutputStream.closeOutput()
-
-&apos;import.sh
+&apos;###################################################
+&apos; Install import.sh
+&apos;###################################################
 If FileExists(WorkingDir &amp; &quot;/import.sh&quot;) then
 oFileAccessService.kill(WorkingDir &amp; &quot;/import.sh&quot;)
 end if
@@ -219,7 +220,7 @@ oTextOutputStream.setOutputStream(outStream)
 &quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;echo ================================================&quot; &amp; chr(10) &amp; _
-&quot;zip -rDX &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; * -x *.svn*)&quot;
+&quot;zip -rDX &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; * -x *.svn*&quot;
 
 &apos;close all streams
 oTextOutputStream.closeOutput()

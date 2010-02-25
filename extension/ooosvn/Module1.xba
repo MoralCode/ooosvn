@@ -139,7 +139,7 @@ End If
    end if
    
    &apos;If successful, reload the document
-
+	ThisComponent.setModified(False) &apos;Tell OOo not to check for external file modificiations.  This avoids the &quot;Cancel all changes?&quot; dialogue in OOo 3.
   dispatcher.executeDispatch(document, &quot;.uno:Reload&quot;, &quot;&quot;, 0, Array())
   oStatus.end()
   
@@ -392,6 +392,7 @@ oStatus.end()
 	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; documentDir &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
 	
 	&apos; Reload
+	ThisComponent.setModified(False) &apos;Tell OOo not to check for external file modificiations.  This avoids the &quot;Cancel all changes?&quot; dialogue in OOo 3.
 	dispatcher.executeDispatch(document, &quot;.uno:Reload&quot;, &quot;&quot;, 0, Array())
 oStatus.end()
    
@@ -494,6 +495,7 @@ End If
 	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
 	
 	&apos; Reload
+	ThisComponent.setModified(False) &apos;Tell OOo not to check for external file modificiations.  This avoids the &quot;Cancel all changes?&quot; dialogue in OOo 3.
 	dispatcher.executeDispatch(document, &quot;.uno:Reload&quot;, &quot;&quot;, 0, Array())
 	
 	oStatus.end()

@@ -51,7 +51,7 @@ End If
 end sub
 
 Sub OnSavedAsSVN()
-&apos; Sub for to assign to OnSavedAs event for automated import
+&apos; Sub to assign to OnSavedAs event for automated import
 
 dim document   as object
 dim dispatcher as object
@@ -119,6 +119,7 @@ OperationLog(&quot;Failed importing file to SVN! Log follows...&quot;)
    end if
    
    &apos;If successful, reload the document
+   ThisComponent.setModified(False) &apos;Tell OOo not to check for external file modificiations.  This avoids the &quot;Cancel all changes?&quot; dialogue in OOo 3.
      dispatcher.executeDispatch(document, &quot;.uno:Reload&quot;, &quot;&quot;, 0, Array())
 oStatus.end()  
 end sub
