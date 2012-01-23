@@ -208,6 +208,8 @@ sub InfoSVN()
   Dim sDocURL
   Dim repo
   oDoc = ThisComponent
+  
+  FirstRunCheck
 
 LoadTools
   If (oDoc.hasLocation()) Then
@@ -275,6 +277,8 @@ Sub ThumbnailsSVN()
 
 dim document   as object
 dim dispatcher as object
+
+FirstRunCheck
 
 document   = ThisComponent.CurrentController.Frame
 dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
@@ -394,6 +398,9 @@ dim document   as object
 dim dispatcher as object
 rem ----------------------------------------------------------------------
 rem get access to the document
+
+FirstRunCheck
+
 document   = ThisComponent.CurrentController.Frame
 dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
 
@@ -495,7 +502,6 @@ End If
 	&apos; Reload
 	ThisComponent.setModified(False) &apos;Tell OOo not to check for external file modificiations.  This avoids the &quot;Cancel all changes?&quot; dialogue in OOo 3.
 	dispatcher.executeDispatch(document, &quot;.uno:Reload&quot;, &quot;&quot;, 0, Array())
-	
 	oStatus.end()
    
 End sub
@@ -507,6 +513,8 @@ Sub RecoverSVN()
   Dim sDocURL
   oDoc = ThisComponent
   LoadTools
+
+FirstRunCheck
 
     repo = getRepo
     WorkingDir = getWorkingDir  
@@ -672,6 +680,8 @@ sub DiffSVN()
 dim document   as object
 dim dispatcher as object
 
+FirstRunCheck
+
 rem get access to the document
 document   = ThisComponent.CurrentController.Frame
 dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
@@ -790,6 +800,8 @@ Sub LogSVN()
 Dim oDlgLog As Object
 Dim txtLog As Object
 Dim sMsg As String
+
+FirstRunCheck
 
 	Dim oDoc
   Dim sDocURL

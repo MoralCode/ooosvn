@@ -10,7 +10,7 @@ dim dispatcher as object
 dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
 
 WorkingDir = getWorkingDir
-
+dim UUID
 &apos; Config file loading of SVN repo
 UUID=&quot;2abb7df7-5d29-0410-912f-aa4066f74452&quot;
    URL = GetURLfromUUID(UUID)
