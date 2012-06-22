@@ -156,13 +156,13 @@ oTextOutputStream.setOutputStream(outStream)
 &quot;elif grep -q &quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;RepositoryUUID\&quot; &amp; chr(34) &amp; &quot;&gt;&quot; &amp; chr(34) &amp; &quot; meta.xml&quot; &amp; chr(10) &amp; _
 &quot;# in case of 0.4 repo format&quot; &amp; chr(10) &amp; _
 &quot;then&quot; &amp; chr(10) &amp; _
-&quot;echo Updating Repository UUID&quot; &amp; chr(10) &amp; _
+&quot;echo Updating Repository UUID: $repo_uuid&quot; &amp; chr(10) &amp; _
 &quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;RepositoryUUID\&quot; &amp; chr(34) &amp; &quot;&gt;.\{36\}&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
 &quot;txtnew=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;RepositoryUUID\&quot; &amp; chr(34) &amp; &quot;&gt;$repo_uuid&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
 &quot;sed -i s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/ meta.xml&quot; &amp; chr(10) &amp; _
 &quot;&quot; &amp; chr(10) &amp; _
 &quot;else&quot; &amp; chr(10) &amp; _
-&quot;echo Inserting Repository UUID&quot; &amp; chr(10) &amp; _
+&quot;echo Inserting Repository UUID: $repo_uuid&quot; &amp; chr(10) &amp; _
 &quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;\/office:meta&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
 &quot;txtnew=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;RepositoryUUID\&quot; &amp; chr(34) &amp; &quot;&gt;$repo_uuid&lt;\/meta:user-defined&gt;&lt;\/office:meta&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
 &quot;sed -i s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/ meta.xml&quot; &amp; chr(10) &amp; _
@@ -172,41 +172,30 @@ oTextOutputStream.setOutputStream(outStream)
 &quot;if grep -q &quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;DocumentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;&quot; &amp; chr(34) &amp; &quot; meta.xml&quot; &amp; chr(10) &amp; _
 &quot;&quot; &amp; chr(10) &amp; _
 &quot;then&quot; &amp; chr(10) &amp; _
-&quot;echo Updating Document UUID&quot; &amp; chr(10) &amp; _
+&quot;echo Updating Document UUID: $5&quot; &amp; chr(10) &amp; _
 &quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;DocumentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;.\{36\}&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
 &quot;txtnew=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;DocumentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;$5&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
 &quot;sed -i s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/ meta.xml&quot; &amp; chr(10) &amp; _
 &quot;&quot; &amp; chr(10) &amp; _
 &quot;else&quot; &amp; chr(10) &amp; _
-&quot;echo Inserting Document UUID&quot; &amp; chr(10) &amp; _
+&quot;echo Inserting Document UUID: $5&quot; &amp; chr(10) &amp; _
 &quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;\/office:meta&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
 &quot;txtnew=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;DocumentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;$5&lt;\/meta:user-defined&gt;&lt;\/office:meta&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
 &quot;sed -i s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/ meta.xml&quot; &amp; chr(10) &amp; _
-&quot;&quot; &amp; chr(10) &amp; _
 &quot;fi&quot; &amp; chr(10) &amp; _
 &quot;&quot; &amp; chr(10) &amp; _
-&quot;if grep -q &quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;ParentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;&quot; &amp; chr(34) &amp; &quot; meta.xml&quot; &amp; chr(10) &amp; _
-&quot;# test if parent UUID exists&quot; &amp; chr(10) &amp; _
-&quot;then&quot; &amp; chr(10) &amp; _
-&quot;echo Old Parent UUID found&quot; &amp; chr(10) &amp; _
-&quot;if test -z $6 #test if parent UUID is given&quot; &amp; chr(10) &amp; _
-&quot;then&quot; &amp; chr(10) &amp; _
-&quot;echo Deleting old Parent UUID&quot; &amp; chr(10) &amp; _
-&quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;ParentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;.\{36\}&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
-&quot;sed -i s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;// meta.xml&quot; &amp; chr(10) &amp; _
+&quot;###ParentUUID processing&quot; &amp; chr(10) &amp; _
 &quot;&quot; &amp; chr(10) &amp; _
-&quot;else&quot; &amp; chr(10) &amp; _
-&quot;echo Updating Parent UUID&quot; &amp; chr(10) &amp; _
+&quot;if grep -q &quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;ParentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;&quot; &amp; chr(34) &amp; &quot; meta.xml&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;then&quot; &amp; chr(10) &amp; _
+&quot;echo Updating Parent UUID: $6&quot; &amp; chr(10) &amp; _
 &quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;ParentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;.\{36\}&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
 &quot;txtnew=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;ParentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;$6&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
 &quot;sed -i s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/ meta.xml&quot; &amp; chr(10) &amp; _
 &quot;&quot; &amp; chr(10) &amp; _
-&quot;fi&quot; &amp; chr(10) &amp; _
-&quot;elif test -z $6 #test if parent UUID is given&quot; &amp; chr(10) &amp; _
-&quot;then&quot; &amp; chr(10) &amp; _
-&quot;echo No Parent UUID given&quot; &amp; chr(10) &amp; _
 &quot;else&quot; &amp; chr(10) &amp; _
-&quot;echo Inserting Parent UUID&quot; &amp; chr(10) &amp; _
+&quot;echo Inserting Parent UUID: $6&quot; &amp; chr(10) &amp; _
 &quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;\/office:meta&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
 &quot;txtnew=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;ParentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;$6&lt;\/meta:user-defined&gt;&lt;\/office:meta&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
 &quot;sed -i s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/ meta.xml&quot; &amp; chr(10) &amp; _
