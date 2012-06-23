@@ -1,4 +1,22 @@
 =======================================
+0.4.1 :: 2012-06-23
+=======================================
+### New features ###
+The initial name of a document is now stored in the documents metadata.  This
+will allow some new features in future.
+
+### Bug Fixes ###
+3481326 - Fixed problems with replacing the ParentUUID with a new ParentUUID in
+meta.xml.
+
+Made many other changes to import script to make sure that metadata is handled
+correctly and no left over junk tags exist.
+
+Added additional checks to see if it is the first run of the software or not.
+
+Fixed an issue in pulling down the userguide.
+
+=======================================
 0.4.0 :: 2010-02-25
 =======================================
 
@@ -6,7 +24,7 @@
 Every document is now assigned a 128-bit DocumentUUID to uniquely identify it.
 This has meant a major rewrite of how OOoSVN structures files with documents
 now being logged under their UUID rather than file name.  This means there are
-no file name limitations anymore.  It also means that if you rename or move a
+no file name limitations any more.  It also means that if you rename or move a
 file on your file system, it's still the same document and the history exists in
 SVN.  You can use spaces and you're not limited to only using a filename once. 
 I have tried to keep compatibility with older documents although they can also
@@ -23,7 +41,7 @@ The functionality of the Recovery module has if anything got worse.  This is
 dictated by the new docuUUID tracking as the name of the file is no longer
 known.
 
-1654527 - Files with same names can be distinguised.
+1654527 - Files with same names can be distinguished.
 
 1759995 - There is now much better feedback through the Last Operation Log
 function.  The output has been better structured with better narration so that
@@ -75,7 +93,7 @@ try to continue.  An error is now given and the process is ended.
 =======================================
 
 ### New features ###
-1805953 - Superceding versions will now be able to install as an upgrade via
+1805953 - Superseding versions will now be able to install as an upgrade via
 OOo's package manager in recent versions of OOo.  This will not work on top of
 pre-0.3.10 versions.  This will make upgrades much smoother and allow checking
 for updates on the OOo extension repository.
@@ -198,14 +216,14 @@ Thanks to monnier for spotting this error.
 ### New Features ###
 Added document existence check to file loading on recoverSVN and GetUserguide
 
-Added working dir and scripts installation tool.  This will create the home
+Added working directory and scripts installation tool.  This will create the home
 repository also.  It is recommended that users upgrading run Tools > Addons >
 Install OOoSVN scripts to check their scripts are up to date.
 
 No more two layered installation.  The outer ZIP file is the extension so just
 install the ZIP file in OOo through the extension manager and go.
 
-FirstRunCheck Function which checks for existence of workingdir, if not found it
+FirstRunCheck Function which checks for existence of working directory, if not found it
 creates the working directory, home repository and installs the scripts there. 
 This should make installation straight forward.
 
