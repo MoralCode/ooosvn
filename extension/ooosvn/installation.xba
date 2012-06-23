@@ -202,6 +202,34 @@ oTextOutputStream.setOutputStream(outStream)
 &quot;&quot; &amp; chr(10) &amp; _
 &quot;fi&quot; &amp; chr(10) &amp; _
 &quot;&quot; &amp; chr(10) &amp; _
+&quot;###Document name processing&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;if grep -q &quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;DocName\&quot; &amp; chr(34) &amp; &quot;&gt;&quot; &amp; chr(34) &amp; &quot; meta.xml&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;then&quot; &amp; chr(10) &amp; _
+&quot;echo Updating Document Name: $2&quot; &amp; chr(10) &amp; _
+&quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;DocName\&quot; &amp; chr(34) &amp; &quot;&gt;\([^&lt;][^&lt;]*\)&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;txtnew=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;DocName\&quot; &amp; chr(34) &amp; &quot;&gt;$2&lt;\/meta:user-defined&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;sed -i s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/ meta.xml&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;else&quot; &amp; chr(10) &amp; _
+&quot;echo Inserting Document Name: $2&quot; &amp; chr(10) &amp; _
+&quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;\/office:meta&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;txtnew=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;DocName\&quot; &amp; chr(34) &amp; &quot;&gt;$2&lt;\/meta:user-defined&gt;&lt;\/office:meta&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;sed -i s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;/&quot; &amp; chr(34) &amp; &quot;$txtnew&quot; &amp; chr(34) &amp; &quot;/ meta.xml&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;# delete junk tags&quot; &amp; chr(10) &amp; _
+&quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;RepositoryUUID\&quot; &amp; chr(34) &amp; &quot;\/&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;sed -i s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;// meta.xml&quot; &amp; chr(10) &amp; _
+&quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;DocumentUUID\&quot; &amp; chr(34) &amp; &quot;\/&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;sed -i s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;// meta.xml&quot; &amp; chr(10) &amp; _
+&quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;ParentUUID\&quot; &amp; chr(34) &amp; &quot;\/&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;sed -i s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;// meta.xml&quot; &amp; chr(10) &amp; _
+&quot;txtold=&quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;DocName\&quot; &amp; chr(34) &amp; &quot;\/&gt;&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;sed -i s/&quot; &amp; chr(34) &amp; &quot;$txtold&quot; &amp; chr(34) &amp; &quot;// meta.xml&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
 &quot;echo updated metadata&quot; &amp; chr(10) &amp; _
 &quot;echo ================================================&quot; &amp; chr(10) &amp; _
 &quot;# Import&quot; &amp; chr(10) &amp; _
