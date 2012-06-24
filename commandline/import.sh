@@ -37,13 +37,13 @@ sed -i s/"$txtold"/"$txtnew"/ meta.xml
 elif grep -q "<meta:user-defined meta:name=\"RepositoryUUID\">" meta.xml
 # in case of 0.4 repo format
 then
-echo Updating Repository UUID
+echo Updating Repository UUID: $repo_uuid
 txtold="<meta:user-defined meta:name=\"RepositoryUUID\">.\{36\}<\/meta:user-defined>"
 txtnew="<meta:user-defined meta:name=\"RepositoryUUID\">$repo_uuid<\/meta:user-defined>"
 sed -i s/"$txtold"/"$txtnew"/ meta.xml
 
 else
-echo Inserting Repository UUID
+echo Inserting Repository UUID: $repo_uuid
 txtold="<\/office:meta>"
 txtnew="<meta:user-defined meta:name=\"RepositoryUUID\">$repo_uuid<\/meta:user-defined><\/office:meta>"
 sed -i s/"$txtold"/"$txtnew"/ meta.xml
@@ -53,46 +53,63 @@ fi
 if grep -q "<meta:user-defined meta:name=\"DocumentUUID\">" meta.xml
 
 then
-echo Updating Document UUID
+echo Updating Document UUID: $5
 txtold="<meta:user-defined meta:name=\"DocumentUUID\">.\{36\}<\/meta:user-defined>"
 txtnew="<meta:user-defined meta:name=\"DocumentUUID\">$5<\/meta:user-defined>"
 sed -i s/"$txtold"/"$txtnew"/ meta.xml
 
 else
-echo Inserting Document UUID
+echo Inserting Document UUID: $5
 txtold="<\/office:meta>"
 txtnew="<meta:user-defined meta:name=\"DocumentUUID\">$5<\/meta:user-defined><\/office:meta>"
 sed -i s/"$txtold"/"$txtnew"/ meta.xml
-
 fi
 
-if grep -q "<meta:user-defined meta:name=\"ParentUUID\">" meta.xml
-# test if parent UUID exists
-then
-echo Old Parent UUID found
-if test -z $6 #test if parent UUID is given
-then
-echo Deleting old Parent UUID
-txtold="<meta:user-defined meta:name=\"ParentUUID\">.\{36\}<\/meta:user-defined>"
-sed -i s/"$txtold"// meta.xml
+###ParentUUID processing
 
-else
-echo Updating Parent UUID
+if grep -q "<meta:user-defined meta:name=\"ParentUUID\">" meta.xml
+
+then
+echo Updating Parent UUID: $6
 txtold="<meta:user-defined meta:name=\"ParentUUID\">.\{36\}<\/meta:user-defined>"
 txtnew="<meta:user-defined meta:name=\"ParentUUID\">$6<\/meta:user-defined>"
 sed -i s/"$txtold"/"$txtnew"/ meta.xml
 
-fi
-elif test -z $6 #test if parent UUID is given
-then
-echo No Parent UUID given
 else
-echo Inserting Parent UUID
+echo Inserting Parent UUID: $6
 txtold="<\/office:meta>"
 txtnew="<meta:user-defined meta:name=\"ParentUUID\">$6<\/meta:user-defined><\/office:meta>"
 sed -i s/"$txtold"/"$txtnew"/ meta.xml
 
 fi
+
+###Document name processing
+
+if grep -q "<meta:user-defined meta:name=\"DocName\">" meta.xml
+
+then
+echo Updating Document Name: $2
+txtold="<meta:user-defined meta:name=\"DocName\">\([^<][^<]*\)<\/meta:user-defined>"
+txtnew="<meta:user-defined meta:name=\"DocName\">$2<\/meta:user-defined>"
+sed -i s/"$txtold"/"$txtnew"/ meta.xml
+
+else
+echo Inserting Document Name: $2
+txtold="<\/office:meta>"
+txtnew="<meta:user-defined meta:name=\"DocName\">$2<\/meta:user-defined><\/office:meta>"
+sed -i s/"$txtold"/"$txtnew"/ meta.xml
+
+fi
+
+# delete junk tags
+txtold="<meta:user-defined meta:name=\"RepositoryUUID\"\/>"
+sed -i s/"$txtold"// meta.xml
+txtold="<meta:user-defined meta:name=\"DocumentUUID\"\/>"
+sed -i s/"$txtold"// meta.xml
+txtold="<meta:user-defined meta:name=\"ParentUUID\"\/>"
+sed -i s/"$txtold"// meta.xml
+txtold="<meta:user-defined meta:name=\"DocName\"\/>"
+sed -i s/"$txtold"// meta.xml
 
 echo updated metadata
 echo ================================================

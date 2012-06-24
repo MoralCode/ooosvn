@@ -10,4 +10,6 @@
  <library:element library:name="OOoEvents"/>
  <library:element library:name="FileTypeCheck"/>
  <library:element library:name="VerifyDocStatus"/>
+ <library:element library:name="BulkImport"/>
+ <library:element library:name="UnitImport"/>
 </library:library>

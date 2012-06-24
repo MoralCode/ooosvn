@@ -384,7 +384,9 @@ oTextOutputStream.setOutputStream(outStream)
 &apos;close all streams
 oTextOutputStream.closeOutput()
 
+&apos;###################################################
 &apos;userguide.sh
+&apos;###################################################
 If FileExists(WorkingDir &amp; &quot;/userguide.sh&quot;) then
 oFileAccessService.kill(WorkingDir &amp; &quot;/userguide.sh&quot;)
 end if
@@ -407,12 +409,101 @@ oTextOutputStream.setOutputStream(outStream)
 &apos;close all streams
 oTextOutputStream.closeOutput()
 
+&apos;###################################################
+&apos;bulklist.sh
+&apos;###################################################
+If FileExists(WorkingDir &amp; &quot;/bulklist.sh&quot;) then
+oFileAccessService.kill(WorkingDir &amp; &quot;/bulklist.sh&quot;)
+end if
+outStream = oFileAccessService.OpenFileWrite(WorkingDir &amp; &quot;/bulklist.sh&quot;)
+oTextOutputStream.setOutputStream(outStream)
+
+ oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
+&quot;#Script to carry out listing of all valid OpenDocument files in a path which are not in OOoSVN.&quot; &amp; chr(10) &amp; _
+&quot;#Usage: bulklist.sh [path] [OOoSVN working directory]&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;# list all writable files with correct extensions recursively, minus .ooosvn/&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
+&quot;echo &quot; &amp; chr(34) &amp; &quot;Generating OpenDocument file list...&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
+&quot;cd $2&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;#remove leftover files&quot; &amp; chr(10) &amp; _
+&quot;rm bulklist.txt&quot; &amp; chr(10) &amp; _
+&quot;rm bulklist2.txt&quot; &amp; chr(10) &amp; _
+&quot;echo Listing any invalid files:&quot; &amp; chr(10) &amp; _
+&quot;find &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; -xtype f -perm -u=w -iname &apos;*.odt&apos; -not -path &quot; &amp; chr(34) &amp; &quot;*.ooosvn*&quot; &amp; chr(34) &amp; &quot; -o -perm -u=w -iname &apos;*.ods&apos; -not -path &quot; &amp; chr(34) &amp; &quot;*.ooosvn*&quot; &amp; chr(34) &amp; &quot; -o -perm -u=w -iname &apos;*.odp&apos; -not -path &quot; &amp; chr(34) &amp; &quot;*.ooosvn*&quot; &amp; chr(34) &amp; &quot; -o -perm -u=w -iname &apos;*.odb&apos; -not -path &quot; &amp; chr(34) &amp; &quot;*.ooosvn*&quot; &amp; chr(34) &amp; &quot; -o -perm -u=w -iname &apos;*.odg&apos; -not -path &quot; &amp; chr(34) &amp; &quot;*.ooosvn*&quot; &amp; chr(34) &amp; &quot; -o -perm -u=w -iname &apos;*.odf&apos; -not -path &quot; &amp; chr(34) &amp; &quot;*.ooosvn*&quot; &amp; chr(34) &amp; &quot; &gt; bulklist.txt&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;#set variables&quot; &amp; chr(10) &amp; _
+&quot;a=0&quot; &amp; chr(10) &amp; _
+&quot;already=0&quot; &amp; chr(10) &amp; _
+&quot;broken=0&quot; &amp; chr(10) &amp; _
+&quot;import=0&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;while read line&quot; &amp; chr(10) &amp; _
+&quot;do a=$(($a+1));&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;### Reading DocumentUUID and seeing if this file is already under control&quot; &amp; chr(10) &amp; _
+&quot;testmeta=`unzip -p &quot; &amp; chr(34) &amp; &quot;$line&quot; &amp; chr(34) &amp; &quot; meta.xml | grep &quot; &amp; chr(34) &amp; &quot;&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;DocumentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;&quot; &amp; chr(34) &amp; &quot; | wc -l`&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;if [ $testmeta = &quot; &amp; chr(34) &amp; &quot;1&quot; &amp; chr(34) &amp; &quot; ]&quot; &amp; chr(10) &amp; _
+&quot;then&quot; &amp; chr(10) &amp; _
+&quot;docuUUID=`unzip -p &quot; &amp; chr(34) &amp; &quot;$line&quot; &amp; chr(34) &amp; &quot; meta.xml | awk &apos;/&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;DocumentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;/,/&lt;\/meta:user-defined&gt;/&apos; | sed &apos;s/\(.*\)\(&lt;meta:user-defined meta:name=\&quot; &amp; chr(34) &amp; &quot;DocumentUUID\&quot; &amp; chr(34) &amp; &quot;&gt;\)\(.*\)\(&lt;\/meta:user-defined&gt;\)\(.*\)/\3/&apos; | head -c36`&quot; &amp; chr(10) &amp; _
+&quot;#echo $line already has a DocuUUID: $docuUUID&quot; &amp; chr(10) &amp; _
+&quot;if [ -d ~/.ooosvn/$docuUUID/.svn/ ]&quot; &amp; chr(10) &amp; _
+&quot;then&quot; &amp; chr(10) &amp; _
+&quot;# the document UUID is already in the working directory so skip it&quot; &amp; chr(10) &amp; _
+&quot;already=$(($already+1))&quot; &amp; chr(10) &amp; _
+&quot;else&quot; &amp; chr(10) &amp; _
+&quot;# there is a document UUID but it isn&apos;t in the working directory so list it&quot; &amp; chr(10) &amp; _
+&quot;echo $line &gt;&gt; bulklist2.txt&quot; &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;else&quot; &amp; chr(10) &amp; _
+&quot;# file does not have a DocuUUID so check if it has a meta.xml&quot; &amp; chr(10) &amp; _
+&quot;unzip -t &quot; &amp; chr(34) &amp; &quot;$line&quot; &amp; chr(34) &amp; &quot; meta.xml &amp;&gt; ziptemp.txt&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;if grep -q &quot; &amp; chr(34) &amp; &quot;cannot find zipfile directory in one of&quot; &amp; chr(34) &amp; &quot; ziptemp.txt&quot; &amp; chr(10) &amp; _
+&quot;then&quot; &amp; chr(10) &amp; _
+&quot;# not a valid zip file so we will skip this one&quot; &amp; chr(10) &amp; _
+&quot;echo &quot; &amp; chr(34) &amp; &quot;$line does not appear to be a valid Zip file.  Skipping.&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;broken=$(($broken+1))&quot; &amp; chr(10) &amp; _
+&quot;else&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;if grep -q &quot; &amp; chr(34) &amp; &quot;caution: filename not matched:  meta.xml&quot; &amp; chr(34) &amp; &quot; ziptemp.txt&quot; &amp; chr(10) &amp; _
+&quot;then&quot; &amp; chr(10) &amp; _
+&quot;# no meta.xml file so we will skip this one&quot; &amp; chr(10) &amp; _
+&quot;echo $line does not contain meta.xml.  Skipping.&quot; &amp; chr(10) &amp; _
+&quot;broken=$(($broken+1))&quot; &amp; chr(10) &amp; _
+&quot;else&quot; &amp; chr(10) &amp; _
+&quot;# there is a meta.xml so valid file for us to list&quot; &amp; chr(10) &amp; _
+&quot;echo $line &gt;&gt; bulklist2.txt&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;done &lt; &quot; &amp; chr(34) &amp; &quot;bulklist.txt&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
+&quot;echo &quot; &amp; chr(34) &amp; &quot;Total possible OpenDocument matches: $a&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;echo &quot; &amp; chr(34) &amp; &quot;Invalid files: $broken&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;echo &quot; &amp; chr(34) &amp; &quot;Already in OOoSVN: $already&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;import=$((a-already-broken))&quot; &amp; chr(10) &amp; _
+&quot;echo &quot; &amp; chr(34) &amp; &quot;Number of files to be imported: $import&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;echo ================================================&quot;
+
+&apos;close all streams
+oTextOutputStream.closeOutput()
+
+&apos;###################################################
+
 &apos; test to make sure script creation worked
 If Not FileExists(WorkingDir &amp; &quot;/commit.sh&quot;) then
 
 MsgBox(&quot;Failed to create scripts in&quot; &amp; WorkingDir,48,&quot;Error&quot;)
 
-end if
+End If
 
 end Function
 

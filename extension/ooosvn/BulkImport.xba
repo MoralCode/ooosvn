@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="BulkImport" script:language="StarBasic">REM  *****  BASIC  *****
+
+&apos; Define oDlgBulkImport so we can close it properly in a seperate function
+Public oDlgBulkImport As Object
+
+Function PickSearchDir
+&apos; Function to prompt user to select the directory to search for all OpenDocument files
+
+FirstRunCheck
+
+&apos;Message box help
+If MsgBox(&quot;Welcome to the bulk import wizard.  The stages are:&quot; &amp; chr(13) &amp; chr(13) &amp; &quot;1. Select the path to recursively search.  All ODF file extensions will be searched on, readonly and invalid files excluded.&quot;  &amp; chr(13) &amp; chr(13) &amp; &quot;2. The list of files will be displayed for confirmation.&quot; &amp; chr(13) &amp; chr(13) &amp; &quot;3. The import process will be run, this may take several seconds per file.&quot; &amp; chr(13) &amp; chr(13) &amp; &quot;4. Confirmation of completion will be shown&quot; &amp; chr(13) &amp; chr(13) &amp; &quot;It is recommended that you backup your files before continuing.  Do you wish to continue?&quot;,4,&quot;Bulk Import Wizard&quot;) =7 Then 
+   Exit function
+End If
+
+dim document   as object
+Dim oDoc
+Dim sDirectory As String
+oDoc = ThisComponent
+
+LoadTools
+
+	aService = CreateUnoService(&quot;com.sun.star.util.PathSubstitution&quot;)
+	sUserPath = aService.substituteVariables(&quot;$(home)&quot;, true)
+
+&apos;Select output directory
+   
+  oFilePicker = CreateUnoService( &quot;com.sun.star.ui.dialogs.FolderPicker&quot; )
+	      sFilePickerArgs = com.sun.star.ui.dialogs.TemplateDescription.FILEOPEN_SIMPLE
+
+&apos; Pass some arguments to it
+   With oFilePicker
+           &apos;.Initialize( sFilePickerArgs() )
+           .setTitle( &quot;Select directory&quot; )
+           .setDisplayDirectory( converttoURL(sUserPath))
+          &apos; .Execute( sFilePickerArgs() )
+                      
+   End With
+
+&apos; If the savepath is selected return the complete path and display it in an messagebox   
+
+   If oFilePicker.execute() Then
+      sDirectory = oFilePicker.getDirectory()
+      else
+	exit Function
+  End If
+  
+  &apos; Pass the directory to ListFiles function
+  ListFiles(ConvertFromURL(sDirectory))
+
+End Function
+
+Function ListFiles (sDirectory As String)
+&apos; Function to invoke the bulklist.sh script
+
+dim document   as object
+Dim oDoc
+Dim sDocURL
+oDoc = ThisComponent
+
+WorkingDir = getWorkingDir
+
+&apos;msgbox sDirectory
+
+cQuote = Chr( 34 )
+
+&apos;  Status Bar Message
+   oDocCtrl = oDoc.getCurrentController()
+   oDocFrame = oDocCtrl.getFrame()
+
+   oStatus = oDocFrame.createStatusIndicator()
+   
+   oStatus.start( &quot;Searching &quot; &amp; sDirectory &amp; &quot; for OpenDocument files.  Please wait....&quot;, 10 )
+
+command = &quot;sh &quot; &amp; WorkingDir &amp; &quot;/bulklist.sh &quot; &amp; sDirectory &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
+
+&apos;msgbox( &quot;bash -c &quot; + cQuote + command + cQuote)
+Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)
+
+  oStatus.end()
+
+ImportListDlg
+
+End Function
+
+Function ImportListDlg
+&apos; Function for loading the help dialogue.
+
+LoadTools
+    If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
+
+Dim FileList As Object
+Dim sMsg As String
+
+    WorkingDir = getWorkingDir
+
+	oDlgBulkImport = _
+		CreateUnoDialog(DialogLibraries.ooosvn.DlgBulkImport)
+	
+	With oDlgBulkImport
+		FileList = .getControl(&quot;txtListing&quot;)
+	End With
+
+	iNumber = Freefile
+	aFile = WorkingDir &amp; &quot;/bulklist2.txt&quot;
+	
+	if FileExists(aFile) then
+	
+		filecount=0
+		Open aFile For Input As iNumber
+		While not eof(iNumber)
+		Line Input #iNumber, sLine
+			If sLine &lt;&gt;&quot;&quot; then
+				sMsg = sMsg &amp; sLine &amp; chr(13)
+				filecount=filecount+1
+			end if
+		wend
+		Close #iNumber
+
+	else
+		Msgbox(&quot;No files found to import.&quot;, 16, &quot;Error&quot;)
+		exit function
+	end if
+
+	FileList.Text = sMsg
+	oDlgBulkImport.Title = &quot;Bulk Import file listing: &quot; &amp; filecount &amp; &quot; files&quot;
+	oDlgBulkImport.execute
+	
+End Function
+
+Function CloseDlgBulkImport
+&apos; Function to close the bulk import window
+
+oDlgBulkImport.endExecute
+BulkImport
+
+End Function
+
+Function BulkImport
+&apos;Function to pull names  and parse them to the import function
+
+Dim sLine as String
+Dim sFilename as String
+dim document   as object
+Dim oDoc
+Dim sDocURL
+oDoc = ThisComponent
+
+&apos;msgbox(&quot;import comes here&quot;)
+LoadTools
+    If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
+      WorkingDir = getWorkingDir
+
+&apos; Line number count
+
+	iNumber = Freefile
+	aFile = WorkingDir &amp; &quot;/bulklist2.txt&quot;
+	TotalFiles=0
+	Open aFile For Input As iNumber
+	While not eof(iNumber)
+	Line Input #iNumber, sLine
+	If sLine &lt;&gt;&quot;&quot; then
+		TotalFiles=TotalFiles+1
+	end if
+	wend
+	Close #iNumber
+
+
+&apos; start status bar
+   oDocCtrl = oDoc.getCurrentController()
+   oDocFrame = oDocCtrl.getFrame()
+
+   oStatus = oDocFrame.createStatusIndicator()
+   
+   oStatus.start( &quot;Importing &quot; &amp; TotalFiles &amp; &quot; OpenDocument files.  Please wait....&quot;, TotalFiles )
+
+	iNumber = Freefile
+	aFile = WorkingDir &amp; &quot;/bulklist2.txt&quot;
+	filecount=0
+	failcount=0
+	Open aFile For Input As iNumber
+	While not eof(iNumber)
+	Line Input #iNumber, sLine
+	If sLine &lt;&gt;&quot;&quot; then
+		filecount=filecount+1
+		oStatus.value=filecount
+&apos;		oStatus.Text =  &quot;Importing &quot; &amp; FileCount &amp; &quot;/&quot; &amp; TotalFiles &amp; &quot; - &quot; &amp; sLine
+		failcount=failcount+UnitImport.UnitImport(sLine)	
+	end if
+	wend
+	Close #iNumber
+
+  oStatus.end()
+  
+  &apos;show the log to end
+If MsgBox(&quot;Import complete:&quot; &amp; chr(13) &amp; chr(13) &amp; filecount-failcount &amp; &quot; files successfully imported&quot;  &amp; chr(13) &amp; failcount &amp; &quot; failures&quot; &amp; chr(13) &amp; chr(13) &amp; &quot;Open log file?&quot;,4,&quot;Bulk Import Complete&quot;) =6 Then 
+	Module1.OperationLog(&quot;Bulk import complete.&quot;)
+End If 
+
+End Function
+
+
+
+</script:module>
