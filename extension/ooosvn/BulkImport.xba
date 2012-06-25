@@ -4,55 +4,155 @@
 
 &apos; Define oDlgBulkImport so we can close it properly in a seperate function
 Public oDlgBulkImport As Object
+Public oDlgBulkImportStart As Object
+Public SearchPath As Object
 
-Function PickSearchDir
-&apos; Function to prompt user to select the directory to search for all OpenDocument files
+Function BulkImportWizard
+&apos; Starts the bulk import process
 
-FirstRunCheck
+LoadTools
 
-&apos;Message box help
-If MsgBox(&quot;Welcome to the bulk import wizard.  The stages are:&quot; &amp; chr(13) &amp; chr(13) &amp; &quot;1. Select the path to recursively search.  All ODF file extensions will be searched on, readonly and invalid files excluded.&quot;  &amp; chr(13) &amp; chr(13) &amp; &quot;2. The list of files will be displayed for confirmation.&quot; &amp; chr(13) &amp; chr(13) &amp; &quot;3. The import process will be run, this may take several seconds per file.&quot; &amp; chr(13) &amp; chr(13) &amp; &quot;4. Confirmation of completion will be shown&quot; &amp; chr(13) &amp; chr(13) &amp; &quot;It is recommended that you backup your files before continuing.  Do you wish to continue?&quot;,4,&quot;Bulk Import Wizard&quot;) =7 Then 
-   Exit function
-End If
+    If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
+  
+  	aService = CreateUnoService(&quot;com.sun.star.util.PathSubstitution&quot;)
+	sUserPath = aService.substituteVariables(&quot;$(home)&quot;, true)
+
+&apos; Load the GUI
+oDlgBulkImportStart = _
+		CreateUnoDialog(DialogLibraries.ooosvn.DlgBulkImportStart)
+	
+&apos;	Dialog_Initialize
+
+With oDlgBulkImportStart
+		SearchPath = .getControl(&quot;txtSearchPath&quot;)
+	End With
+	
+	
+	SearchPath.Text = ConvertFromURL(sUserPath)
+	
+	oDlgBulkImportStart.execute
+	
+&apos;	oDlgBulkImportStart.dispose
+
+&apos;FileSearch
+
+End Function
+
+Function PickDirectory
+&apos; Show a directory picker
 
 dim document   as object
 Dim oDoc
 Dim sDirectory As String
+&apos;Dim ReadSearchPath As Object
+
 oDoc = ThisComponent
 
 LoadTools
 
 	aService = CreateUnoService(&quot;com.sun.star.util.PathSubstitution&quot;)
-	sUserPath = aService.substituteVariables(&quot;$(home)&quot;, true)
+	sDirectory = aService.substituteVariables(&quot;$(home)&quot;, true)
+
+&apos; Pull the directory across from the text box
+	SearchPath = oDlgBulkImportStart.GetControl(&quot;txtSearchPath&quot;) &apos;oDlgBulkImportStart.getModel().SearchPath.Text
+	sDirectory = SearchPath.text
 
 &apos;Select output directory
    
   oFilePicker = CreateUnoService( &quot;com.sun.star.ui.dialogs.FolderPicker&quot; )
 	      sFilePickerArgs = com.sun.star.ui.dialogs.TemplateDescription.FILEOPEN_SIMPLE
 
-&apos; Pass some arguments to it
    With oFilePicker
-           &apos;.Initialize( sFilePickerArgs() )
            .setTitle( &quot;Select directory&quot; )
-           .setDisplayDirectory( converttoURL(sUserPath))
-          &apos; .Execute( sFilePickerArgs() )
-                      
+           .setDisplayDirectory(converttoURL(sDirectory))                      
    End With
 
-&apos; If the savepath is selected return the complete path and display it in an messagebox   
-
+&apos; If the search path is selected update the dialogue box field
    If oFilePicker.execute() Then
-      sDirectory = oFilePicker.getDirectory()
+      SearchPath.text = ConvertFromURL(oFilePicker.getDirectory())
       else
 	exit Function
   End If
-  
-  &apos; Pass the directory to ListFiles function
-  ListFiles(ConvertFromURL(sDirectory))
 
 End Function
 
-Function ListFiles (sDirectory As String)
+Function OnClickWizardContinue
+&apos; When the user clicks &apos;Continue&apos;, pull the values from the dialogue and mangle them into the search function
+
+Dim sDirectory As String
+Dim sFileTypes As String
+Dim sExclude As String
+
+	SearchPath = oDlgBulkImportStart.GetControl(&quot;txtSearchPath&quot;) &apos;oDlgBulkImportStart.getModel().SearchPath.Text
+	sDirectory = SearchPath.text
+
+&apos; Generate string of filetypes	
+TickODT = oDlgBulkImportStart.GetControl(&quot;TickODT&quot;)
+TickODS = oDlgBulkImportStart.GetControl(&quot;TickODS&quot;)
+TickODP = oDlgBulkImportStart.GetControl(&quot;TickODP&quot;)
+TickODG = oDlgBulkImportStart.GetControl(&quot;TickODG&quot;)
+TickODB = oDlgBulkImportStart.GetControl(&quot;TickODB&quot;)
+TickODF = oDlgBulkImportStart.GetControl(&quot;TickODF&quot;)
+	
+sFiletypes =&quot;&quot;
+If TickODT.state = 1 Then
+	sFileTypes = sFiletypes &amp; &quot;t&quot;
+End If
+
+If TickODS.state = 1 Then
+	sFileTypes = sFiletypes &amp; &quot;s&quot;
+End If
+
+If TickODP.state = 1 Then
+	sFileTypes = sFiletypes &amp; &quot;p&quot;
+End If
+
+If TickODG.state = 1 Then
+	sFileTypes = sFiletypes &amp; &quot;g&quot;
+End If
+
+If TickODB.state = 1 Then
+	sFileTypes = sFiletypes &amp; &quot;b&quot;
+End If
+
+If TickODF.state = 1 Then
+	sFileTypes = sFiletypes &amp; &quot;f&quot;
+End If
+
+If sFiletypes = &quot;&quot; Then
+	Msgbox(&quot;You must select at least one file type to continue.&quot;, 16, &quot;Error&quot;)
+	exit function
+end if
+
+&apos; Generate string of Exclusions
+TickSubdirectories = oDlgBulkImportStart.GetControl(&quot;TickSubdirectories&quot;)
+TickHidden = oDlgBulkImportStart.GetControl(&quot;TickHidden&quot;)
+
+sExclude =&quot;&quot;
+If TickSubdirectories.state = 1 Then
+	sExclude = sExclude &amp; &quot;s&quot;
+End If
+
+If TickHidden.state = 1 Then
+	sExclude = sExclude &amp; &quot;h&quot;
+End If
+
+&apos;Close the dialogue
+	oDlgBulkImportStart.endExecute
+
+&apos; Parse paramaters to the search function
+ListFiles(sDirectory, sFileTypes, sExclude)
+
+End Function
+
+Function OnClickWizardCancel
+&apos; When the user clicks &apos;Cancel&apos;, close the dialogue and stop
+	oDlgBulkImportStart.endExecute
+End Function
+
+Function ListFiles (sDirectory As String, sFileTypes As String, sExclude As String)
 &apos; Function to invoke the bulklist.sh script
 
 dim document   as object
@@ -76,7 +176,7 @@ cQuote = Chr( 34 )
    
 	oStatus.value=1
 
-command = &quot;sh &quot; &amp; WorkingDir &amp; &quot;/bulklist.sh &apos;&quot; &amp; sDirectory &amp; &quot;&apos; &quot; &amp; WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
+command = &quot;sh &quot; &amp; WorkingDir &amp; &quot;/bulklist.sh &apos;&quot; &amp; sDirectory &amp; &quot;&apos; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; sFileTypes &amp; &quot; &quot; &amp; sExclude &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
 
 &apos;msgbox( &quot;bash -c &quot; + cQuote + command + cQuote)
 Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)

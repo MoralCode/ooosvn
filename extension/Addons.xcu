@@ -202,7 +202,7 @@
 						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.sdb.OfficeDatabaseDocument</value>
 					</prop>
 					<prop oor:name="URL" oor:type="xs:string">
-						<value>macro:///ooosvn.BulkImport.PickSearchDir</value>
+						<value>macro:///ooosvn.BulkImport.BulkImportWizard</value>
 					</prop>
 					<prop oor:name="ImageIdentifier" oor:type="xs:string">
 						<value>%origin%/icons/image12</value>

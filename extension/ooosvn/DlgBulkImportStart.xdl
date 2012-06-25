@@ -5,26 +5,32 @@
   <dlg:style dlg:style-id="0" dlg:font-weight="150"/>
  </dlg:styles>
  <dlg:bulletinboard>
-  <dlg:textfield dlg:id="txtSearchPath" dlg:tab-index="0" dlg:left="50" dlg:top="6" dlg:width="175" dlg:height="13"/>
-  <dlg:button dlg:id="BrowseDirectory1" dlg:tab-index="1" dlg:left="226" dlg:top="6" dlg:width="8" dlg:height="13" dlg:default="true" dlg:value="..."/>
-  <dlg:titledbox dlg:id="FileTypes" dlg:tab-index="2" dlg:left="4" dlg:top="25" dlg:width="232" dlg:height="55">
+  <dlg:textfield dlg:id="txtSearchPath" dlg:tab-index="0" dlg:left="50" dlg:top="6" dlg:width="175" dlg:height="13" dlg:readonly="true"/>
+  <dlg:button dlg:id="BrowseDirectory1" dlg:tab-index="1" dlg:left="226" dlg:top="6" dlg:width="8" dlg:height="13" dlg:help-text="Click to select search directory" dlg:default="true" dlg:value="...">
+   <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:ooosvn.BulkImport.PickDirectory?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:button>
+  <dlg:titledbox dlg:id="FileTypes" dlg:tab-index="2" dlg:left="4" dlg:top="25" dlg:width="232" dlg:height="58">
    <dlg:title dlg:value="File Types"/>
   </dlg:titledbox>
-  <dlg:checkbox dlg:id="TickODT" dlg:tab-index="3" dlg:left="7" dlg:top="34" dlg:width="118" dlg:height="11" dlg:value="OpenDocument Text (*.odt)" dlg:checked="true"/>
-  <dlg:checkbox dlg:id="TickODS" dlg:tab-index="4" dlg:left="7" dlg:top="49" dlg:width="118" dlg:height="11" dlg:value="OpenDocument Spreadsheet (*.ods)" dlg:checked="true"/>
-  <dlg:checkbox dlg:id="TickODP" dlg:tab-index="5" dlg:left="7" dlg:top="65" dlg:width="116" dlg:height="11" dlg:value="OpenDocument Presentation (*.odp)" dlg:checked="true"/>
-  <dlg:checkbox dlg:id="TickODG" dlg:tab-index="6" dlg:left="125" dlg:top="34" dlg:width="108" dlg:height="11" dlg:value="OpenDocument Graphics (*.odg)" dlg:checked="true"/>
-  <dlg:checkbox dlg:id="TickODB" dlg:tab-index="7" dlg:left="125" dlg:top="49" dlg:width="108" dlg:height="11" dlg:value="OpenDocument Database (*.odb)" dlg:checked="true"/>
-  <dlg:checkbox dlg:id="TickODF" dlg:tab-index="8" dlg:left="125" dlg:top="65" dlg:width="108" dlg:height="11" dlg:value="OpenDocument Formula (*.odf)" dlg:checked="true"/>
+  <dlg:checkbox dlg:id="TickODT" dlg:tab-index="3" dlg:left="7" dlg:top="34" dlg:width="118" dlg:height="11" dlg:help-text="Include .odt files in search" dlg:value="OpenDocument Text (*.odt)" dlg:checked="true"/>
+  <dlg:checkbox dlg:id="TickODS" dlg:tab-index="4" dlg:left="7" dlg:top="49" dlg:width="118" dlg:height="11" dlg:help-text="Include .ods files in search" dlg:value="OpenDocument Spreadsheet (*.ods)" dlg:checked="true"/>
+  <dlg:checkbox dlg:id="TickODP" dlg:tab-index="5" dlg:left="7" dlg:top="65" dlg:width="116" dlg:height="11" dlg:help-text="Include .odp files in search" dlg:value="OpenDocument Presentation (*.odp)" dlg:checked="true"/>
+  <dlg:checkbox dlg:id="TickODG" dlg:tab-index="6" dlg:left="125" dlg:top="34" dlg:width="108" dlg:height="11" dlg:help-text="Include .odg files in search" dlg:value="OpenDocument Graphics (*.odg)" dlg:checked="true"/>
+  <dlg:checkbox dlg:id="TickODB" dlg:tab-index="7" dlg:left="125" dlg:top="49" dlg:width="108" dlg:height="11" dlg:help-text="Include .odb files in search" dlg:value="OpenDocument Database (*.odb)" dlg:checked="true"/>
+  <dlg:checkbox dlg:id="TickODF" dlg:tab-index="8" dlg:left="125" dlg:top="65" dlg:width="108" dlg:height="11" dlg:help-text="Include .odf files in search" dlg:value="OpenDocument Formula (*.odf)" dlg:checked="true"/>
   <dlg:text dlg:style-id="0" dlg:id="LabelPath" dlg:tab-index="9" dlg:left="6" dlg:top="9" dlg:width="43" dlg:height="13" dlg:value="Search Path:"/>
   <dlg:titledbox dlg:id="FrameExclusions" dlg:tab-index="10" dlg:left="4" dlg:top="89" dlg:width="233" dlg:height="43">
    <dlg:title dlg:value="Exclusions"/>
   </dlg:titledbox>
-  <dlg:checkbox dlg:id="TickExcludeHiddenFiles" dlg:tab-index="11" dlg:left="7" dlg:top="114" dlg:width="114" dlg:height="11" dlg:value="Hidden files and directories (.*)" dlg:checked="true"/>
   <dlg:checkbox dlg:id="TickReadonly" dlg:tab-index="12" dlg:disabled="true" dlg:left="125" dlg:top="114" dlg:width="102" dlg:height="11" dlg:value="Readonly files" dlg:checked="true"/>
   <dlg:checkbox dlg:id="TickAlreadyInSVN" dlg:tab-index="13" dlg:disabled="true" dlg:left="125" dlg:top="99" dlg:width="115" dlg:height="11" dlg:value="Documents already in OOoSVN" dlg:checked="true"/>
-  <dlg:checkbox dlg:id="TickRecursive" dlg:tab-index="14" dlg:left="7" dlg:top="99" dlg:width="101" dlg:height="11" dlg:value="Subdirectories" dlg:checked="false"/>
-  <dlg:button dlg:id="NextButton" dlg:tab-index="15" dlg:left="160" dlg:top="138" dlg:width="38" dlg:height="15" dlg:value="Next"/>
-  <dlg:button dlg:id="CancelButton" dlg:tab-index="16" dlg:left="201" dlg:top="138" dlg:width="35" dlg:height="15" dlg:value="Cancel"/>
+  <dlg:button dlg:id="NextButton" dlg:tab-index="15" dlg:left="160" dlg:top="138" dlg:width="38" dlg:height="15" dlg:value="Continue">
+   <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:ooosvn.BulkImport.OnClickWizardContinue?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:button>
+  <dlg:button dlg:id="CancelButton" dlg:tab-index="16" dlg:left="201" dlg:top="138" dlg:width="35" dlg:height="15" dlg:value="Cancel">
+   <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:ooosvn.BulkImport.OnClickWizardCancel?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:button>
+  <dlg:checkbox dlg:id="TickSubdirectories" dlg:tab-index="14" dlg:left="7" dlg:top="99" dlg:width="101" dlg:height="11" dlg:help-text="When disabled, search is recursive.  Select this to make the search non-recursive." dlg:value="Subdirectories" dlg:checked="false"/>
+  <dlg:checkbox dlg:id="TickHidden" dlg:tab-index="11" dlg:left="7" dlg:top="114" dlg:width="114" dlg:height="11" dlg:help-text="Excludes files with a &apos;.&apos; at the beginning.  Hidden files and directories are often used for storing user preferences." dlg:value="Hidden files and directories (.*)" dlg:checked="true"/>
  </dlg:bulletinboard>
 </dlg:window>
