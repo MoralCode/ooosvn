@@ -57,9 +57,13 @@ End If
    oStatus = oDocFrame.createStatusIndicator()
    oStatus.start( &quot;Committing &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
 
-command =  &quot;sh &quot; &amp; WorkingDir &amp; &quot;/commit.sh &quot; &amp; &quot;&apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &quot; &amp; docpath &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; Comment &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
+	oStatus.value=1
+
+command =  &quot;sh &quot; &amp; WorkingDir &amp; &quot;/commit.sh &quot; &amp; &quot;&apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &apos;&quot; &amp; docpath &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; Comment &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
 
 	Shell( &quot;bash -c &quot; + cQuote + command + cQuote)  
+
+	oStatus.value=9
 
 	&apos;End the status bar
 	oStatus.end()
@@ -121,18 +125,26 @@ parentUUID = getdocumentUUID &apos;If the document currently has a docUUID, make
    oStatus = oDocFrame.createStatusIndicator()
    
    oStatus.start( &quot;Importing &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
-   
-command = &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; &quot;&apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; DocuUUID &amp; &quot; &quot; &amp; parentUUID &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
+
+	oStatus.value=1
+
+command = &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; &quot;&apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &apos;&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; DocuUUID &amp; &quot; &quot; &amp; parentUUID &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
 
    Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)
-  
+
+	oStatus.value=7
+
    &apos;Test for success
    
    If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then
    
+	oStatus.end()
+   
 OperationLog(&quot;Failed importing file to SVN! Log follows...&quot;)
 	exit sub
    end if
+   
+	oStatus.value=8
    
    &apos;If successful, reload the document
    ThisComponent.setModified(False) &apos;Tell OOo not to check for external file modificiations.  This avoids the &quot;Cancel all changes?&quot; dialogue in OOo 3.
@@ -181,7 +193,7 @@ End If
     comment = &quot;tagtest&quot;
     &apos; tag the active version     
     cQuote = Chr( 34 )
-	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/tag.sh &quot; &amp; sDocURL2 &amp; &quot; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; copytype &amp; &quot; &quot; &amp; copyname &amp; &quot; &quot; &amp; comment &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote )
+	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/tag.sh &apos;&quot; &amp; sDocURL2 &amp; &quot;&apos; &apos;&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; copytype &amp; &quot; &quot; &amp; copyname &amp; &quot; &apos;&quot; &amp; comment &amp; &quot;&apos; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote )
   
 
   

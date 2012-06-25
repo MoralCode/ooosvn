@@ -423,10 +423,11 @@ oTextOutputStream.setOutputStream(outStream)
 &quot;#Usage: bulklist.sh [path] [OOoSVN working directory]&quot; &amp; chr(10) &amp; _
 &quot;&quot; &amp; chr(10) &amp; _
 &quot;# list all writable files with correct extensions recursively, minus .ooosvn/&quot; &amp; chr(10) &amp; _
+&quot;cd &quot; &amp; chr(34) &amp; &quot;$2&quot; &amp; chr(34) &amp; chr(10) &amp; _
 &quot;echo ================================================&quot; &amp; chr(10) &amp; _
-&quot;echo &quot; &amp; chr(34) &amp; &quot;Generating OpenDocument file list...&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;echo &quot; &amp; chr(34) &amp; &quot;Generating OpenDocument file list for:&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;echo &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; chr(10) &amp; _
 &quot;echo ================================================&quot; &amp; chr(10) &amp; _
-&quot;cd $2&quot; &amp; chr(10) &amp; _
 &quot;&quot; &amp; chr(10) &amp; _
 &quot;#remove leftover files&quot; &amp; chr(10) &amp; _
 &quot;rm bulklist.txt&quot; &amp; chr(10) &amp; _
@@ -540,7 +541,7 @@ msgbox (&quot;Repository creation failed.&quot; &amp; repo, 16, &quot;Error&quot
 exit function
 end if
 
-uuid = shell(&quot;svn info &quot; &amp; converttourl(sSVNURL) &amp; &quot;| grep UUID | cut -c18-&quot;)
+uuid = shell(&quot;svn info &apos;&quot; &amp; converttourl(sSVNURL) &amp; &quot;&apos; | grep UUID | cut -c18-&quot;)
 msgbox(sSVNURL)
 msgbox(uuid)
 

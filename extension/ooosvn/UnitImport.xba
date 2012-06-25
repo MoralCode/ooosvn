@@ -28,7 +28,7 @@ parentUUID = getdocumentUUID &apos;If the document currently has a docUUID, make
    
 &apos;   oStatus.start( &quot;Importing &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
    
-command = &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; &quot;&apos;&quot; &amp; sDocPath &amp; &quot;&apos; &quot; &amp; FileNameoutofPath(sDocPath, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; DocuUUID &amp; &quot; &quot; &amp; parentUUID &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
+command = &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; &quot;&apos;&quot; &amp; sDocPath &amp; &quot;&apos; &apos;&quot; &amp; FileNameoutofPath(sDocPath, &quot;/&quot;) &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; DocuUUID &amp; &quot; &quot; &amp; parentUUID &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
 
 &apos;msgbox (&quot;bash -c &quot; + cQuote + command + cQuote)
    Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)

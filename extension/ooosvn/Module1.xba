@@ -127,19 +127,20 @@ End If
    oStatus = oDocFrame.createStatusIndicator()
    
    oStatus.start( &quot;Importing &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
-
-command = &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; &quot;&apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; DocuUUID &amp; &quot; &quot; &amp; parentUUID &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
+oStatus.value=1
+command = &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; &quot;&apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &apos;&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; DocuUUID &amp; &quot; &quot; &amp; parentUUID &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
 
    Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)
 
    &apos;Test for success
-   
+oStatus.value=7
    If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then
     &apos; Display the log on failure
+	oStatus.end()
      OperationLog(&quot;Failed importing file to SVN! Log follows...&quot;)
 	exit sub
    end if
-   
+oStatus.value=8
    &apos;If successful, reload the document
 	ThisComponent.setModified(False) &apos;Tell OOo not to check for external file modificiations.  This avoids the &quot;Cancel all changes?&quot; dialogue in OOo 3.
   dispatcher.executeDispatch(document, &quot;.uno:Reload&quot;, &quot;&quot;, 0, Array())
@@ -192,11 +193,11 @@ cQuote = Chr( 34 )
    oStatus = oDocFrame.createStatusIndicator()
    
    oStatus.start( &quot;Committing &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
-
-	command =  &quot;sh &quot; &amp; WorkingDir &amp; &quot;/commit.sh &quot; &amp; &quot;&apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &quot; &amp; docpath &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; Comment &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
+oStatus.value=1
+	command =  &quot;sh &quot; &amp; WorkingDir &amp; &quot;/commit.sh &apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &apos;&quot; &amp; docpath &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &apos;&quot; &amp; Comment &amp; &quot;&apos; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
 
 	Shell( &quot;bash -c &quot; + cQuote + command + cQuote)  
-
+oStatus.value=9
 	&apos;End the status bar
 oStatus.end()	
 end sub
@@ -245,8 +246,12 @@ cQuote = Chr( 34 )
    oStatus = oDocFrame.createStatusIndicator()
    
    oStatus.start( &quot;Retrieving SVN information for &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;.  Please wait....&quot;, 10 )
-	Shell( &quot;bash -c &quot; + cQuote + &quot;cd &quot; &amp; WorkingDir &amp; &quot;/&quot; &amp; documentDir &amp; &quot;/ &amp;&amp; svn info &gt; &quot; &amp; WorkingDir &amp; &quot;/&quot; &amp; documentDir &amp; &quot;/info.txt&quot; + cQuote, &quot;&quot;,6,true)
-		
+	oStatus.value=1
+	
+	Shell( &quot;bash -c &quot; + cQuote + &quot;cd &apos;&quot; &amp; WorkingDir &amp; &quot;/&quot; &amp; documentDir &amp; &quot;/&apos; &amp;&amp; svn info &gt; &apos;&quot; &amp; WorkingDir &amp; &quot;/&quot; &amp; documentDir &amp; &quot;/info.txt&apos;&quot; + cQuote, &quot;&quot;,6,true)
+	
+	oStatus.value=7
+			
 	iNumber = Freefile
 	aFile = WorkingDir &amp; &quot;/&quot; &amp; documentDir &amp; &quot;/info.txt&quot;
 Open aFile For Input As iNumber
@@ -259,9 +264,13 @@ end if
 wend
 Close #iNumber
 
+oStatus.value=8
+
 if docuUUID &lt;&gt; &quot;&quot; then
 sMsg = sMsg &amp; chr(13) &amp; &quot;Document UUID: &quot; &amp; docuUUID &apos; append a line for docuUUID if it exists
 end if
+
+oStatus.value=9
 
 if parentUUID &lt;&gt; &quot;&quot; then
 sMsg = sMsg &amp; chr(13) &amp; &quot;Parent Document UUID: &quot; &amp; parentUUID &apos; same for parentUUID
@@ -330,7 +339,11 @@ End If
    
    oStatus.start( &quot;Retrieving version thumbnails for &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;.  Please wait....&quot;, 10 )
 
-   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/thumbnails.sh &quot; &amp; docpath &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;, 6, True)
+oStatus.value=1
+
+   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/thumbnails.sh &apos;&quot; &amp; docpath &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;, 6, True)
+
+oStatus.value=9
 
 oStatus.end()
 
@@ -380,11 +393,18 @@ oStatus.end()
    
    oStatus.start( &quot;Reverting &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to version &quot; &amp; version &amp; &quot;.  Please wait....&quot;, 10 )
 
-	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &quot; &amp; docpath &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+	oStatus.value=1
+
+	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &apos;&quot; &amp; docpath &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
 	
+	oStatus.value=8
+
 	&apos; Reload
 	ThisComponent.setModified(False) &apos;Tell OOo not to check for external file modificiations.  This avoids the &quot;Cancel all changes?&quot; dialogue in OOo 3.
 	dispatcher.executeDispatch(document, &quot;.uno:Reload&quot;, &quot;&quot;, 0, Array())
+	
+	oStatus.value=9
+	
 oStatus.end()
    
 End sub
@@ -442,7 +462,13 @@ End If
    oStatus = oDocFrame.createStatusIndicator()
    
    oStatus.start( &quot;Listing versions for &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;.  Please wait....&quot;, 10 )
-   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/listversions.sh &quot; &amp; docpath &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+   
+	oStatus.value=1
+   
+   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/listversions.sh &apos;&quot; &amp; docpath &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+   
+	oStatus.value=9
+   
 oStatus.end()
    &apos; The dialogue
    
@@ -497,11 +523,18 @@ End If
    
    oStatus.start( &quot;Reverting &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to version &quot; &amp; version &amp; &quot;.  Please wait....&quot;, 10 )
 
-	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &quot; &amp; docpath &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
-	
+	oStatus.value=1
+
+	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &apos;&quot; &amp; docpath &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+
+	oStatus.value=8
+
 	&apos; Reload
 	ThisComponent.setModified(False) &apos;Tell OOo not to check for external file modificiations.  This avoids the &quot;Cancel all changes?&quot; dialogue in OOo 3.
 	dispatcher.executeDispatch(document, &quot;.uno:Reload&quot;, &quot;&quot;, 0, Array())
+	
+	oStatus.value=9	
+
 	oStatus.end()
    
 End sub
@@ -528,8 +561,12 @@ FirstRunCheck
    
    oStatus.start( &quot;Listing documents in working directory.  Please wait....&quot;, 10 )
 
+	oStatus.value=1
+
 	&apos; Get document list
    Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/listdocuments.sh &quot; &amp; WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+   
+	oStatus.value=9
 
 oStatus.end()
 
@@ -575,8 +612,14 @@ oStatus.end()
    oStatus = oDocFrame.createStatusIndicator()
    
    oStatus.start( &quot;Listing versions for &quot; &amp; documentname &amp; &quot; in repository &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
+   
+	oStatus.value=1
+   
 	&apos; Get version list
-   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/listversions.sh &quot;  &amp; documentname &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/listversions.sh &apos;&quot;  &amp; documentname &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+   
+	oStatus.value=9
+   
 oStatus.end()
 
 &apos; If no versions directory exists, there must be a problem.
@@ -657,8 +700,13 @@ end if
    oStatus = oDocFrame.createStatusIndicator()
    
    oStatus.start( &quot;Recovering &quot; &amp; documentname &amp; &quot;, version &quot; &amp; version &amp; &quot; to &quot; &amp; outputURL &amp; &quot;.  Please wait....&quot;, 10 )
+   
+	oStatus.value=1
+   
    &apos;Output
-	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &apos;&quot; &amp; outputURL &amp; &quot;&apos; &quot; &amp; documentname &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &apos;&quot; &amp; outputURL &amp; &quot;&apos; &apos;&quot; &amp; documentname &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+
+	oStatus.value=9
 
 	outputfile = ConvertToURL(outputURL)
 
@@ -723,8 +771,12 @@ End If
    oStatus = oDocFrame.createStatusIndicator()
    
    oStatus.start( &quot;Listing versions for &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; in repository &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
-   
-   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/listversions.sh &quot; &amp; &quot; &quot; &amp; docpath &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+
+	oStatus.value=1
+
+   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/listversions.sh &quot; &amp; &quot; &apos;&quot; &amp; docpath &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+
+	oStatus.value=9
 
 oStatus.end()
    &apos; The dialogue
@@ -775,8 +827,12 @@ oStatus.end()
    oStatus = oDocFrame.createStatusIndicator()
    
    oStatus.start( &quot;Comparing latest version of &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; with version &quot; &amp; version &amp; &quot;.  Please wait....&quot;, 10 )
-   
-	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &quot; &amp; OutputURL &amp; &quot; &quot; &amp; docpath &amp; &quot; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+
+	oStatus.value=1
+
+	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &apos;&quot; &amp; OutputURL &amp; &quot;&apos; &apos;&quot; &amp; docpath &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+
+	oStatus.value=9
 
 &apos;	Compare documents
 	dim xFrame   as object
@@ -852,24 +908,33 @@ cQuote = Chr( 34 )
    
    oStatus.start( &quot;Loading log for &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;.  Please wait....&quot;, 10 )
 
-	Shell( &quot;bash -c &quot; + cQuote + &quot;cd &quot; &amp; WorkingDir &amp; &quot;/&quot; &amp; docpath &amp; &quot;/ &amp;&amp; svn log -v &gt; log.txt&quot; + cQuote, &quot;&quot;,6,true)
+	oStatus.value=1
+
+	Shell( &quot;bash -c &quot; + cQuote + &quot;cd &apos;&quot; &amp; WorkingDir &amp; &quot;/&quot; &amp; docpath &amp; &quot;/&apos; &amp;&amp; svn log -v &gt; log.txt&quot; + cQuote, &quot;&quot;,6,true)
+	
+	oStatus.value=9
 	
 	iNumber = Freefile
 	aFile = WorkingDir &amp; &quot;/&quot; &amp; docpath &amp; &quot;/log.txt&quot;
-Open aFile For Input As iNumber
-While not eof(iNumber)
-Line Input #iNumber, sLine
-If sLine &lt;&gt;&quot;&quot; then
-sMsg = sMsg &amp; sLine &amp; chr(13)
-end if
-wend
-Close #iNumber
+&apos;Open aFile For Input As iNumber
+&apos;While not eof(iNumber)
+&apos;Line Input #iNumber, sLine
+&apos;If sLine &lt;&gt;&quot;&quot; then
+&apos;sMsg = sMsg &amp; sLine &amp; chr(13)
+&apos;end if
+&apos;wend
+&apos;Close #iNumber
 
-	txtLog.Text = sMsg
-	oDlgLog.Title = &quot;Log for &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;)
+&apos;	txtLog.Text = sMsg
+&apos;	oDlgLog.Title = &quot;Log for &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;)
 		oStatus.end()
-	oDlgLog.execute
+&apos;	oDlgLog.execute
 
+If FileExists(aFile) then
+
+&apos; Load log.txt as a document to work around 65536 character string limit
+	StarDesktop.loadComponentfromURL(converttourl(aFile),&quot;_blank&quot;, 0, Array(MakePropertyValue(&quot;ReadOnly&quot;, True)))
+end if
 		
 End Sub
 
@@ -953,12 +1018,6 @@ If FileExists(aFile) then
 
 &apos; Load operation.log as a document to work around 65536 character string limit
 	StarDesktop.loadComponentfromURL(converttourl(aFile),&quot;_blank&quot;, 0, Array(MakePropertyValue(&quot;ReadOnly&quot;, True)))
-	&apos;oStatus.end()
-   &apos;		else
-   	&apos;	oStatus.end()
-   		
-   		&apos;Error Log window
-   	&apos;OperationLog(&quot;Failed to recover document! Log follows...&quot;)
 end if
 
 
