@@ -73,11 +73,15 @@ cQuote = Chr( 34 )
    oStatus = oDocFrame.createStatusIndicator()
    
    oStatus.start( &quot;Searching &quot; &amp; sDirectory &amp; &quot; for OpenDocument files.  Please wait....&quot;, 10 )
+   
+	oStatus.value=1
 
 command = &quot;sh &quot; &amp; WorkingDir &amp; &quot;/bulklist.sh &apos;&quot; &amp; sDirectory &amp; &quot;&apos; &quot; &amp; WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
 
 &apos;msgbox( &quot;bash -c &quot; + cQuote + command + cQuote)
 Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)
+
+	oStatus.value=9
 
   oStatus.end()
 

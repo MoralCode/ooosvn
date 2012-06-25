@@ -10,4 +10,5 @@
  <library:element library:name="DlgRepoSelect2"/>
  <library:element library:name="DlgImportUUID"/>
  <library:element library:name="DlgBulkImport"/>
+ <library:element library:name="DlgBulkImportStart"/>
 </library:library>
