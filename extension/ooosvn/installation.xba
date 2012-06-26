@@ -120,7 +120,8 @@ oTextOutputStream.setOutputStream(outStream)
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
 &quot;#Script to carry out initial import of document in SVN.&quot; &amp; chr(10) &amp; _
 &quot;#Usage: import.sh [document path] [document filename] [full repository URL] [working directory path] [Document UUID to assign] [Optional Document UUID of parent document to make child document]&quot; &amp; chr(10) &amp; _
-&quot;echo Document Path: $1 &quot; &amp; chr(10) &amp; _
+&quot;echo Importing $1&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
 &quot;echo Document filename: $2 &quot; &amp; chr(10) &amp; _
 &quot;echo Repository URL: $3 &quot; &amp; chr(10) &amp; _
 &quot;echo Working directory path: $4 &quot; &amp; chr(10) &amp; _
@@ -130,11 +131,18 @@ oTextOutputStream.setOutputStream(outStream)
 &quot;mkdir -v $4/$5/&quot; &amp; chr(10) &amp; _
 &quot;mkdir -v $4/$5/temp/&quot; &amp; chr(10) &amp; _
 &quot;echo ================================================&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
 &quot;if test -f &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; 		# test that file exists&quot; &amp; chr(10) &amp; _
 &quot;	then echo &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; found		# confirmation of file existence&quot; &amp; chr(10) &amp; _
 &quot;else&quot; &amp; chr(10) &amp; _
-&quot;	echo &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; not found.	# warn that file doesn&apos;t exist&quot; &amp; chr(10) &amp; _
+&quot;	# Error that file doesn&apos;t exist and exit&quot; &amp; chr(10) &amp; _
+&quot;	echo Fatal error!&quot; &amp; chr(10) &amp; _
+&quot;	echo &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; not found&quot; &amp; chr(10) &amp; _
+&quot;	echo &quot; &amp; chr(34) &amp; &quot;Maybe the filename includes a forbidden character: &amp; ; ( )&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;	echo Import aborted.&quot; &amp; chr(10) &amp; _
+&quot;	exit&quot; &amp; chr(10) &amp; _
 &quot;fi&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
 &quot;echo ================================================&quot; &amp; chr(10) &amp; _
 &quot;unzip -o &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; -d $4/$5/temp/ -x *.svn* # Spaces in filename fixed&quot; &amp; chr(10) &amp; _
 &quot;cd $4/$5/temp/&quot; &amp; chr(10) &amp; _
@@ -246,7 +254,7 @@ oTextOutputStream.setOutputStream(outStream)
 &quot;if [ $pwd != &quot; &amp; chr(34) &amp; &quot;${4}/${5}/trunk&quot; &amp; chr(34) &amp; &quot; ]&quot; &amp; chr(10) &amp; _
 &quot;then&quot; &amp; chr(10) &amp; _
 &quot;echo &quot;&amp; chr(34) &amp; &quot;Error: Working copy is not where it should be!&quot;&amp; chr(34) &amp; chr(10) &amp; _
-&quot;echo &quot;&amp; chr(34) &amp; &quot;Most likely cause is disallowed characters in document filename.&quot;&amp; chr(34) &amp; chr(10) &amp; _
+&quot;echo &quot;&amp; chr(34) &amp; &quot;Most likely cause is disallowed characters in document filename.  Exiting.&quot;&amp; chr(34) &amp; chr(10) &amp; _
 &quot;exit&quot; &amp; chr(10) &amp; _
 &quot;fi&quot; &amp; chr(10) &amp; _
 &quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
@@ -420,7 +428,10 @@ oTextOutputStream.setOutputStream(outStream)
 
  oTextOutputStream.writeString(&quot;#!/bin/bash&quot; &amp; chr(10) &amp; _
 &quot;#Script to carry out listing of all valid OpenDocument files in a path which are not in OOoSVN.&quot; &amp; chr(10) &amp; _
-&quot;#Usage: bulklist.sh [path] [OOoSVN working directory]&quot; &amp; chr(10) &amp; _
+&quot;#Usage: bulklist.sh [path] [OOoSVN working directory] [Filetypes] [Excludes]&quot; &amp; chr(10) &amp; _
+&quot;# Filetypes: any number of t, s, p, g, b or f, each matching an ODF type, eg. &apos;t&apos; for .odt.&quot; &amp; chr(10) &amp; _
+&quot;# Excludes: any number of s or h, s to exclude subdirectories (non-recursive), h to exclude hidden files and directories&quot; &amp; chr(10) &amp; _
+&quot;# Example: &apos;sh bulklist.sh tspgbf sh&apos; will search for *.odt, *.ods, *.odp, *.odg, *.odb and *.odf files, non-recursively, without hidden files or directories&quot; &amp; chr(10) &amp; _
 &quot;&quot; &amp; chr(10) &amp; _
 &quot;# list all writable files with correct extensions recursively, minus .ooosvn/&quot; &amp; chr(10) &amp; _
 &quot;cd &quot; &amp; chr(34) &amp; &quot;$2&quot; &amp; chr(34) &amp; chr(10) &amp; _
@@ -428,12 +439,88 @@ oTextOutputStream.setOutputStream(outStream)
 &quot;echo &quot; &amp; chr(34) &amp; &quot;Generating OpenDocument file list for:&quot; &amp; chr(34) &amp; chr(10) &amp; _
 &quot;echo &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; chr(10) &amp; _
 &quot;echo ================================================&quot; &amp; chr(10) &amp; _
+&quot;echo File types:&quot; &amp; chr(10) &amp; _
+&quot;# Extract the file types specified and put together the find parameters&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;filetypes=&quot; &amp; chr(34) &amp; chr(34) &amp; chr(10) &amp; _
+&quot;odt=&quot; &amp; chr(34) &amp; chr(34) &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;if [[ &quot; &amp; chr(34) &amp; &quot;$3&quot; &amp; chr(34) &amp; &quot; == *t* ]]&quot; &amp; chr(10) &amp; _
+&quot;  then&quot; &amp; chr(10) &amp; _
+&quot;  echo .odt - OpenDocument Text&quot; &amp; chr(10) &amp; _
+&quot;  filetypes=${filetypes}&quot; &amp; chr(34) &amp; &quot;-iname \&quot; &amp; chr(34) &amp; &quot;*.odt\&quot; &amp; chr(34) &amp; chr(34) &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;if [[ &quot; &amp; chr(34) &amp; &quot;$3&quot; &amp; chr(34) &amp; &quot; == *s* ]]&quot; &amp; chr(10) &amp; _
+&quot;  then&quot; &amp; chr(10) &amp; _
+&quot;  echo .ods - OpenDocument Spreadsheet&quot; &amp; chr(10) &amp; _
+&quot;  filetypes=${filetypes}&quot; &amp; chr(34) &amp; &quot; -o -iname \&quot; &amp; chr(34) &amp; &quot;*.ods\&quot; &amp; chr(34) &amp; chr(34) &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;if [[ &quot; &amp; chr(34) &amp; &quot;$3&quot; &amp; chr(34) &amp; &quot; == *p* ]]&quot; &amp; chr(10) &amp; _
+&quot;  then&quot; &amp; chr(10) &amp; _
+&quot;  echo .odp - OpenDocument Presentation&quot; &amp; chr(10) &amp; _
+&quot;  filetypes=${filetypes}&quot; &amp; chr(34) &amp; &quot; -o -iname \&quot; &amp; chr(34) &amp; &quot;*.odp\&quot; &amp; chr(34) &amp; chr(34) &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;if [[ &quot; &amp; chr(34) &amp; &quot;$3&quot; &amp; chr(34) &amp; &quot; == *g* ]]&quot; &amp; chr(10) &amp; _
+&quot;  then&quot; &amp; chr(10) &amp; _
+&quot;  echo .odg - OpenDocument Graphics&quot; &amp; chr(10) &amp; _
+&quot;  filetypes=${filetypes}&quot; &amp; chr(34) &amp; &quot; -o -iname \&quot; &amp; chr(34) &amp; &quot;*.odg\&quot; &amp; chr(34) &amp; chr(34) &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;if [[ &quot; &amp; chr(34) &amp; &quot;$3&quot; &amp; chr(34) &amp; &quot; == *b* ]]&quot; &amp; chr(10) &amp; _
+&quot;  then&quot; &amp; chr(10) &amp; _
+&quot;  echo .odb - OpenDocument Database&quot; &amp; chr(10) &amp; _
+&quot;  filetypes=${filetypes}&quot; &amp; chr(34) &amp; &quot; -o -iname \&quot; &amp; chr(34) &amp; &quot;*.odb\&quot; &amp; chr(34) &amp; chr(34) &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;if [[ &quot; &amp; chr(34) &amp; &quot;$3&quot; &amp; chr(34) &amp; &quot; == *f* ]]&quot; &amp; chr(10) &amp; _
+&quot;  then&quot; &amp; chr(10) &amp; _
+&quot;  echo .odf - OpenDocument Formula&quot; &amp; chr(10) &amp; _
+&quot;  filetypes=${filetypes}&quot; &amp; chr(34) &amp; &quot; -o -iname \&quot; &amp; chr(34) &amp; &quot;*.odf\&quot; &amp; chr(34) &amp; chr(34) &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;# Tidy up the filetypes string&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;if [[ &quot; &amp; chr(34) &amp; &quot;$filetypes&quot; &amp; chr(34) &amp; &quot; == &quot; &amp; chr(34) &amp; &quot; -o &quot; &amp; chr(34) &amp; &quot;* ]]&quot; &amp; chr(10) &amp; _
+&quot;  then&quot; &amp; chr(10) &amp; _
+&quot;  filetypes2=${filetypes:4}&quot; &amp; chr(10) &amp; _
+&quot;else&quot; &amp; chr(10) &amp; _
+&quot;  filetypes2=$filetypes&quot; &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
+&quot;echo Exclusions:&quot; &amp; chr(10) &amp; _
+&quot;# Extract recursive and hidden options from the command line parameters&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;recursive=&quot; &amp; chr(34) &amp; chr(34) &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;if [[ &quot; &amp; chr(34) &amp; &quot;$4&quot; &amp; chr(34) &amp; &quot; == *s* ]]&quot; &amp; chr(10) &amp; _
+&quot;  then&quot; &amp; chr(10) &amp; _
+&quot;  echo Subdirectories - Search will be non-recursive&quot; &amp; chr(10) &amp; _
+&quot;  recursive=&quot; &amp; chr(34) &amp; &quot;-maxdepth 1&quot; &amp; chr(34)  &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;hidden=&quot; &amp; chr(34) &amp; chr(34)  &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;if [[ &quot; &amp; chr(34) &amp; &quot;$4&quot; &amp; chr(34) &amp; &quot; == *h* ]]&quot; &amp; chr(10) &amp; _
+&quot;  then&quot; &amp; chr(10) &amp; _
+&quot;  echo Hidden files and directories&quot; &amp; chr(10) &amp; _
+&quot;  hidden=&quot; &amp; chr(34) &amp; &quot; ! -iname \&quot; &amp; chr(34) &amp; &quot;.*\&quot; &amp; chr(34) &amp; &quot; \) \( ! -path \&quot; &amp; chr(34) &amp; &quot;*/.*\&quot; &amp; chr(34) &amp; &quot; \)&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;  else&quot; &amp; chr(10) &amp; _
+&quot;  hidden=&quot; &amp; chr(34) &amp; &quot;\) \( ! -path \&quot; &amp; chr(34) &amp; &quot;*.ooosvn*\&quot; &amp; chr(34) &amp; &quot; \)&quot; &amp; chr(34) &amp; chr(10) &amp; _
+&quot;fi&quot; &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
 &quot;&quot; &amp; chr(10) &amp; _
 &quot;#remove leftover files&quot; &amp; chr(10) &amp; _
-&quot;rm bulklist.txt&quot; &amp; chr(10) &amp; _
-&quot;rm bulklist2.txt&quot; &amp; chr(10) &amp; _
-&quot;echo Listing any invalid files:&quot; &amp; chr(10) &amp; _
-&quot;find &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; -xtype f -perm -u=w -iname &apos;*.odt&apos; -not -path &quot; &amp; chr(34) &amp; &quot;*.ooosvn*&quot; &amp; chr(34) &amp; &quot; -o -perm -u=w -iname &apos;*.ods&apos; -not -path &quot; &amp; chr(34) &amp; &quot;*.ooosvn*&quot; &amp; chr(34) &amp; &quot; -o -perm -u=w -iname &apos;*.odp&apos; -not -path &quot; &amp; chr(34) &amp; &quot;*.ooosvn*&quot; &amp; chr(34) &amp; &quot; -o -perm -u=w -iname &apos;*.odb&apos; -not -path &quot; &amp; chr(34) &amp; &quot;*.ooosvn*&quot; &amp; chr(34) &amp; &quot; -o -perm -u=w -iname &apos;*.odg&apos; -not -path &quot; &amp; chr(34) &amp; &quot;*.ooosvn*&quot; &amp; chr(34) &amp; &quot; -o -perm -u=w -iname &apos;*.odf&apos; -not -path &quot; &amp; chr(34) &amp; &quot;*.ooosvn*&quot; &amp; chr(34) &amp; &quot; &gt; bulklist.txt&quot; &amp; chr(10) &amp; _
+&quot;rm bulklist.txt &amp;&gt; /dev/null&quot; &amp; chr(10) &amp; _
+&quot;rm bulklist2.txt &amp;&gt; /dev/null&quot; &amp; chr(10) &amp; _
+&quot;echo &quot; &amp; chr(34) &amp; &quot;Listing any invalid files, check to see if they are corrupt:&quot; &amp; chr(34)  &amp; chr(10) &amp; _
+&quot;&quot; &amp; chr(10) &amp; _
+&quot;# Echo the parameters to find.  Messy but the best way to get all characters mangled correctly!&quot; &amp; chr(10) &amp; _
+&quot;echo &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; &quot; &amp; chr(34) &amp; &quot;$recursive&quot; &amp; chr(34) &amp; &quot; -perm -u=w -xtype f &apos;\(&apos;  &quot; &amp; chr(34) &amp; &quot;$filetypes2&quot; &amp; chr(34) &amp; &quot; &quot; &amp; chr(34) &amp; &quot;$hidden&quot; &amp; chr(34) &amp; &quot; | xargs find &gt; bulklist.txt&quot; &amp; chr(10) &amp; _
 &quot;&quot; &amp; chr(10) &amp; _
 &quot;#set variables&quot; &amp; chr(10) &amp; _
 &quot;a=0&quot; &amp; chr(10) &amp; _
@@ -548,7 +635,7 @@ msgbox(uuid)
 end function
 
 Function FirstRunCheck
-&apos; Function to test if it is the first run or not.  If it is, the wiward runs.
+&apos; Function to test if it is the first run or not.  If it is, the wizard runs.
 
 	WorkingDir = getWorkingDir	
 	

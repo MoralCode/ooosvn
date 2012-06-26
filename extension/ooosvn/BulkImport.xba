@@ -10,11 +10,13 @@ Public SearchPath As Object
 Function BulkImportWizard
 &apos; Starts the bulk import process
 
+&apos; Load libraries
 LoadTools
-
-    If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+  If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
     GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
   End If
+  
+  FirstRunCheck
   
   	aService = CreateUnoService(&quot;com.sun.star.util.PathSubstitution&quot;)
 	sUserPath = aService.substituteVariables(&quot;$(home)&quot;, true)
