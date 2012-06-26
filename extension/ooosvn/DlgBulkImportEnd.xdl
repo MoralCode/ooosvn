@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dlg:window PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "dialog.dtd">
+<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="DlgBulkImportEnd" dlg:left="329" dlg:top="183" dlg:width="171" dlg:height="156" dlg:closeable="true" dlg:moveable="true" dlg:title="Bulk Import Finished">
+ <dlg:bulletinboard>
+  <dlg:titledbox dlg:id="FrameStatistics" dlg:tab-index="0" dlg:left="4" dlg:top="7" dlg:width="164" dlg:height="130">
+   <dlg:title dlg:value="Statistics"/>
+  </dlg:titledbox>
+  <dlg:text dlg:id="Label1" dlg:tab-index="1" dlg:left="10" dlg:top="29" dlg:width="81" dlg:height="19" dlg:value="Files processed"/>
+  <dlg:text dlg:id="Label2" dlg:tab-index="2" dlg:left="10" dlg:top="50" dlg:width="81" dlg:height="19" dlg:value="Files successfully imported"/>
+  <dlg:text dlg:id="Label3" dlg:tab-index="3" dlg:left="10" dlg:top="72" dlg:width="81" dlg:height="19" dlg:value="Import failures"/>
+  <dlg:text dlg:id="Label4" dlg:tab-index="4" dlg:left="10" dlg:top="94" dlg:width="81" dlg:height="19" dlg:value="Time elapsed (seconds)"/>
+  <dlg:button dlg:id="CancelButton" dlg:tab-index="6" dlg:left="129" dlg:top="139" dlg:width="38" dlg:height="15" dlg:value="Close">
+   <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:ooosvn.BulkImport.OnClickCloseBulkImportEnd?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:button>
+  <dlg:button dlg:id="ViewLogButton" dlg:tab-index="5" dlg:left="88" dlg:top="139" dlg:width="38" dlg:height="15" dlg:value=" View Log">
+   <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:ooosvn.BulkImport.OnClickLogBulkImportEnd?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:button>
+  <dlg:text dlg:id="SuccessNumber" dlg:tab-index="8" dlg:left="98" dlg:top="50" dlg:width="62" dlg:height="19" dlg:value="0" dlg:align="right"/>
+  <dlg:text dlg:id="FailNumber" dlg:tab-index="9" dlg:left="98" dlg:top="72" dlg:width="62" dlg:height="19" dlg:value="0" dlg:align="right"/>
+  <dlg:text dlg:id="SecondsNumber" dlg:tab-index="10" dlg:left="98" dlg:top="94" dlg:width="62" dlg:height="19" dlg:value="0" dlg:align="right"/>
+  <dlg:text dlg:id="FileNumber" dlg:tab-index="7" dlg:left="98" dlg:top="29" dlg:width="62" dlg:height="19" dlg:value="0" dlg:align="right"/>
+ </dlg:bulletinboard>
+</dlg:window>

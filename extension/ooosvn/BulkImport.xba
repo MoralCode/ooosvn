@@ -5,6 +5,7 @@
 &apos; Define oDlgBulkImport so we can close it properly in a seperate function
 Public oDlgBulkImport As Object
 Public oDlgBulkImportStart As Object
+Public oDlgBulkImportEnd As Object
 Public SearchPath As Object
 
 Function BulkImportWizard
@@ -247,7 +248,7 @@ BulkImport
 End Function
 
 Function BulkImport
-&apos;Function to pull names  and parse them to the import function
+&apos;Function to pull names from bulklist2.txt and parse them to the import function
 
 Dim sLine as String
 Dim sFilename as String
@@ -256,7 +257,6 @@ Dim oDoc
 Dim sDocURL
 oDoc = ThisComponent
 
-&apos;msgbox(&quot;import comes here&quot;)
 LoadTools
     If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
     GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
@@ -264,7 +264,6 @@ LoadTools
       WorkingDir = getWorkingDir
 
 &apos; Line number count
-
 	iNumber = Freefile
 	aFile = WorkingDir &amp; &quot;/bulklist2.txt&quot;
 	TotalFiles=0
@@ -277,12 +276,14 @@ LoadTools
 	wend
 	Close #iNumber
 
-
 &apos; start status bar
    oDocCtrl = oDoc.getCurrentController()
    oDocFrame = oDocCtrl.getFrame()
 
    oStatus = oDocFrame.createStatusIndicator()
+   
+   &apos; Start the timer
+   StartTime = Timer
    
    oStatus.start( &quot;Importing &quot; &amp; TotalFiles &amp; &quot; OpenDocument files.  Please wait....&quot;, TotalFiles )
 
@@ -296,19 +297,50 @@ LoadTools
 	If sLine &lt;&gt;&quot;&quot; then
 		filecount=filecount+1
 		oStatus.value=filecount
-&apos;		oStatus.Text =  &quot;Importing &quot; &amp; FileCount &amp; &quot;/&quot; &amp; TotalFiles &amp; &quot; - &quot; &amp; sLine
 		failcount=failcount+UnitImport.UnitImport(sLine)	
 	end if
 	wend
 	Close #iNumber
 
+	&apos; End status bar and timer
   oStatus.end()
+  EndTime = Timer
   
-  &apos;show the log to end
-If MsgBox(&quot;Import complete:&quot; &amp; chr(13) &amp; chr(13) &amp; filecount-failcount &amp; &quot; files successfully imported&quot;  &amp; chr(13) &amp; failcount &amp; &quot; failures&quot; &amp; chr(13) &amp; chr(13) &amp; &quot;Open log file?&quot;,4,&quot;Bulk Import Complete&quot;) =6 Then 
-	Module1.OperationLog(&quot;Bulk import complete.&quot;)
-End If 
+  &apos; Work out the elapsed time
+  ElapsedTime= CStr((EndTime-StartTime))
 
+&apos; Load the end confirmation screen
+oDlgBulkImportEnd = _
+		CreateUnoDialog(DialogLibraries.ooosvn.DlgBulkImportEnd)
+	
+&apos; Get access to labels in the dialogue
+
+With oDlgBulkImportEnd
+		FileNumber = .getControl(&quot;FileNumber&quot;)
+		SuccessNumber = .getControl(&quot;SuccessNumber&quot;)
+		FailNumber = .getControl(&quot;FailNumber&quot;)
+		SecondsNumber = .getControl(&quot;SecondsNumber&quot;)
+	End With
+	
+	&apos; Set values of labels in the dialogue to display statistics
+	FileNumber.Text = FileCount
+	SuccessNumber.Text = FileCount-FailCount
+	FailNumber.Text = FailCount
+	SecondsNumber.Text = ElapsedTime
+	
+	oDlgBulkImportEnd.execute
+
+End Function
+
+Function OnClickLogBulkImportEnd
+&apos; Function to close the bulk import window and show the log
+oDlgBulkImportEnd.endExecute
+OperationLog(&quot;Bulk import wizard log...&quot;)
+End Function
+
+Function OnClickCloseBulkImportEnd
+&apos; Function to close the bulk import window
+oDlgBulkImportEnd.endExecute
 End Function
 
 

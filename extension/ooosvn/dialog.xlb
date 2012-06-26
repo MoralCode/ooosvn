@@ -11,4 +11,5 @@
  <library:element library:name="DlgImportUUID"/>
  <library:element library:name="DlgBulkImport"/>
  <library:element library:name="DlgBulkImportStart"/>
+ <library:element library:name="DlgBulkImportEnd"/>
 </library:library>

@@ -140,6 +140,7 @@ oTextOutputStream.setOutputStream(outStream)
 &quot;	echo &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; not found&quot; &amp; chr(10) &amp; _
 &quot;	echo &quot; &amp; chr(34) &amp; &quot;Maybe the filename includes a forbidden character: &amp; ; ( )&quot; &amp; chr(34) &amp; chr(10) &amp; _
 &quot;	echo Import aborted.&quot; &amp; chr(10) &amp; _
+&quot;	echo ================================================&quot; &amp; chr(10) &amp; _
 &quot;	exit&quot; &amp; chr(10) &amp; _
 &quot;fi&quot; &amp; chr(10) &amp; _
 &quot;&quot; &amp; chr(10) &amp; _
@@ -255,12 +256,15 @@ oTextOutputStream.setOutputStream(outStream)
 &quot;then&quot; &amp; chr(10) &amp; _
 &quot;echo &quot;&amp; chr(34) &amp; &quot;Error: Working copy is not where it should be!&quot;&amp; chr(34) &amp; chr(10) &amp; _
 &quot;echo &quot;&amp; chr(34) &amp; &quot;Most likely cause is disallowed characters in document filename.  Exiting.&quot;&amp; chr(34) &amp; chr(10) &amp; _
+&quot;echo ================================================&quot; &amp; chr(10) &amp; _
 &quot;exit&quot; &amp; chr(10) &amp; _
 &quot;fi&quot; &amp; chr(10) &amp; _
 &quot;echo Changed directory to:&quot; &amp; chr(10) &amp; _
 &quot;pwd&quot; &amp; chr(10) &amp; _
 &quot;echo ================================================&quot; &amp; chr(10) &amp; _
-&quot;zip -rDX &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; * -x *.svn*&quot;)
+&quot;echo Recompressing archive:&quot; &amp; chr(10) &amp; _
+&quot;zip -rDX &quot; &amp; chr(34) &amp; &quot;$1&quot; &amp; chr(34) &amp; &quot; * -x *.svn*&quot; &amp; chr(10) &amp; _
+&quot;echo ================================================&quot;)
 
 &apos;close all streams
 oTextOutputStream.closeOutput()
