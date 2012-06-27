@@ -12,4 +12,5 @@
  <library:element library:name="DlgBulkImport"/>
  <library:element library:name="DlgBulkImportStart"/>
  <library:element library:name="DlgBulkImportEnd"/>
+ <library:element library:name="DlgPackageCheck"/>
 </library:library>

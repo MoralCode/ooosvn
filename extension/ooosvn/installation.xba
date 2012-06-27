@@ -6,7 +6,6 @@
    WorkingDir = getWorkingDir
 
 &apos; Create the home repository
-&apos;   Shell(&quot;bash -c &quot; + cQuote + &quot;svnadmin create --fs-type fsfs&quot; &amp; WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote , &quot;&quot;,6,true)
    ret = Shell(&quot;svnadmin create --fs-type fsfs&quot; , 6, WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;,true)
 If ret &lt;&gt; 0 then 
 		CreateSVN = false
@@ -39,11 +38,6 @@ Close #iNumber
      WorkingDirCreate = 0
      Exit Function
    End If
-   
-                  PackagesCheck
- &apos;              If Packages = false then
-  &apos;             exit function
-              &apos; else
 
    Installscripts
 
@@ -62,7 +56,6 @@ Function InstallScripts
           
   &apos;now open the file..
 oFileAccessService = createUnoService(&quot;com.sun.star.ucb.SimpleFileAccess&quot;)
-&apos;oTextInputStream = createUnoService(&quot;com.sun.star.io.TextInputStream&quot;)
 oTextOutputStream = createUnoService(&quot;com.sun.star.io.TextOutputStream&quot;)
 
 &apos;###################################################
@@ -646,44 +639,292 @@ Function FirstRunCheck
 If NOT FileExists(WorkingDir) then
                MsgBox(&quot;This appears to be the first time you have run OOoSVN.&quot; &amp; chr(10) &amp; chr(10) &amp; _
                &quot;There are several configuration steps we must do:&quot; &amp; chr(10) &amp; _
-               &quot;1. Create a working directory, &quot; &amp; WorkingDir &amp; &quot;, which will be used for file operations.&quot; &amp; chr(10) &amp; _
-               &quot;2. Check you have the required packages&quot; &amp; chr(10) &amp; _
+               &quot;1. Check you have the required packages, &quot; &amp; WorkingDir &amp; &quot;, which will be used for file operations.&quot; &amp; chr(10) &amp; _
+               &quot;2. Create a working directory&quot; &amp; chr(10) &amp; _
                &quot;3. Configure a repository for documents to be checked into.&quot; &amp; chr(10) &amp; chr(10) &amp; _
                &quot;Press OK to begin.&quot;,64, &quot;First run wizard&quot;)
-
+              PackagesCheck
+ &apos;              If Packages = false then
+  &apos;             exit function
+              &apos; else
                InstallScripts
                MsgBox(&quot;Configuration complete.  OOoSVN will now continue with the function you requested.&quot;, 64, &quot;Complete&quot;)
           end if
 End Function
 
-Function PackagesCheck
-&apos; Installation test to see if we&apos;ve got SVN installed
-  Dim lSVN as Single
-  packages = true
+Sub PackagesCheck
+&apos; Installation test to see if we&apos;ve got dependencies installed
+&apos; Check for: bash in path
+Dim lSVN as Single
+Dim lBash as Single
+Dim lCoreutils as Single
+Dim lFindutils as Single
+Dim lzip as Single
+Dim lUnzip as Single
+Dim lGrep as Single
+Dim lAwk as Single
+Dim lSed as Single
 
+dim path as string
+dim aPaths
+dim BashPath as string
+dim oDlgPackageCheck as Object
+
+	packages = true
     WorkingDir = getWorkingDir
+	cQuote = Chr( 34 )
+	bash=0
+	BashPath=&quot;&quot;
+	
+&apos; Find the OS
+OS=getguitype()
+If OS=1 then
+	OS = &quot;Microsoft Windows&quot;
+	bashname=&quot;bash.exe&quot;
+else
+	OS = &quot;Unix like system&quot;
+	bashname=&quot;bash&quot;
+End If
 
-cQuote = Chr( 34 )
+&apos; Load the system &apos;PATH&apos; environment variable
+path=Environ(&quot;PATH&quot;) 
 
+&apos;In case system is running Windows where paths are delimeted by semicolons
+path=join(split(path, &quot;;&quot;), &quot;:&quot;)
+
+&apos; Split the string into an array or paths about the colon delimeters
+aPaths =Split(path,&quot;:&quot;)
+
+&apos; For each element of the path array look to see if the bash file exists in it
+For i = Lbound(aPaths) to Ubound(aPaths)
+	If FileExists(aPaths(i)&amp;&quot;/&quot;&amp;bashname) then
+		bash=1
+		BashPath=aPaths(i)
+	End If
+Next
+
+&apos; Test if bash was found
+If bash=1 then
+&apos; If Bash wasn&apos;t found we can skip straight to the dialogue.  If not, all of the version tests get run.
+
+	&apos;bash - now we know it exists we can call it without dividing by zero
+	Shell( &quot;bash -c &quot; + cQuote + &quot;bash --version &gt; &quot; &amp; WorkingDir &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
+		
+	iNumber = Freefile
+	aFile = WorkingDir &amp; &quot;/test.txt&quot;
+	Open aFile For Input As iNumber
+	While not eof(iNumber)
+	Line Input #iNumber, sLine
+	If sLine &lt;&gt;&quot;&quot; then
+		sBash = sBash &amp; sLine &amp; chr(13)
+	end if
+	wend
+	Close #iNumber
+	&apos; Now mangle out the bash version
+	aBash=Split(sBash,&quot; &quot;)
+	sBash=aBash(3)
+	lBash=left(sBash,3)
+	if lBash &lt; 3 then
+		packages=false
+	end if
+	
+	&apos;Subversion
 	Shell( &quot;bash -c &quot; + cQuote + &quot;svn --version -q &gt; &quot; &amp; WorkingDir &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
 		
 	iNumber = Freefile
 	aFile = WorkingDir &amp; &quot;/test.txt&quot;
-Open aFile For Input As iNumber
-While not eof(iNumber)
-Line Input #iNumber, sLine
-If sLine &lt;&gt;&quot;&quot; then
-sSVN = sSVN &amp; sLine &amp; chr(13)
-end if
-wend
-Close #iNumber
-lSVN=left(sSVN,3)
-if lSVN &lt; 1.3 then
-msgbox(&quot;OOoSVN is supported for use with SVN &gt;= 1.3.&quot; &amp; chr(13) &amp; &quot;You either have too early a version or don&apos;t have it installed.&quot; &amp; chr(13) &amp; chr(13) &amp; &quot;Using the latest stable version of SVN available is recommended. Please check your distros package manager.&quot; &amp; chr(10) &amp; &quot;Setup will continue but OOoSVN may not function correctly.&quot;, 16, &quot;SVN error&quot;)
-packages=false
+	Open aFile For Input As iNumber
+	While not eof(iNumber)
+	Line Input #iNumber, sLine
+	If sLine &lt;&gt;&quot;&quot; then
+		sSVN = sSVN &amp; sLine &amp; chr(13)
+	end if
+	wend
+	Close #iNumber
+	lSVN=left(sSVN,3)
+	if lSVN &lt; 1.3 then
+		packages=false
+	end if
+	
+	&apos; Coreutils, via &apos;ls&apos;
+	Shell( &quot;bash -c &quot; + cQuote + &quot;ls --version &gt; &quot; &amp; WorkingDir &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
+		
+	iNumber = Freefile
+	aFile = WorkingDir &amp; &quot;/test.txt&quot;
+	Open aFile For Input As iNumber
+	While not eof(iNumber)
+	Line Input #iNumber, sLine
+	If sLine &lt;&gt;&quot;&quot; then
+		sCoreutils = sCoreutils &amp; sLine &amp; chr(13)
+	end if
+	wend
+	Close #iNumber
+	&apos; Now mangle out the version
+	sCoreutils=join(split(sCoreutils, chr(13)), &quot; &quot;) &apos;Replacing carriage returns with spaces
+	aCoreutils=Split(sCoreutils,&quot; &quot;)
+	sCoreutils=aCoreutils(3)
+	lCoreutils=left(sCoreutils,4)
+	if lCoreutils &lt; 5 then
+		packages=false
+	end if
+	
+	&apos; Findutils
+	Shell( &quot;bash -c &quot; + cQuote + &quot;find --version &gt; &quot; &amp; WorkingDir &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
+		
+	iNumber = Freefile
+	aFile = WorkingDir &amp; &quot;/test.txt&quot;
+	Open aFile For Input As iNumber
+	While not eof(iNumber)
+	Line Input #iNumber, sLine
+	If sLine &lt;&gt;&quot;&quot; then
+		sFindutils = sFindutils &amp; sLine &amp; chr(13)
+	end if
+	wend
+	Close #iNumber
+	&apos; Now mangle out the version
+	sFindUtils=join(split(sFindutils, chr(13)), &quot; &quot;) &apos;Replacing carriage returns with spaces
+	aFindUtils=Split(sFindutils,&quot; &quot;)
+	sFindutils=aFindutils(3)
+	lFindutils=left(sFindutils,3)
+	if lFindutils &lt; 4 then
+		packages=false
+	end if
+
+	&apos; Zip
+	Shell( &quot;bash -c &quot; + cQuote + &quot;zip --version &gt; &quot; &amp; WorkingDir &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
+		
+	iNumber = Freefile
+	aFile = WorkingDir &amp; &quot;/test.txt&quot;
+	Open aFile For Input As iNumber
+	While not eof(iNumber)
+	Line Input #iNumber, sLine
+	If sLine &lt;&gt;&quot;&quot; then
+		sZip = sZip &amp; sLine &amp; chr(13)
+	end if
+	wend
+	Close #iNumber
+	&apos; Now mangle out the version
+	sZip=join(split(sZip, chr(13)), &quot; &quot;) &apos;Replacing carriage returns with spaces
+	aZip=Split(sZip,&quot; &quot;)
+	sZip=aZip(14)
+	lZip=left(sZip,3)
+	if lZip &lt; 2 then
+		packages=false
+	end if
+
+	&apos; Unzip
+	Shell( &quot;bash -c &quot; + cQuote + &quot;unzip -v &gt; &quot; &amp; WorkingDir &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
+		
+	iNumber = Freefile
+	aFile = WorkingDir &amp; &quot;/test.txt&quot;
+	Open aFile For Input As iNumber
+	While not eof(iNumber)
+	Line Input #iNumber, sLine
+	If sLine &lt;&gt;&quot;&quot; then
+		sUnzip = sUnzip &amp; sLine &amp; chr(13)
+	end if
+	wend
+	Close #iNumber
+	&apos; Now mangle out the version
+	aUnzip=Split(sUnzip,&quot; &quot;)
+	sUnzip=aUnzip(1)
+	lUnzip=left(sUnzip,3)
+	if lUnzip &lt; 5 then
+		packages=false
+	end if
+	
+	&apos; grep
+	Shell( &quot;bash -c &quot; + cQuote + &quot;grep --version &gt; &quot; &amp; WorkingDir &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
+		
+	iNumber = Freefile
+	aFile = WorkingDir &amp; &quot;/test.txt&quot;
+	Open aFile For Input As iNumber
+	While not eof(iNumber)
+	Line Input #iNumber, sLine
+	If sLine &lt;&gt;&quot;&quot; then
+		sGrep = sGrep &amp; sLine &amp; chr(13)
+	end if
+	wend
+	Close #iNumber
+	&apos; Now mangle out the version
+	sGrep=join(split(sGrep, chr(13)), &quot; &quot;) &apos;Replacing carriage returns with spaces
+	aGrep=Split(sGrep,&quot; &quot;)
+	sGrep=aGrep(2)
+	lGrep=left(sGrep,3)
+	if lGrep &lt; 3 then
+		packages=false
+	end if	
+	
+	&apos; awk
+	Shell( &quot;bash -c &quot; + cQuote + &quot;awk --version &gt; &quot; &amp; WorkingDir &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
+		
+	iNumber = Freefile
+	aFile = WorkingDir &amp; &quot;/test.txt&quot;
+	Open aFile For Input As iNumber
+	While not eof(iNumber)
+	Line Input #iNumber, sLine
+	If sLine &lt;&gt;&quot;&quot; then
+		sAwk = sAwk &amp; sLine &amp; chr(13)
+	end if
+	wend
+	Close #iNumber
+	&apos; Now mangle out the version
+	sAwk=join(split(sAwk, chr(13)), &quot; &quot;) &apos;Replacing carriage returns with spaces
+	aAwk=Split(sAwk,&quot; &quot;)
+	sAwk=aAwk(2)
+	lAwk=left(sAwk,3)
+	if lAwk &lt; 3 then
+		packages=false
+	end if
+	
 else
-&apos;Msgbox (&quot;SVN version: &quot; &amp; sSVN, 64, &quot;Checking package versions&quot;)
+&apos;In case bash was not found
+packages=false
+
+&apos; version numbers in case of skipping
+	sSVN=&quot;skipped&quot;
+	sBash=&quot;not found&quot;
 end if
 
-End Function
+
+
+&apos;Set up the dialogue
+oDlgPackageCheck = _
+		CreateUnoDialog(DialogLibraries.ooosvn.DlgPackageCheck)
+
+&apos; Get access to labels in the dialogue
+With oDlgPackageCheck
+	OSType = .getcontrol(&quot;labelOSType&quot;)
+	BashNumber = .getcontrol(&quot;labelBashNumber&quot;)
+	SubversionNumber = .getControl(&quot;labelSubversionNumber&quot;)
+	CoreutilsNumber = .getControl(&quot;labelCoreutilsNumber&quot;)
+	FindutilsNumber = .getControl(&quot;labelFindutilsNumber&quot;)
+	ZipNumber = .getControl(&quot;labelZipNumber&quot;)
+	UnzipNumber = .getControl(&quot;labelUnzipNumber&quot;)
+	GrepNumber = .getControl(&quot;labelGrepNumber&quot;)
+	AwkNumber = .getControl(&quot;labelAwkNumber&quot;)
+	SedNumber = .getControl(&quot;labelSedNumber&quot;)
+	
+End With
+	
+	&apos; Set values of labels in the dialogue to display statistics
+	OSType.Text =OS
+	BashNumber.Text =sBash
+	SubversionNumber.Text = sSVN
+	CoreutilsNumber.Text = sCoreutils
+	FindutilsNumber.Text = sFindutils
+	ZipNumber.Text = sZip
+	UnzipNumber.Text = sUnzip
+	GrepNumber.Text = sGrep
+	AwkNumber.Text = sAwk
+	SedNumber.Text = sSed
+			
+	&apos;Load the dialogue to show the results
+	oDlgPackageCheck.execute
+	
+	if packages=false	then
+	msgbox(packages)
+	end if
+
+End Sub
 </script:module>
