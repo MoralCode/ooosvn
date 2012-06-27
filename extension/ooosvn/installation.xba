@@ -720,11 +720,16 @@ If bash=1 then
 	end if
 	wend
 	Close #iNumber
-	&apos; Now mangle out the bash version
+	&apos; Now mangle out the version
+	if len(sBash)&lt;&gt;0 then
 	aBash=Split(sBash,&quot; &quot;)
 	sBash=aBash(3)
 	lBash=left(sBash,3)
 	if lBash &lt; 3 then
+		packages=false
+	end if
+	else
+		sBash=&quot;not found&quot;
 		packages=false
 	end if
 	
@@ -741,8 +746,14 @@ If bash=1 then
 	end if
 	wend
 	Close #iNumber
+	&apos; Now mangle out the version
+	if len(sSVN)&lt;&gt;0 then
 	lSVN=left(sSVN,3)
 	if lSVN &lt; 1.3 then
+		packages=false
+	end if
+	else
+		sSVN=&quot;not found&quot;
 		packages=false
 	end if
 	
@@ -760,11 +771,16 @@ If bash=1 then
 	wend
 	Close #iNumber
 	&apos; Now mangle out the version
+	if len(sCoreUtils)&lt;&gt;0 then
 	sCoreutils=join(split(sCoreutils, chr(13)), &quot; &quot;) &apos;Replacing carriage returns with spaces
 	aCoreutils=Split(sCoreutils,&quot; &quot;)
 	sCoreutils=aCoreutils(3)
 	lCoreutils=left(sCoreutils,4)
 	if lCoreutils &lt; 5 then
+		packages=false
+	end if
+	else
+		sCoreutils=&quot;not found&quot;
 		packages=false
 	end if
 	
@@ -782,11 +798,16 @@ If bash=1 then
 	wend
 	Close #iNumber
 	&apos; Now mangle out the version
+	if len(sFindUtils)&lt;&gt;0 then
 	sFindUtils=join(split(sFindutils, chr(13)), &quot; &quot;) &apos;Replacing carriage returns with spaces
 	aFindUtils=Split(sFindutils,&quot; &quot;)
 	sFindutils=aFindutils(3)
 	lFindutils=left(sFindutils,3)
 	if lFindutils &lt; 4 then
+		packages=false
+	end if
+	else
+		sFindUtils=&quot;not found&quot;
 		packages=false
 	end if
 
@@ -804,11 +825,16 @@ If bash=1 then
 	wend
 	Close #iNumber
 	&apos; Now mangle out the version
+	if len(sZip)&lt;&gt;0 then
 	sZip=join(split(sZip, chr(13)), &quot; &quot;) &apos;Replacing carriage returns with spaces
 	aZip=Split(sZip,&quot; &quot;)
 	sZip=aZip(14)
 	lZip=left(sZip,3)
 	if lZip &lt; 2 then
+		packages=false
+	end if
+	else
+		sZip=&quot;not found&quot;
 		packages=false
 	end if
 
@@ -826,10 +852,15 @@ If bash=1 then
 	wend
 	Close #iNumber
 	&apos; Now mangle out the version
+	if len(sUnzip)&lt;&gt;0 then
 	aUnzip=Split(sUnzip,&quot; &quot;)
 	sUnzip=aUnzip(1)
 	lUnzip=left(sUnzip,3)
 	if lUnzip &lt; 5 then
+		packages=false
+	end if
+	else
+		sUnzip=&quot;not found&quot;
 		packages=false
 	end if
 	
@@ -847,13 +878,18 @@ If bash=1 then
 	wend
 	Close #iNumber
 	&apos; Now mangle out the version
+	if len(sGrep)&lt;&gt;0 then
 	sGrep=join(split(sGrep, chr(13)), &quot; &quot;) &apos;Replacing carriage returns with spaces
 	aGrep=Split(sGrep,&quot; &quot;)
-	sGrep=aGrep(2)
+	sGrep=aGrep(3)
 	lGrep=left(sGrep,3)
-	if lGrep &lt; 3 then
+	if lGrep &lt; 2 then
 		packages=false
-	end if	
+	end if
+	else
+		sGrep=&quot;not found&quot;
+		packages=false
+	end if
 	
 	&apos; awk
 	Shell( &quot;bash -c &quot; + cQuote + &quot;awk --version &gt; &quot; &amp; WorkingDir &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
@@ -869,6 +905,7 @@ If bash=1 then
 	wend
 	Close #iNumber
 	&apos; Now mangle out the version
+	if len(sAwk)&lt;&gt;0 then
 	sAwk=join(split(sAwk, chr(13)), &quot; &quot;) &apos;Replacing carriage returns with spaces
 	aAwk=Split(sAwk,&quot; &quot;)
 	sAwk=aAwk(2)
@@ -876,6 +913,38 @@ If bash=1 then
 	if lAwk &lt; 3 then
 		packages=false
 	end if
+	else
+		sAwk=&quot;not found&quot;
+		packages=false
+	end if
+	
+	&apos; sed
+	Shell( &quot;bash -c &quot; + cQuote + &quot;sed --version &gt; &quot; &amp; WorkingDir &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
+		
+	iNumber = Freefile
+	aFile = WorkingDir &amp; &quot;/test.txt&quot;
+	Open aFile For Input As iNumber
+	While not eof(iNumber)
+	Line Input #iNumber, sLine
+	If sLine &lt;&gt;&quot;&quot; then
+		sSed = sSed &amp; sLine &amp; chr(13)
+	end if
+	wend
+	Close #iNumber
+	&apos; Now mangle out the version
+	if len(sSed)&lt;&gt;0 then
+	sSed=join(split(sSed, chr(13)), &quot; &quot;) &apos;Replacing carriage returns with spaces
+	aSed=Split(sSed,&quot; &quot;)
+	sSed=aSed(3)
+	lSed=left(sSed,3)
+	if lSed &lt; 3 then
+		packages=false
+	end if
+	else
+		sSed=&quot;not found&quot;
+		packages=false
+	end if
+
 	
 else
 &apos;In case bash was not found
