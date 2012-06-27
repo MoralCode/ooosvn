@@ -9,18 +9,18 @@
   <dlg:text dlg:id="labelFindutils" dlg:tab-index="4" dlg:left="4" dlg:top="74" dlg:width="78" dlg:height="17" dlg:value="Findutils"/>
   <dlg:text dlg:id="labelZip" dlg:tab-index="5" dlg:left="4" dlg:top="90" dlg:width="78" dlg:height="17" dlg:value="Zip"/>
   <dlg:text dlg:id="lableUnzip" dlg:tab-index="6" dlg:left="4" dlg:top="106" dlg:width="78" dlg:height="17" dlg:value="Unzip"/>
-  <dlg:text dlg:id="labelAwk" dlg:tab-index="7" dlg:left="4" dlg:top="138" dlg:width="78" dlg:height="17" dlg:value="Awk"/>
-  <dlg:text dlg:id="labelSed" dlg:tab-index="8" dlg:left="4" dlg:top="154" dlg:width="78" dlg:height="17" dlg:value="Sed"/>
-  <dlg:text dlg:id="labelBashNumber" dlg:tab-index="10" dlg:left="88" dlg:top="26" dlg:width="78" dlg:height="17" dlg:value="not found" dlg:align="right"/>
-  <dlg:text dlg:id="labelSubversionNumber" dlg:tab-index="11" dlg:left="88" dlg:top="42" dlg:width="78" dlg:height="17" dlg:value="skipped" dlg:align="right"/>
-  <dlg:text dlg:id="labelCoreutilsNumber" dlg:tab-index="12" dlg:left="88" dlg:top="58" dlg:width="78" dlg:height="17" dlg:value="skipped" dlg:align="right"/>
-  <dlg:text dlg:id="labelFindutilsNumber" dlg:tab-index="13" dlg:left="88" dlg:top="74" dlg:width="78" dlg:height="17" dlg:value="skipped" dlg:align="right"/>
-  <dlg:text dlg:id="labelZipNumber" dlg:tab-index="14" dlg:left="88" dlg:top="90" dlg:width="78" dlg:height="17" dlg:value="skipped" dlg:align="right"/>
-  <dlg:text dlg:id="labelUnzipNumber" dlg:tab-index="15" dlg:left="88" dlg:top="106" dlg:width="78" dlg:height="17" dlg:value="skipped" dlg:align="right"/>
-  <dlg:text dlg:id="labelGrepNumber" dlg:tab-index="16" dlg:left="88" dlg:top="122" dlg:width="78" dlg:height="17" dlg:value="skipped" dlg:align="right"/>
-  <dlg:text dlg:id="labelAwkNumber" dlg:tab-index="17" dlg:left="88" dlg:top="138" dlg:width="78" dlg:height="17" dlg:value="skipped" dlg:align="right"/>
-  <dlg:text dlg:id="labelOSType" dlg:tab-index="9" dlg:left="88" dlg:top="10" dlg:width="78" dlg:height="17" dlg:value="not found" dlg:align="right"/>
-  <dlg:text dlg:id="labelGrep" dlg:tab-index="18" dlg:left="4" dlg:top="122" dlg:width="78" dlg:height="17" dlg:value="Grep"/>
-  <dlg:text dlg:id="labelGrepNumber" dlg:tab-index="19" dlg:left="88" dlg:top="154" dlg:width="78" dlg:height="17" dlg:value="skipped" dlg:align="right"/>
+  <dlg:text dlg:id="labelGrep" dlg:tab-index="7" dlg:left="4" dlg:top="122" dlg:width="78" dlg:height="17" dlg:value="Grep"/>
+  <dlg:text dlg:id="labelAwk" dlg:tab-index="8" dlg:left="4" dlg:top="138" dlg:width="78" dlg:height="17" dlg:value="Awk"/>
+  <dlg:text dlg:id="labelSed" dlg:tab-index="9" dlg:left="4" dlg:top="154" dlg:width="78" dlg:height="17" dlg:value="Sed"/>
+  <dlg:text dlg:id="labelBashNumber" dlg:tab-index="11" dlg:left="88" dlg:top="26" dlg:width="78" dlg:height="17" dlg:value="not found" dlg:align="right"/>
+  <dlg:text dlg:id="labelSubversionNumber" dlg:tab-index="12" dlg:left="88" dlg:top="42" dlg:width="78" dlg:height="17" dlg:value="skipped" dlg:align="right"/>
+  <dlg:text dlg:id="labelCoreutilsNumber" dlg:tab-index="13" dlg:left="88" dlg:top="58" dlg:width="78" dlg:height="17" dlg:value="skipped" dlg:align="right"/>
+  <dlg:text dlg:id="labelFindutilsNumber" dlg:tab-index="14" dlg:left="88" dlg:top="74" dlg:width="78" dlg:height="17" dlg:value="skipped" dlg:align="right"/>
+  <dlg:text dlg:id="labelZipNumber" dlg:tab-index="15" dlg:left="88" dlg:top="90" dlg:width="78" dlg:height="17" dlg:value="skipped" dlg:align="right"/>
+  <dlg:text dlg:id="labelUnzipNumber" dlg:tab-index="16" dlg:left="88" dlg:top="106" dlg:width="78" dlg:height="17" dlg:value="skipped" dlg:align="right"/>
+  <dlg:text dlg:id="labelGrepNumber" dlg:tab-index="17" dlg:left="88" dlg:top="122" dlg:width="78" dlg:height="17" dlg:value="skipped" dlg:align="right"/>
+  <dlg:text dlg:id="labelAwkNumber" dlg:tab-index="18" dlg:left="88" dlg:top="138" dlg:width="78" dlg:height="17" dlg:value="skipped" dlg:align="right"/>
+  <dlg:text dlg:id="labelSedNumber" dlg:tab-index="19" dlg:left="88" dlg:top="154" dlg:width="78" dlg:height="17" dlg:value="skipped" dlg:align="right"/>
+  <dlg:text dlg:id="labelOSType" dlg:tab-index="10" dlg:left="88" dlg:top="10" dlg:width="78" dlg:height="17" dlg:value="not found" dlg:align="right"/>
  </dlg:bulletinboard>
 </dlg:window>
