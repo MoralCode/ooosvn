@@ -10,7 +10,11 @@ dim dispatcher as object
 dim docuUUID as string
 dim parentUUID as string
 
-FirstRunCheck &apos;Check scripts are installed, if not, install them.
+sFirstRunCheck = FirstRunCheck &apos;Check scripts are installed, if not, install them.
+If sFirstRunCheck = 0 then
+	Msgbox(&quot;OOoSVN failed to be setup correctly, aborting.&quot;,48,&quot;OOoSVN error&quot;)
+Exit sub
+End If
 
 document   = ThisComponent.CurrentController.Frame
 dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)

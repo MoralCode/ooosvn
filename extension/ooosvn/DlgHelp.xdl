@@ -2,10 +2,13 @@
 <!DOCTYPE dlg:window PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "dialog.dtd">
 <dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="DlgHelp" dlg:left="150" dlg:top="109" dlg:width="230" dlg:height="209" dlg:closeable="true" dlg:moveable="true">
  <dlg:bulletinboard>
-  <dlg:button dlg:id="CommandButton1" dlg:tab-index="0" dlg:left="174" dlg:top="190" dlg:width="53" dlg:height="15" dlg:default="true" dlg:value="Ok" dlg:button-type="ok" dlg:image-position="left-center" dlg:image-align="left"/>
+  <dlg:button dlg:id="CommandButton1" dlg:tab-index="0" dlg:left="185" dlg:top="190" dlg:width="40" dlg:height="15" dlg:default="true" dlg:value="Ok" dlg:button-type="ok" dlg:image-position="left-center" dlg:image-align="left"/>
   <dlg:textfield dlg:id="txtHelp" dlg:tab-index="1" dlg:left="3" dlg:top="5" dlg:width="223" dlg:height="177" dlg:vscroll="true" dlg:multiline="true" dlg:readonly="true"/>
-  <dlg:button dlg:id="GetUserguide" dlg:tab-index="2" dlg:left="125" dlg:top="190" dlg:width="44" dlg:height="14" dlg:value="Get Userguide">
+  <dlg:button dlg:id="GetUserguide" dlg:tab-index="2" dlg:left="137" dlg:top="190" dlg:width="45" dlg:height="15" dlg:value="Get Userguide">
    <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:ooosvn.UserGuide.GetUserguide?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:button>
+  <dlg:button dlg:id="buttonPackagesCheck" dlg:tab-index="3" dlg:left="69" dlg:top="191" dlg:width="64" dlg:height="15" dlg:value="Check Dependencies">
+   <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:ooosvn.installation.HelpDoPackagesCheck?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:button>
  </dlg:bulletinboard>
 </dlg:window>

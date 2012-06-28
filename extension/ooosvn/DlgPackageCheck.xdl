@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE dlg:window PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "dialog.dtd">
-<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="DlgPackageCheck" dlg:left="329" dlg:top="183" dlg:width="171" dlg:height="180" dlg:closeable="true" dlg:moveable="true" dlg:title="OOoSVN Dependencies">
+<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="DlgPackageCheck" dlg:left="329" dlg:top="183" dlg:width="171" dlg:height="249" dlg:closeable="true" dlg:moveable="true" dlg:title="OOoSVN Dependencies">
  <dlg:bulletinboard>
   <dlg:text dlg:id="labelOS" dlg:tab-index="0" dlg:left="4" dlg:top="10" dlg:width="78" dlg:height="17" dlg:value="Operating System"/>
   <dlg:text dlg:id="labelBash" dlg:tab-index="1" dlg:left="4" dlg:top="26" dlg:width="78" dlg:height="17" dlg:value="Bash"/>
@@ -22,5 +22,9 @@
   <dlg:text dlg:id="labelAwkNumber" dlg:tab-index="18" dlg:left="88" dlg:top="138" dlg:width="78" dlg:height="17" dlg:value="skipped" dlg:align="right"/>
   <dlg:text dlg:id="labelSedNumber" dlg:tab-index="19" dlg:left="88" dlg:top="154" dlg:width="78" dlg:height="17" dlg:value="skipped" dlg:align="right"/>
   <dlg:text dlg:id="labelOSType" dlg:tab-index="10" dlg:left="88" dlg:top="10" dlg:width="78" dlg:height="17" dlg:value="not found" dlg:align="right"/>
+  <dlg:fixedline dlg:id="FixedLine1" dlg:tab-index="20" dlg:left="4" dlg:top="170" dlg:width="163" dlg:height="5"/>
+  <dlg:fixedline dlg:id="FixedLine2" dlg:tab-index="21" dlg:left="4" dlg:top="225" dlg:width="163" dlg:height="5"/>
+  <dlg:button dlg:id="CommandButton1" dlg:tab-index="22" dlg:left="126" dlg:top="232" dlg:width="40" dlg:height="15" dlg:default="true" dlg:value="Close" dlg:button-type="ok" dlg:image-position="left-center" dlg:image-align="left"/>
+  <dlg:text dlg:id="FailMessage" dlg:tab-index="23" dlg:left="4" dlg:top="178" dlg:width="163" dlg:height="43" dlg:value="Label1"/>
  </dlg:bulletinboard>
 </dlg:window>
