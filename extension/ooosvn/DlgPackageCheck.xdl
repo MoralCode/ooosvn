@@ -25,6 +25,6 @@
   <dlg:fixedline dlg:id="FixedLine1" dlg:tab-index="20" dlg:left="4" dlg:top="170" dlg:width="163" dlg:height="5"/>
   <dlg:fixedline dlg:id="FixedLine2" dlg:tab-index="21" dlg:left="4" dlg:top="225" dlg:width="163" dlg:height="5"/>
   <dlg:button dlg:id="CommandButton1" dlg:tab-index="22" dlg:left="126" dlg:top="232" dlg:width="40" dlg:height="15" dlg:default="true" dlg:value="Close" dlg:button-type="ok" dlg:image-position="left-center" dlg:image-align="left"/>
-  <dlg:text dlg:id="FailMessage" dlg:tab-index="23" dlg:left="4" dlg:top="178" dlg:width="163" dlg:height="43" dlg:value="Label1"/>
+  <dlg:text dlg:id="FailMessage" dlg:tab-index="23" dlg:left="4" dlg:top="178" dlg:width="163" dlg:height="43" dlg:value="Label1" dlg:multiline="true"/>
  </dlg:bulletinboard>
 </dlg:window>

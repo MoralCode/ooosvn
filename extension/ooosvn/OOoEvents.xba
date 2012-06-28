@@ -6,7 +6,13 @@
   Dim oDoc
   Dim sDocURL
   
-  FirstRunCheck &apos;Check scripts are installed, if not, install them.
+  &apos; Check dependencies, check scripts are installed, if not, install them.
+sFirstRunCheck = FirstRunCheck
+&apos; If the process has failed then error out.
+If sFirstRunCheck = 0 then
+	Msgbox(&quot;OOoSVN failed to be setup correctly, aborting.&quot;,48,&quot;OOoSVN error&quot;)
+Exit sub
+End If
   
   oDoc = ThisComponent
   If oDoc.supportsService( &quot;com.sun.star.chart.ChartDocument&quot; ) Then
@@ -76,7 +82,13 @@ Sub OnSavedAsSVN()
 dim document   as object
 dim dispatcher as object
 
-FirstRunCheck &apos;Check scripts are installed, if not, install them.
+&apos; Check dependencies, check scripts are installed, if not, install them.
+sFirstRunCheck = FirstRunCheck
+&apos; If the process has failed then error out.
+If sFirstRunCheck = 0 then
+	Msgbox(&quot;OOoSVN failed to be setup correctly, aborting.&quot;,48,&quot;OOoSVN error&quot;)
+Exit sub
+End If
 
 document   = ThisComponent.CurrentController.Frame
 dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)

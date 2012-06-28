@@ -637,25 +637,31 @@ Function FirstRunCheck
 	WorkingDir = getWorkingDir	
 
 &apos; Set the variable to 1
-FirstRunCheck = 1	
+FirstRunCheck = 1
+	
+&apos; If we can&apos;t find a shell script in the working dir then OOoSVN is not set up so run the installation
 If NOT FileExists(WorkingDir &amp; &quot;/commit.sh&quot;) then
                MsgBox(&quot;This appears to be the first time you have run OOoSVN.&quot; &amp; chr(10) &amp; chr(10) &amp; _
                &quot;There are several configuration steps we must do:&quot; &amp; chr(10) &amp; _
-               &quot;1. Check you have the required packages, &quot; &amp; WorkingDir &amp; &quot;, which will be used for file operations.&quot; &amp; chr(10) &amp; _
-               &quot;2. Create a working directory&quot; &amp; chr(10) &amp; _
+               &quot;1. Check you have the required packages.&quot; &amp; chr(10) &amp; _
+               &quot;2. Create a working directory, &quot; &amp; WorkingDir &amp; &quot;, which will be used for file operations.&quot; &amp; chr(10) &amp; _
                &quot;3. Configure a repository for documents to be checked into.&quot; &amp; chr(10) &amp; chr(10) &amp; _
                &quot;Press OK to begin.&quot;,64, &quot;First run wizard&quot;)
+
               Packages=1
+              &apos;Run the dependency check
               Packages=PackagesCheck
-              If Packages = 0 then
-              		&apos; Set failure status so that initiating process can also escape
-					
-					OverrideDeps=msgbox(&quot;Would you like to continue anyway?  Expect problems.&quot;,292,&quot;Dependency Failure&quot;)
+              
+              If Packages = 0 then				
+					OverrideDeps=msgbox(&quot;Not all dependencies were satisfied.  This may cause problems.&quot; &amp; chr(10) &amp; &quot;Would you like to continue anyway?&quot;,292,&quot;Dependency Failure&quot;)
 					If OverrideDeps=6 Then
-						firstruncheck = 1
-					else firstruncheck = 0
+              		&apos; Set failure status so that initiating process can also escape						
+						FirstRunCheck = 1
+					else FirstRunCheck = 0
 					End If
 			End If
+			&apos; If we are OK to go on then try and install the scripts.  If we can&apos;t go on there&apos;s no point in trying as it might crash soffice
+			If FirstRunCheck = 1 Then
 	             InstallScripts
 	             If NOT FileExists(WorkingDir &amp; &quot;/commit.sh&quot;) then
 	             	FirstRunCheck = 0
@@ -663,6 +669,7 @@ If NOT FileExists(WorkingDir &amp; &quot;/commit.sh&quot;) then
                		MsgBox(&quot;Configuration complete.  OOoSVN will now continue with the function you requested.&quot;, 64, &quot;Complete&quot;)
                		FirstRunCheck = 1 
                	 End If
+            End If
 end if
 End Function
 
@@ -1021,8 +1028,15 @@ else
 packagescheck=0
 
 &apos; version numbers in case of skipping
-	sSVN=&quot;skipped&quot;
 	sBash=&quot;not found&quot;
+	sSVN=&quot;skipped&quot;
+	sCoreUtils=&quot;skipped&quot;
+	sFindUtils=&quot;skipped&quot;
+	sZip=&quot;skipped&quot;
+	sUnzip=&quot;skipped&quot;
+	sGrep=&quot;skipped&quot;
+	sAwk=&quot;skipped&quot;
+	sSed=&quot;skipped&quot;
 end if
 
 oStatus.end()
@@ -1031,11 +1045,10 @@ oStatus.end()
 if packagescheck=0	then
 		
 	If OS=&quot;Microsoft Windows&quot; then
-		Fail=&quot;OOoSVN is not currently supported on Windows and will not function properly.&quot; &amp; chr(10) &amp; _
-			&quot;If you would like to help implement OOoSVN support on Windows then please contact ed.holness@gmail.com&quot;
+		Fail=&quot;OOoSVN is not currently supported on Windows and will not function properly.&quot; &amp; _  
+			&quot;  If you would like to help implement OOoSVN support on Windows then please contact ed.holness@gmail.com.&quot;
 	else
-		Fail=&quot;Some package checks seem to have failed.  These&quot; &amp; chr(10) &amp; _
-			&quot;tests are not 100% reliable so please check manually.&quot;
+		Fail=&quot;Some package checks seem to have failed.  These tests are not 100% reliable so please check manually.&quot;
 	End If
 	
 	

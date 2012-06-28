@@ -17,7 +17,13 @@ LoadTools
     GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
   End If
   
-  FirstRunCheck
+&apos; Check dependencies, check scripts are installed, if not, install them.
+sFirstRunCheck = FirstRunCheck
+&apos; If the process has failed then error out.
+If sFirstRunCheck = 0 then
+	Msgbox(&quot;OOoSVN failed to be setup correctly, aborting.&quot;,48,&quot;OOoSVN error&quot;)
+Exit Function
+End If
   
   	aService = CreateUnoService(&quot;com.sun.star.util.PathSubstitution&quot;)
 	sUserPath = aService.substituteVariables(&quot;$(home)&quot;, true)
@@ -87,6 +93,8 @@ Function OnClickWizardContinue
 Dim sDirectory As String
 Dim sFileTypes As String
 Dim sExclude As String
+
+LoadTools
 
 	SearchPath = oDlgBulkImportStart.GetControl(&quot;txtSearchPath&quot;) &apos;oDlgBulkImportStart.getModel().SearchPath.Text
 	sDirectory = SearchPath.text
@@ -162,6 +170,8 @@ dim document   as object
 Dim oDoc
 Dim sDocURL
 oDoc = ThisComponent
+
+LoadTools
 
 WorkingDir = getWorkingDir
 
@@ -334,12 +344,14 @@ End Function
 
 Function OnClickLogBulkImportEnd
 &apos; Function to close the bulk import window and show the log
+LoadTools
 oDlgBulkImportEnd.endExecute
 OperationLog(&quot;Bulk import wizard log...&quot;)
 End Function
 
 Function OnClickCloseBulkImportEnd
 &apos; Function to close the bulk import window
+LoadTools
 oDlgBulkImportEnd.endExecute
 End Function
 

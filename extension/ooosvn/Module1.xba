@@ -10,7 +10,9 @@ dim dispatcher as object
 dim docuUUID as string
 dim parentUUID as string
 
-sFirstRunCheck = FirstRunCheck &apos;Check scripts are installed, if not, install them.
+&apos; Check dependencies, check scripts are installed, if not, install them.
+sFirstRunCheck = FirstRunCheck
+&apos; If the process has failed then error out.
 If sFirstRunCheck = 0 then
 	Msgbox(&quot;OOoSVN failed to be setup correctly, aborting.&quot;,48,&quot;OOoSVN error&quot;)
 Exit sub
@@ -42,7 +44,6 @@ LoadTools
                 msgbox (&quot;Repository not found. Create it using:&quot; &amp; chr(13) &amp; &quot;svnadmin create --fs-type fsfs &quot; &amp; mid(repo, 8) &amp; chr(13) &amp; &quot;Then all scripts should be placed in &quot; &amp; WorkingDir, 16, &quot;Repository Error&quot;)
             exit sub
           end if
-
 
     WorkingDir = getWorkingDir
     
@@ -214,7 +215,13 @@ sub InfoSVN()
   Dim repo
   oDoc = ThisComponent
   
-  FirstRunCheck
+&apos; Check dependencies, check scripts are installed, if not, install them.
+sFirstRunCheck = FirstRunCheck
+&apos; If the process has failed then error out.
+If sFirstRunCheck = 0 then
+	Msgbox(&quot;OOoSVN failed to be setup correctly, aborting.&quot;,48,&quot;OOoSVN error&quot;)
+Exit sub
+End If
 
 LoadTools
   If (oDoc.hasLocation()) Then
@@ -291,7 +298,13 @@ Sub ThumbnailsSVN()
 dim document   as object
 dim dispatcher as object
 
-FirstRunCheck
+&apos; Check dependencies, check scripts are installed, if not, install them.
+sFirstRunCheck = FirstRunCheck
+&apos; If the process has failed then error out.
+If sFirstRunCheck = 0 then
+	Msgbox(&quot;OOoSVN failed to be setup correctly, aborting.&quot;,48,&quot;OOoSVN error&quot;)
+Exit sub
+End If
 
 document   = ThisComponent.CurrentController.Frame
 dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
@@ -423,7 +436,13 @@ dim dispatcher as object
 rem ----------------------------------------------------------------------
 rem get access to the document
 
-FirstRunCheck
+&apos; Check dependencies, check scripts are installed, if not, install them.
+sFirstRunCheck = FirstRunCheck
+&apos; If the process has failed then error out.
+If sFirstRunCheck = 0 then
+	Msgbox(&quot;OOoSVN failed to be setup correctly, aborting.&quot;,48,&quot;OOoSVN error&quot;)
+Exit sub
+End If
 
 document   = ThisComponent.CurrentController.Frame
 dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
@@ -551,7 +570,16 @@ Sub RecoverSVN()
   oDoc = ThisComponent
   LoadTools
 
-FirstRunCheck
+&apos; Check dependencies, check scripts are installed, if not, install them.
+sFirstRunCheck = FirstRunCheck
+&apos; If the process has failed then error out.
+If sFirstRunCheck = 0 then
+	Msgbox(&quot;OOoSVN failed to be setup correctly, aborting.&quot;,48,&quot;OOoSVN error&quot;)
+Exit sub
+End If
+
+	aService = CreateUnoService(&quot;com.sun.star.util.PathSubstitution&quot;)
+	sUserPath = aService.substituteVariables(&quot;$(home)&quot;, true)
 
     repo = getRepo
     WorkingDir = getWorkingDir  
@@ -675,12 +703,13 @@ End If
 &apos; Pass some arguments to it
    With oFilePicker
            &apos;.Initialize( sFilePickerArgs() )
+           .setDisplayDirectory( converttoURL(sUserPath))
            .setTitle( &quot;Step 3/4: Select directory to save version &quot; &amp; version &amp; &quot; of &quot; &amp; documentname &amp; &quot; in&quot; )
           &apos; .Execute( sFilePickerArgs() )
                       
    End With
 
-&apos; If the savepath is selected return the complete path and display it in an messagebox   
+&apos; If the savepath is selected return the complete path, if not close the recovery process 
 
    If oFilePicker.execute() Then
       sFiles = oFilePicker.getDirectory()
@@ -695,7 +724,7 @@ newFileName = InputBox(ConvertFromURL(sFiles) &amp; &quot;/&quot;, &quot;Step 4/
 if newFileName =&quot;&quot; then
 exit sub &apos; exit if cancelled
 end if
-      outputURL = ConvertFromURL(sFiles) &amp; &quot;/&quot; &amp; newFileName
+      outputURL = ConvertFromURL(sFiles) &amp; newFileName&apos;&amp; &quot;/&quot; &amp; newFileName
 
    &apos;  Status Bar Message
    oDocCtrl = oDoc.getCurrentController()
@@ -712,11 +741,10 @@ end if
 
 	oStatus.value=9
 
-	outputfile = ConvertToURL(outputURL)
-
+&apos;msgbox(outputURL)
 &apos; Load the recovered file
-If FileExists(outputfile) then
-	StarDesktop.loadComponentfromURL(outputfile,&quot;_blank&quot;, 0, Array())
+If FileExists(outputURL) then
+	StarDesktop.loadComponentfromURL(ConvertToURL(outputURL),&quot;_blank&quot;, 0, Array())
 	oStatus.end()
    		else
    		oStatus.end()
@@ -726,13 +754,21 @@ If FileExists(outputfile) then
 end if
 End sub
 
+&apos;############################################################################
+
 sub DiffSVN() 
 &apos; Function to allow graphical comparison between two versions of a document
 
 dim document   as object
 dim dispatcher as object
 
-FirstRunCheck
+&apos; Check dependencies, check scripts are installed, if not, install them.
+sFirstRunCheck = FirstRunCheck
+&apos; If the process has failed then error out.
+If sFirstRunCheck = 0 then
+	Msgbox(&quot;OOoSVN failed to be setup correctly, aborting.&quot;,48,&quot;OOoSVN error&quot;)
+Exit sub
+End If
 
 rem get access to the document
 document   = ThisComponent.CurrentController.Frame
@@ -855,13 +891,19 @@ oStatus.end()
 end sub
 
 Sub LogSVN()
-&apos;Generate a log file and display it on screen.  Limited to 65536 characters due to string length limitation.
+&apos;Generate a log file and display it in a document window
 
 Dim oDlgLog As Object
 Dim txtLog As Object
 Dim sMsg As String
 
-FirstRunCheck
+&apos; Check dependencies, check scripts are installed, if not, install them.
+sFirstRunCheck = FirstRunCheck
+&apos; If the process has failed then error out.
+If sFirstRunCheck = 0 then
+	Msgbox(&quot;OOoSVN failed to be setup correctly, aborting.&quot;,48,&quot;OOoSVN error&quot;)
+Exit sub
+End If
 
 	Dim oDoc
   Dim sDocURL
@@ -981,6 +1023,8 @@ Dim oDlgLog As Object
 Dim txtLog As Object
 Dim sMsg As String
 
+LoadTools
+
 	oDlgLog = _
 		CreateUnoDialog(DialogLibraries.ooosvn.DlgHelp)
 	
@@ -1014,6 +1058,13 @@ Dim sMsg As String
 
     WorkingDir = getWorkingDir
 
+&apos; Check dependencies, check scripts are installed, if not, install them.
+sFirstRunCheck = FirstRunCheck
+&apos; If the process has failed then error out.
+If sFirstRunCheck = 0 then
+	Msgbox(&quot;OOoSVN failed to be setup correctly, aborting.&quot;,48,&quot;OOoSVN error&quot;)
+Exit Function
+End If
 
 &apos;	oDlgLog = _
 &apos;		CreateUnoDialog(DialogLibraries.ooosvn.DlgLog)

@@ -13,6 +13,7 @@ End Sub
 
 Function GetURLfromUUID(ByVal UUID As String)
 &apos; Function to find URL from UUID
+LoadTools
 oConfigData_UserProfile = GetConfigAccess( &quot;/ooo.ext.ooosvn.Configuration/ProductInfo/Repositories&quot;, False )
 &apos;
 	mKeys() = oConfigData_UserProfile.ElementNames
@@ -33,6 +34,7 @@ End Function
 
 Sub ShowUserProfile()
    &apos;oConfigData_UserProfile = GetConfigAccess( &quot;/org.openoffice.UserProfile/Data&quot;, False )
+   LoadTools
    oConfigData_UserProfile = GetConfigAccess( &quot;/ooo.ext.ooosvn.Configuration/ProductInfo/Repositories&quot;, False )
    &apos;oConfigData_UserProfile = GetConfigAccess( &quot;/ooo.ext.ooosvn.Configuration/Repositories&quot;, False )
    
@@ -63,6 +65,8 @@ Function GetConfigAccess( ByVal cNodePath As String,_
    If IsMissing( bLazyWrite ) Then
       bLazyWrite = False
    EndIf
+   
+   LoadTools
 
 &apos;   If bWriteAccess  And  bEnableSync Then
       oConfigProvider = GetProcessServiceManager().createInstanceWithArguments(_

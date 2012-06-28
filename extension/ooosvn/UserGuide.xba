@@ -5,6 +5,14 @@
 Sub GetUserguide
 &apos;Sub to get the userguide from Sourceforge SVN repo and build
 
+&apos; Check dependencies, check scripts are installed, if not, install them.
+sFirstRunCheck = FirstRunCheck
+&apos; If the process has failed then error out.
+If sFirstRunCheck = 0 then
+	Msgbox(&quot;OOoSVN failed to be setup correctly, aborting.&quot;,48,&quot;OOoSVN error&quot;)
+Exit sub
+End If
+
 dim dispatcher as object
 
 dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
