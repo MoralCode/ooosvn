@@ -949,7 +949,26 @@ Function getWorkingDir()
 &apos; Function used whenever we need to find the working directory path
 	aService = CreateUnoService(&quot;com.sun.star.util.PathSubstitution&quot;)
 	sUserPath = aService.substituteVariables(&quot;$(home)&quot;, true)
-	getWorkingDir = mid(sUserPath &amp; &quot;/.ooosvn&quot;, 8)
+	getWorkingDir = ConvertFromURL(sUserPath) &amp; &quot;/.ooosvn&quot;
+end Function
+
+Function getWorkingDir2()
+&apos; Function to work around complications with cygwin path names being different
+	aService = CreateUnoService(&quot;com.sun.star.util.PathSubstitution&quot;)
+	WorkingDir = getWorkingDir
+	&apos; Find the OS
+	OS=getguitype()
+	&apos; In case of Windows we need to reformat WorkingDir into a cygwin friendly form
+	If OS=1 then
+		drive=split(WorkingDir,&quot;:&quot;)
+		drive=lcase(drive(0))
+		WorkingDir2 = join(drive,&quot;&quot;)
+		WorkingDir2 = join(split(WorkingDir2,&quot;\&quot;),&quot;/&quot;)
+		getWorkingDir2 = &quot;/cygdrive/&quot; &amp; WorkingDir2
+	else
+		&apos; For other systems it&apos;s the same
+		getWorkingDir2 = WorkingDir
+	end if
 end Function
 
 Sub HelpAbout()

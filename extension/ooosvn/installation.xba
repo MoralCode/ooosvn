@@ -636,7 +636,7 @@ Function FirstRunCheck
 
 	WorkingDir = getWorkingDir	
 	
-If NOT FileExists(WorkingDir) then
+If NOT FileExists(WorkingDir &amp; &quot;/README.txt&quot;) then
                MsgBox(&quot;This appears to be the first time you have run OOoSVN.&quot; &amp; chr(10) &amp; chr(10) &amp; _
                &quot;There are several configuration steps we must do:&quot; &amp; chr(10) &amp; _
                &quot;1. Check you have the required packages, &quot; &amp; WorkingDir &amp; &quot;, which will be used for file operations.&quot; &amp; chr(10) &amp; _
@@ -664,14 +664,25 @@ Dim lUnzip as Single
 Dim lGrep as Single
 Dim lAwk as Single
 Dim lSed as Single
+Dim oDoc
 
 dim path as string
 dim aPaths
 dim BashPath as string
 dim oDlgPackageCheck as Object
 
+&apos; start status bar
+	oDoc = ThisComponent
+	oDocCtrl = oDoc.getCurrentController()
+	oDocFrame = oDocCtrl.getFrame()
+
+	oStatus = oDocFrame.createStatusIndicator()   
+	oStatus.start( &quot;Checking OOoSVN dependencies....&quot;, 10 )
+
+
 	packages = true
     WorkingDir = getWorkingDir
+    WorkingDir2 = getWorkingDir2
 	cQuote = Chr( 34 )
 	bash=0
 	BashPath=&quot;&quot;
@@ -681,19 +692,21 @@ OS=getguitype()
 If OS=1 then
 	OS = &quot;Microsoft Windows&quot;
 	bashname=&quot;bash.exe&quot;
+	pathdelimiter=&quot;;&quot;
 else
 	OS = &quot;Unix like system&quot;
 	bashname=&quot;bash&quot;
+	pathdelimiter=&quot;:&quot;
 End If
 
 &apos; Load the system &apos;PATH&apos; environment variable
 path=Environ(&quot;PATH&quot;) 
 
 &apos;In case system is running Windows where paths are delimeted by semicolons
-path=join(split(path, &quot;;&quot;), &quot;:&quot;)
+&apos;path=join(split(path, &quot;&quot;), &quot;&quot;)
 
 &apos; Split the string into an array or paths about the colon delimeters
-aPaths =Split(path,&quot;:&quot;)
+aPaths =Split(path,pathdelimiter)
 
 &apos; For each element of the path array look to see if the bash file exists in it
 For i = Lbound(aPaths) to Ubound(aPaths)
@@ -703,15 +716,34 @@ For i = Lbound(aPaths) to Ubound(aPaths)
 	End If
 Next
 
+oStatus.value=1
+
 &apos; Test if bash was found
 If bash=1 then
 &apos; If Bash wasn&apos;t found we can skip straight to the dialogue.  If not, all of the version tests get run.
 
+&apos;Test if the working directory exists and if not create it:
+
+	If NOT FileExists(WorkingDir) then
+		mkdir WorkingDir
+	End If
+
 	&apos;bash - now we know it exists we can call it without dividing by zero
-	Shell( &quot;bash -c &quot; + cQuote + &quot;bash --version &gt; &quot; &amp; WorkingDir &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
-		
+	command = &quot;bash --version &gt; &quot; &amp; cQuote &amp; WorkingDir2 &amp; &quot;/test.txt&quot; &amp; cQuote
+&apos;	msgbox( &quot;bash -c &quot; + cQuote + command + cQuote)
+&apos;	Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)
+&apos;	Shell(command &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/test.txt&quot;)
+
+&apos;	Shell( &quot;bash -c &quot; + cQuote + &quot;bash --version &gt; &quot; &amp; WorkingDir2 &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
+	Shell( &quot;bash -c &quot; + cQuote + &quot;bash --version &gt; &quot; &amp; WorkingDir2 &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
 	iNumber = Freefile
 	aFile = WorkingDir &amp; &quot;/test.txt&quot;
+	if not fileexists(afile) then
+	
+	wait 1000
+	
+	end if
+	
 	Open aFile For Input As iNumber
 	While not eof(iNumber)
 	Line Input #iNumber, sLine
@@ -733,8 +765,12 @@ If bash=1 then
 		packages=false
 	end if
 	
+	oStatus.value=2
+	
 	&apos;Subversion
-	Shell( &quot;bash -c &quot; + cQuote + &quot;svn --version -q &gt; &quot; &amp; WorkingDir &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
+	command = &quot;svn --version -q&gt; &quot; &amp; cQuote &amp; WorkingDir2 &amp; &quot;/test.txt&quot; &amp; cQuote
+&apos;	Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)
+	Shell( &quot;bash -c &quot; + cQuote + &quot;svn --version -q &gt; &quot; &amp; WorkingDir2 &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
 		
 	iNumber = Freefile
 	aFile = WorkingDir &amp; &quot;/test.txt&quot;
@@ -757,8 +793,12 @@ If bash=1 then
 		packages=false
 	end if
 	
+	oStatus.value=2
+	
 	&apos; Coreutils, via &apos;ls&apos;
-	Shell( &quot;bash -c &quot; + cQuote + &quot;ls --version &gt; &quot; &amp; WorkingDir &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
+	command = &quot;ls --version &gt; &quot; &amp; cQuote &amp; WorkingDir2 &amp; &quot;/test.txt&quot; &amp; cQuote
+&apos;	Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)
+	Shell( &quot;bash -c &quot; + cQuote + &quot;ls --version &gt; &quot; &amp; WorkingDir2 &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
 		
 	iNumber = Freefile
 	aFile = WorkingDir &amp; &quot;/test.txt&quot;
@@ -784,8 +824,12 @@ If bash=1 then
 		packages=false
 	end if
 	
+	oStatus.value=3
+	
 	&apos; Findutils
-	Shell( &quot;bash -c &quot; + cQuote + &quot;find --version &gt; &quot; &amp; WorkingDir &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
+	command = &quot;find --version &gt; &quot; &amp; cQuote &amp; WorkingDir2 &amp; &quot;/test.txt&quot; &amp; cQuote
+&apos;	Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)
+	Shell( &quot;bash -c &quot; + cQuote + &quot;find --version &gt; &quot; &amp; WorkingDir2 &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
 		
 	iNumber = Freefile
 	aFile = WorkingDir &amp; &quot;/test.txt&quot;
@@ -811,8 +855,12 @@ If bash=1 then
 		packages=false
 	end if
 
+	oStatus.value=4
+
 	&apos; Zip
-	Shell( &quot;bash -c &quot; + cQuote + &quot;zip --version &gt; &quot; &amp; WorkingDir &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
+	command = &quot;zip --version &gt; &quot; &amp; cQuote &amp; WorkingDir2 &amp; &quot;/test.txt&quot; &amp; cQuote
+&apos;	Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)
+	Shell( &quot;bash -c &quot; + cQuote + &quot;zip --version &gt; &quot; &amp; WorkingDir2 &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
 		
 	iNumber = Freefile
 	aFile = WorkingDir &amp; &quot;/test.txt&quot;
@@ -837,9 +885,13 @@ If bash=1 then
 		sZip=&quot;not found&quot;
 		packages=false
 	end if
+	
+	oStatus.value=5
 
 	&apos; Unzip
-	Shell( &quot;bash -c &quot; + cQuote + &quot;unzip -v &gt; &quot; &amp; WorkingDir &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
+	command = &quot;unzip -v &gt; &quot; &amp; cQuote &amp; WorkingDir2 &amp; &quot;/test.txt&quot; &amp; cQuote
+&apos;	Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)
+	Shell( &quot;bash -c &quot; + cQuote + &quot;unzip -v &gt; &quot; &amp; WorkingDir2 &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
 		
 	iNumber = Freefile
 	aFile = WorkingDir &amp; &quot;/test.txt&quot;
@@ -864,8 +916,12 @@ If bash=1 then
 		packages=false
 	end if
 	
+	oStatus.value=6
+	
 	&apos; grep
-	Shell( &quot;bash -c &quot; + cQuote + &quot;grep --version &gt; &quot; &amp; WorkingDir &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
+	command = &quot;grep --version &gt; &quot; &amp; cQuote &amp; WorkingDir2 &amp; &quot;/test.txt&quot; &amp; cQuote
+&apos;	Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)
+	Shell( &quot;bash -c &quot; + cQuote + &quot;grep --version &gt; &quot; &amp; WorkingDir2 &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
 		
 	iNumber = Freefile
 	aFile = WorkingDir &amp; &quot;/test.txt&quot;
@@ -891,8 +947,12 @@ If bash=1 then
 		packages=false
 	end if
 	
+	oStatus.value=7
+	
 	&apos; awk
-	Shell( &quot;bash -c &quot; + cQuote + &quot;awk --version &gt; &quot; &amp; WorkingDir &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
+	command = &quot;awk --version &gt; &quot; &amp; cQuote &amp; WorkingDir2 &amp; &quot;/test.txt&quot; &amp; cQuote
+&apos;	Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)
+	Shell( &quot;bash -c &quot; + cQuote + &quot;awk --version &gt; &quot; &amp; WorkingDir2 &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
 		
 	iNumber = Freefile
 	aFile = WorkingDir &amp; &quot;/test.txt&quot;
@@ -918,8 +978,12 @@ If bash=1 then
 		packages=false
 	end if
 	
+	oStatus.value=8
+	
 	&apos; sed
-	Shell( &quot;bash -c &quot; + cQuote + &quot;sed --version &gt; &quot; &amp; WorkingDir &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
+	command = &quot;sed --version &gt; &quot; &amp; cQuote &amp; WorkingDir2 &amp; &quot;/test.txt&quot; &amp; cQuote
+&apos;	Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)
+	Shell( &quot;bash -c &quot; + cQuote + &quot;sed --version &gt; &quot; &amp; WorkingDir2 &amp; &quot;/test.txt&quot; + cQuote, &quot;&quot;,6,true)
 		
 	iNumber = Freefile
 	aFile = WorkingDir &amp; &quot;/test.txt&quot;
@@ -945,6 +1009,7 @@ If bash=1 then
 		packages=false
 	end if
 
+	oStatus.value=9
 	
 else
 &apos;In case bash was not found
@@ -955,6 +1020,7 @@ packages=false
 	sBash=&quot;not found&quot;
 end if
 
+oStatus.end()
 
 
 &apos;Set up the dialogue
