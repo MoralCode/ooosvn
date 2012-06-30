@@ -5,9 +5,9 @@
  xmlns:xlink="http://www.w3.org/1999/xlink">
 	<identifier value="vnd.basicaddonbuilder.ooosvn"/>
 	<version value="0.4.1.12"/>
-	<!-- <dependencies>
-		<OpenOffice.org-minimal-version value="2.1" dep:name="OpenOffice.org 2.1"/>
-	</dependencies> -->
+	<dependencies>
+		<OpenOffice.org-minimal-version value="2.3" dep:name="OpenOffice.org 2.1"/>
+	</dependencies>
 	<registration>
 		<simple-license  accept-by="admin" default-license-id="ID0" suppress-on-update="true" >
 			<license-text xlink:href="registration/gpl.txt" lang="en" license-id="ID0" />

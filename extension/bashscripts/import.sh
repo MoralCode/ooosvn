@@ -1,7 +1,8 @@
 #!/bin/bash
 #Script to carry out initial import of document in SVN.
 #Usage: import.sh [document path] [document filename] [full repository URL] [working directory path] [Document UUID to assign] [Optional Document UUID of parent document to make child document]
-echo Document Path: $1 
+echo Importing $1
+echo ================================================
 echo Document filename: $2 
 echo Repository URL: $3 
 echo Working directory path: $4 
@@ -11,11 +12,19 @@ echo ================================================
 mkdir -v $4/$5/
 mkdir -v $4/$5/temp/
 echo ================================================
+
 if test -f "$1" 		# test that file exists
 	then echo "$1" found		# confirmation of file existence
 else
-	echo "$1" not found.	# warn that file doesn't exist
+	# Error that file doesn't exist and exit
+	echo Fatal error!
+	echo "$1" not found
+	echo "Maybe the filename includes a forbidden character: & ; ( )"
+	echo Import aborted.
+	echo ================================================
+	exit
 fi
+
 echo ================================================
 unzip -o "$1" -d $4/$5/temp/ -x *.svn* # Spaces in filename fixed
 cd $4/$5/temp/
@@ -127,10 +136,13 @@ pwd=`pwd`
 if [ $pwd != "${4}/${5}/trunk" ]
 then
 echo "Error: Working copy is not where it should be!"
-echo "Most likely cause is disallowed characters in document filename."
+echo "Most likely cause is disallowed characters in document filename.  Exiting."
+echo ================================================
 exit
 fi
 echo Changed directory to:
 pwd
 echo ================================================
+echo Recompressing archive:
 zip -rDX "$1" * -x *.svn*
+echo ================================================

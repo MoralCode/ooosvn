@@ -13,6 +13,9 @@ End Sub
 
 Function GetURLfromUUID(ByVal UUID As String)
 &apos; Function to find URL from UUID
+    If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
 LoadTools
 oConfigData_UserProfile = GetConfigAccess( &quot;/ooo.ext.ooosvn.Configuration/ProductInfo/Repositories&quot;, False )
 &apos;
@@ -34,6 +37,9 @@ End Function
 
 Sub ShowUserProfile()
    &apos;oConfigData_UserProfile = GetConfigAccess( &quot;/org.openoffice.UserProfile/Data&quot;, False )
+       If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
    LoadTools
    oConfigData_UserProfile = GetConfigAccess( &quot;/ooo.ext.ooosvn.Configuration/ProductInfo/Repositories&quot;, False )
    &apos;oConfigData_UserProfile = GetConfigAccess( &quot;/ooo.ext.ooosvn.Configuration/Repositories&quot;, False )
@@ -66,6 +72,10 @@ Function GetConfigAccess( ByVal cNodePath As String,_
       bLazyWrite = False
    EndIf
    
+   
+      If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
    LoadTools
 
 &apos;   If bWriteAccess  And  bEnableSync Then

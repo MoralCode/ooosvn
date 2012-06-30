@@ -25,8 +25,10 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
   Dim sDocURL
   oDoc = ThisComponent
 
+    If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
 LoadTools
-
           
         If (oDoc.hasLocation()) Then
           sDocURL = oDoc.getURL()
@@ -160,7 +162,11 @@ Sub CommitSVN()
   Dim sDocURL
   oDoc = ThisComponent
 
+    If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
  LoadTools
+ 
   If (oDoc.hasLocation()) Then
     sDocURL = oDoc.getURL()
     sDocURL2 = mid(sDocURL, 8)
@@ -223,6 +229,9 @@ If sFirstRunCheck = 0 then
 Exit sub
 End If
 
+    If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
 LoadTools
   If (oDoc.hasLocation()) Then
 	sDocURL = oDoc.getURL()
@@ -313,6 +322,9 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
   Dim sDocURL
   oDoc = ThisComponent
 
+    If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
   LoadTools
   
   If (oDoc.hasLocation()) Then
@@ -401,6 +413,12 @@ oStatus.end()
 
 &apos; Close the Dialog
    oFilePicker.Dispose()
+   
+   	&apos; Check just in case user has selected a broken file or one from a different directory
+	If NOT FileExists(converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; sDocumentDir &amp; &quot;/versions/&quot; &amp; FileNameoutofPath(sFileURL, &quot;/&quot;) ) Then
+		MsgBox(&quot;File selection error, version info not found in change control.  Aborted.&quot;, 48, &quot;Error&quot;)
+		Exit Sub
+	End If
 
 &apos;  Status Bar Message
    oDocCtrl = oDoc.getCurrentController()
@@ -451,7 +469,11 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
   Dim sDocURL
   oDoc = ThisComponent
 
+    If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
   LoadTools
+  
   If (oDoc.hasLocation()) Then
     sDocURL = oDoc.getURL()
     sDocURL2 = mid(sDocURL, 8)
@@ -531,12 +553,16 @@ End If
       version = Left ( version, InStr( 1, version, sCut ) )
       else
 	exit sub
-&apos;      MsgBox ( version )
-
-  End If
+End If
 
 &apos; Close the Dialog
    oFilePicker.Dispose() 
+   
+   	&apos; Check just in case user has selected a broken file or one from a different directory
+	If NOT FileExists(converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; sDocumentDir &amp; &quot;/versions/&quot; &amp; FileNameoutofPath(sFileURL, &quot;/&quot;) ) Then
+		MsgBox(&quot;File selection error, version info not found in change control.  Aborted.&quot;, 48, &quot;Error&quot;)
+		Exit Sub
+	End If
 
 &apos;  Status Bar Message
    oDocCtrl = oDoc.getCurrentController()
@@ -562,12 +588,18 @@ End If
    
 End sub
 
+&apos;################################################
+
 Sub RecoverSVN()
 &apos; Sub for reloading any version of any file under version control.
 
   Dim oDoc
   Dim sDocURL
   oDoc = ThisComponent
+  
+      If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
   LoadTools
 
 &apos; Check dependencies, check scripts are installed, if not, install them.
@@ -578,13 +610,6 @@ If sFirstRunCheck = 0 then
 Exit sub
 End If
 
-	aService = CreateUnoService(&quot;com.sun.star.util.PathSubstitution&quot;)
-	sUserPath = aService.substituteVariables(&quot;$(home)&quot;, true)
-
-    repo = getRepo
-    WorkingDir = getWorkingDir  
-         
-            cQuote = Chr( 34 )
 &apos;  Status Bar Message
    oDocCtrl = oDoc.getCurrentController()
    oDocFrame = oDocCtrl.getFrame()
@@ -594,6 +619,16 @@ End If
    oStatus.start( &quot;Listing documents in working directory.  Please wait....&quot;, 10 )
 
 	oStatus.value=1
+
+	aService = CreateUnoService(&quot;com.sun.star.util.PathSubstitution&quot;)
+	sUserPath = aService.substituteVariables(&quot;$(home)&quot;, true)
+
+    repo = getRepo
+    WorkingDir = getWorkingDir  
+         
+            cQuote = Chr( 34 )
+
+	oStatus.value=2
 
 	&apos; Get document list
    Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/listdocuments.sh &quot; &amp; WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
@@ -617,10 +652,20 @@ oStatus.end()
 &apos; Pass some arguments to it
 
    With oFilePicker
-           .Initialize( sFilePickerArgs() )
-           .setDisplayDirectory( converttoURL(WorkingDir) &amp; &quot;/documentlist/&quot;)
-           .setTitle( &quot;Step 1/4: Select Document to recover&quot; )
-           .appendFilter(&quot;All files&quot;, &quot;*.*&quot; ) 
+		.Initialize( sFilePickerArgs() )
+		.setDisplayDirectory( converttoURL(WorkingDir) &amp; &quot;/documentlist/&quot;)
+		.setTitle( &quot;Step 1/3: Select Document to recover&quot; )
+		.appendFilter(&quot;All files&quot;, &quot;*.*&quot; ) 
+		.appendFilter(&quot;Text Documents&quot;, &quot;*.odt; *.sxw&quot; )
+		.appendFilter(&quot;Spreadsheets&quot;, &quot;*.ods; *.sxc&quot; )
+		.appendFilter(&quot;Presentations&quot;, &quot;*.odp; *.sxi &quot; )
+		.appendFilter(&quot;Graphics&quot;, &quot;*.odg; *.sxd&quot; )
+		.appendFilter(&quot;Charts&quot;, &quot;*.odc&quot; )
+		.appendFilter(&quot;Images&quot;, &quot;*.odi&quot; )
+		.appendFilter(&quot;Databases&quot;, &quot;*.odb&quot; )
+		.appendFilter(&quot;Formulae&quot;, &quot;*.odf; *.sxm&quot; )
+		.appendFilter(&quot;Master Documents&quot;, &quot;*.odm; *.sxg&quot; )
+		.appendFilter(&quot;Templates (*.od*; *.st*)&quot;, &quot;*.ot*; *.st*&quot; )
            
    End With
 
@@ -630,6 +675,7 @@ oStatus.end()
       sFiles = oFilePicker.getFiles()
       sFileURL = sFiles(0)
       documentname = FileNameoutofPath(sFileURL, &quot;/&quot;)
+      documentname = ConvertFromURL(documentname)
       else
 	exit sub
 
@@ -641,21 +687,44 @@ oStatus.end()
    oDocCtrl = oDoc.getCurrentController()
    oDocFrame = oDocCtrl.getFrame()
    
-   oStatus = oDocFrame.createStatusIndicator()
+   
+   
+   	iNumber = Freefile
+	aFile = WorkingDir &amp; &quot;/documentlist/&quot; &amp; documentname
+	
+	&apos; Check just in case user has selected a broken file or one from a different directory
+	If NOT FileExists(aFile) Then
+		MsgBox(&quot;File selection error, document info not found in change control.  Aborted.&quot;, 48, &quot;Error&quot;)
+		Exit Sub
+	End If
+	
+	   oStatus = oDocFrame.createStatusIndicator()
    
    oStatus.start( &quot;Listing versions for &quot; &amp; documentname &amp; &quot; in repository &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
    
 	oStatus.value=1
+	
+	&apos; Pull the directory name from the document link
+	Open aFile For Input As iNumber
+	While not eof(iNumber)
+	Line Input #iNumber, sLine
+	If sLine &lt;&gt;&quot;&quot; then
+		sDocumentDir = sLine
+	end if
+	wend
+	Close #iNumber
+   
+	oStatus.value=2
    
 	&apos; Get version list
-   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/listversions.sh &apos;&quot;  &amp; documentname &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+   Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/listversions.sh &apos;&quot;  &amp; sDocumentDir &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
    
 	oStatus.value=9
    
 oStatus.end()
 
 &apos; If no versions directory exists, there must be a problem.
-If Not FileExists (converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; documentname &amp; &quot;/versions/&quot;) Then
+If Not FileExists (converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; sDocumentDir &amp; &quot;/versions/&quot;) Then
 Msgbox(&quot;Version files do not exist in the repository.  Operation cancelled.&quot;)
 Exit Sub
 End If
@@ -674,8 +743,8 @@ End If
 
    With oFilePicker
            .Initialize( sFilePickerArgs() )
-           .setDisplayDirectory( converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; documentname &amp; &quot;/versions/&quot; )
-           .setTitle( &quot;Step 2/4: Select version of &quot; &amp; documentname &amp; &quot; to revert to &quot; )
+           .setDisplayDirectory( converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; sDocumentDir &amp; &quot;/versions/&quot; )
+           .setTitle( &quot;Step 2/3: Select version of &quot; &amp; documentname &amp; &quot; to revert to &quot; )
            .appendFilter(&quot;Document versions&quot;, &quot;*.version&quot; ) 
            
    End With
@@ -692,39 +761,42 @@ End If
 	exit sub
   End If
 
+	&apos; Check just in case user has selected a broken file or one from a different directory
+	If NOT FileExists(converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; sDocumentDir &amp; &quot;/versions/&quot; &amp; FileNameoutofPath(sFileURL, &quot;/&quot;) ) Then
+		MsgBox(&quot;File selection error, version info not found in change control.  Aborted.&quot;, 48, &quot;Error&quot;)
+		Exit Sub
+	End If
+
 &apos; Close the Dialog
    oFilePicker.Dispose()
    
 &apos;Select output directory
    
-  oFilePicker = CreateUnoService( &quot;com.sun.star.ui.dialogs.FolderPicker&quot; )
-	      sFilePickerArgs = com.sun.star.ui.dialogs.TemplateDescription.FILEOPEN_SIMPLE
+   sFilePickerArgs = com.sun.star.ui.dialogs.TemplateDescription.FILESAVE_SIMPLE
+  oFilePicker = CreateUnoService( &quot;com.sun.star.ui.dialogs.FilePicker&quot; )
+	      
 
 &apos; Pass some arguments to it
    With oFilePicker
-           &apos;.Initialize( sFilePickerArgs() )
+           .Initialize( Array(sFilePickerArgs) )
            .setDisplayDirectory( converttoURL(sUserPath))
-           .setTitle( &quot;Step 3/4: Select directory to save version &quot; &amp; version &amp; &quot; of &quot; &amp; documentname &amp; &quot; in&quot; )
+           .setTitle( &quot;Step 3/3: Select output file path&quot; )
+           .setDefaultName(documentname)
           &apos; .Execute( sFilePickerArgs() )
                       
    End With
 
-&apos; If the savepath is selected return the complete path, if not close the recovery process 
-
+&apos; If the savepath is selected return the complete path, if not close the recovery process
    If oFilePicker.execute() Then
-      sFiles = oFilePicker.getDirectory()
+      sFiles = oFilePicker.getFiles()
+      sFilesURL = sFiles(0)
       else
 	exit sub
   End If
   
-dim newfilename  
-
-newFileName = InputBox(ConvertFromURL(sFiles) &amp; &quot;/&quot;, &quot;Step 4/4: Enter filename for recovered file:&quot;, documentname)
-
-if newFileName =&quot;&quot; then
-exit sub &apos; exit if cancelled
-end if
-      outputURL = ConvertFromURL(sFiles) &amp; newFileName&apos;&amp; &quot;/&quot; &amp; newFileName
+  oFilePicker.dispose()
+  
+      outputURL = ConvertFromURL(sFilesURL)&apos; &amp; newFileName&apos;&amp; &quot;/&quot; &amp; newFileName
 
    &apos;  Status Bar Message
    oDocCtrl = oDoc.getCurrentController()
@@ -737,7 +809,7 @@ end if
 	oStatus.value=1
    
    &apos;Output
-	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &apos;&quot; &amp; outputURL &amp; &quot;&apos; &apos;&quot; &amp; documentname &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
+	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/revert.sh &apos;&quot; &amp; outputURL &amp; &quot;&apos; &apos;&quot; &amp; sDocumentDir &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; version &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote, &quot;&quot;,6,true)
 
 	oStatus.value=9
 
@@ -777,6 +849,10 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
   Dim oDoc
   Dim sDocURL
   oDoc = ThisComponent
+  
+      If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
   LoadTools
   If (oDoc.hasLocation()) Then
     sDocURL = oDoc.getURL()
@@ -860,6 +936,12 @@ oStatus.end()
 &apos; Close the Dialog
    oFilePicker.Dispose() 
    
+   	&apos; Check just in case user has selected a broken file or one from a different directory
+	If NOT FileExists(converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; sDocumentDir &amp; &quot;/versions/&quot; &amp; FileNameoutofPath(sFileURL, &quot;/&quot;) ) Then
+		MsgBox(&quot;File selection error, version info not found in change control.  Aborted.&quot;, 48, &quot;Error&quot;)
+		Exit Sub
+	End If
+   
    &apos;  Status Bar Message
    oDocCtrl = oDoc.getCurrentController()
    oDocFrame = oDocCtrl.getFrame()
@@ -909,10 +991,12 @@ End If
   Dim sDocURL
   Dim repo
   oDoc = ThisComponent
-  LoadTools
+
     If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
     GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
   End If
+  LoadTools
+
   If (oDoc.hasLocation()) Then
 	sDocURL = oDoc.getURL()
     sDocURL2 = mid(sDocURL, 8)
@@ -1023,6 +1107,9 @@ Dim oDlgLog As Object
 Dim txtLog As Object
 Dim sMsg As String
 
+  If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
 LoadTools
 
 	oDlgLog = _
@@ -1051,10 +1138,10 @@ Dim sMsg As String
   Dim sDocURL
   Dim repo
 
-  LoadTools
     If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
     GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
   End If
+  LoadTools
 
     WorkingDir = getWorkingDir
 

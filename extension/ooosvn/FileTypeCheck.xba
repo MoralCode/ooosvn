@@ -105,6 +105,9 @@ Function PrintFileType
   Dim sDocURL
   oDoc = ThisComponent
 
+    If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
  LoadTools
   If (oDoc.hasLocation()) Then
     sDocURL = oDoc.getURL()

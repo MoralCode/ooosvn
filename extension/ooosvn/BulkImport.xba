@@ -12,10 +12,10 @@ Function BulkImportWizard
 &apos; Starts the bulk import process
 
 &apos; Load libraries
-LoadTools
   If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
     GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
   End If
+LoadTools
   
 &apos; Check dependencies, check scripts are installed, if not, install them.
 sFirstRunCheck = FirstRunCheck
@@ -59,6 +59,9 @@ Dim sDirectory As String
 
 oDoc = ThisComponent
 
+  If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
 LoadTools
 
 	aService = CreateUnoService(&quot;com.sun.star.util.PathSubstitution&quot;)
@@ -84,6 +87,7 @@ LoadTools
       else
 	exit Function
   End If
+	oFilePicker.Dispose()
 
 End Function
 
@@ -94,6 +98,9 @@ Dim sDirectory As String
 Dim sFileTypes As String
 Dim sExclude As String
 
+  If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
 LoadTools
 
 	SearchPath = oDlgBulkImportStart.GetControl(&quot;txtSearchPath&quot;) &apos;oDlgBulkImportStart.getModel().SearchPath.Text
@@ -171,6 +178,9 @@ Dim oDoc
 Dim sDocURL
 oDoc = ThisComponent
 
+  If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
 LoadTools
 
 WorkingDir = getWorkingDir
@@ -205,10 +215,10 @@ End Function
 Function ImportListDlg
 &apos; Function for loading the help dialogue.
 
-LoadTools
-    If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+  If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
     GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
   End If
+LoadTools
 
 Dim FileList As Object
 Dim sMsg As String
@@ -267,10 +277,12 @@ Dim oDoc
 Dim sDocURL
 oDoc = ThisComponent
 
-LoadTools
     If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
     GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
   End If
+
+LoadTools
+
       WorkingDir = getWorkingDir
 
 &apos; Line number count
@@ -344,6 +356,10 @@ End Function
 
 Function OnClickLogBulkImportEnd
 &apos; Function to close the bulk import window and show the log
+
+    If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
 LoadTools
 oDlgBulkImportEnd.endExecute
 OperationLog(&quot;Bulk import wizard log...&quot;)
@@ -351,6 +367,9 @@ End Function
 
 Function OnClickCloseBulkImportEnd
 &apos; Function to close the bulk import window
+    If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
 LoadTools
 oDlgBulkImportEnd.endExecute
 End Function

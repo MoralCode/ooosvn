@@ -17,6 +17,10 @@ End If
   oDoc = ThisComponent
   If oDoc.supportsService( &quot;com.sun.star.chart.ChartDocument&quot; ) Then
     oDoc = oDoc.getParent()
+  End If
+  
+      If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
   End If  
   LoadTools
   
@@ -96,7 +100,12 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
   Dim oDoc
   Dim sDocURL
   oDoc = ThisComponent
+  
+      If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
  LoadTools
+ 
   If (oDoc.hasLocation()) Then
     sDocURL = oDoc.getURL()
     sDocURL2 = mid(sDocURL, 8)
@@ -182,7 +191,12 @@ dispatcher.executeDispatch(document, &quot;.uno:Save&quot;, &quot;&quot;, 0, Arr
   Dim oDoc
   Dim sDocURL
   oDoc = ThisComponent
+  
+      If (Not GlobalScope.DialogLibraries.isLibraryLoaded(&quot;ooosvn&quot;)) Then
+    GlobalScope.DialogLibraries.LoadLibrary(&quot;ooosvn&quot;)
+  End If
   LoadTools
+  
   If (oDoc.hasLocation()) Then
     sDocURL = oDoc.getURL()
     sDocURL2 = mid(sDocURL, 8)
