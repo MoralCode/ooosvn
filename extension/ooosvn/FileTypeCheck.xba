@@ -54,7 +54,7 @@ end if
 
 end function 
 
-Function validatefiletypeODF(sDocURL As String)
+Function ValidateFiletypeHasThumbnail(sDocURL As String)
 &apos; Function to check that a file is ODF
 
 oSFA       = createUNOService (&quot;com.sun.star.ucb.SimpleFileAccess&quot;)
@@ -83,7 +83,7 @@ if sType &lt;&gt; &quot;draw8_template&quot; then
 if sType &lt;&gt; &quot;math8&quot; then
 if sType &lt;&gt; &quot;StarBase&quot; then
 msgbox (sDocURL &amp; &quot; is not an ODF file and does not contain a document Thumbnail.  Operation cancelled.&quot;, 16, &quot;Non-ODF document&quot;)
-validatefiletypeODF=&quot;false&quot;
+ValidateFiletypeHasThumbnail=&quot;false&quot;
 end if
 end if
 end if

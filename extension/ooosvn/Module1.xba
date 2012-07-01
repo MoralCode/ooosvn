@@ -301,6 +301,8 @@ Msgbox (sMsg, 64, &quot;SVN info for &quot; &amp; FileNameoutofPath(sDocURL, &qu
 
 end sub
 
+&apos; ######################################
+
 Sub ThumbnailsSVN()
 &apos;Sub for a version browser based upon the Thumbnail.png files in ODF documents
 
@@ -336,7 +338,7 @@ dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
   End If
   
   &apos; Now test we have an ODF file as sx* files do not have thumbnails
-	if validatefiletypeODF(sDocURL)=&quot;false&quot; then
+	if ValidateFiletypeHasThumbnail(sDocURL)=&quot;false&quot; then
 &apos;ImportSVN = 0
 	exit sub
 end if
@@ -385,7 +387,7 @@ oStatus.end()
    Dim sFileURL as String
 
 &apos; Set the Dialog Arguments to a Template for FILESAVE
-   sFilePickerArgs = Array( com.sun.star.ui.dialogs.TemplateDescription.FILEOPEN_LINK_PREVIEW_IMAGE_TEMPLATE) &apos;FILESAVE_AUTOEXTENSION )
+   sFilePickerArgs = Array( com.sun.star.ui.dialogs.TemplateDescription.FILEOPEN_LINK_PREVIEW
 
 &apos; register the Service for Filepicker   
    oFilePicker = CreateUnoService( &quot;com.sun.star.ui.dialogs.FilePicker&quot; )
@@ -415,7 +417,7 @@ oStatus.end()
    oFilePicker.Dispose()
    
    	&apos; Check just in case user has selected a broken file or one from a different directory
-	If NOT FileExists(converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; sDocumentDir &amp; &quot;/versions/&quot; &amp; FileNameoutofPath(sFileURL, &quot;/&quot;) ) Then
+	If NOT FileExists(converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; docpath &amp; &quot;/preview/&quot; &amp; FileNameoutofPath(sFileURL, &quot;/&quot;) ) Then
 		MsgBox(&quot;File selection error, version info not found in change control.  Aborted.&quot;, 48, &quot;Error&quot;)
 		Exit Sub
 	End If
@@ -559,7 +561,7 @@ End If
    oFilePicker.Dispose() 
    
    	&apos; Check just in case user has selected a broken file or one from a different directory
-	If NOT FileExists(converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; sDocumentDir &amp; &quot;/versions/&quot; &amp; FileNameoutofPath(sFileURL, &quot;/&quot;) ) Then
+	If NOT FileExists(converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; docpath &amp; &quot;/versions/&quot; &amp; FileNameoutofPath(sFileURL, &quot;/&quot;) ) Then
 		MsgBox(&quot;File selection error, version info not found in change control.  Aborted.&quot;, 48, &quot;Error&quot;)
 		Exit Sub
 	End If
@@ -656,16 +658,16 @@ oStatus.end()
 		.setDisplayDirectory( converttoURL(WorkingDir) &amp; &quot;/documentlist/&quot;)
 		.setTitle( &quot;Step 1/3: Select Document to recover&quot; )
 		.appendFilter(&quot;All files&quot;, &quot;*.*&quot; ) 
-		.appendFilter(&quot;Text Documents&quot;, &quot;*.odt; *.sxw&quot; )
-		.appendFilter(&quot;Spreadsheets&quot;, &quot;*.ods; *.sxc&quot; )
-		.appendFilter(&quot;Presentations&quot;, &quot;*.odp; *.sxi &quot; )
-		.appendFilter(&quot;Graphics&quot;, &quot;*.odg; *.sxd&quot; )
+		.appendFilter(&quot;Text Documents&quot;, &quot;*.odt&quot; )
+		.appendFilter(&quot;Spreadsheets&quot;, &quot;*.ods&quot; )
+		.appendFilter(&quot;Presentations&quot;, &quot;*.odp&quot; )
+		.appendFilter(&quot;Graphics&quot;, &quot;*.odg&quot; )
 		.appendFilter(&quot;Charts&quot;, &quot;*.odc&quot; )
 		.appendFilter(&quot;Images&quot;, &quot;*.odi&quot; )
 		.appendFilter(&quot;Databases&quot;, &quot;*.odb&quot; )
-		.appendFilter(&quot;Formulae&quot;, &quot;*.odf; *.sxm&quot; )
-		.appendFilter(&quot;Master Documents&quot;, &quot;*.odm; *.sxg&quot; )
-		.appendFilter(&quot;Templates (*.od*; *.st*)&quot;, &quot;*.ot*; *.st*&quot; )
+		.appendFilter(&quot;Formulae&quot;, &quot;*.odf&quot; )
+		.appendFilter(&quot;Master Documents&quot;, &quot;*.odm&quot; )
+		.appendFilter(&quot;Templates (*.od*)&quot;, &quot;*.ot*&quot; )
            
    End With
 
@@ -937,7 +939,7 @@ oStatus.end()
    oFilePicker.Dispose() 
    
    	&apos; Check just in case user has selected a broken file or one from a different directory
-	If NOT FileExists(converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; sDocumentDir &amp; &quot;/versions/&quot; &amp; FileNameoutofPath(sFileURL, &quot;/&quot;) ) Then
+	If NOT FileExists(converttoURL(WorkingDir) &amp; &quot;/&quot; &amp; docpath &amp; &quot;/versions/&quot; &amp; FileNameoutofPath(sFileURL, &quot;/&quot;) ) Then
 		MsgBox(&quot;File selection error, version info not found in change control.  Aborted.&quot;, 48, &quot;Error&quot;)
 		Exit Sub
 	End If

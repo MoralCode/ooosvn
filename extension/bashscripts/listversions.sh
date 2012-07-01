@@ -41,13 +41,12 @@ count=0
 
 for version in `svn log -q $2/$1 | grep r | cut -c2- | cut -d' ' -f1`
 do
-echo $version > "$3/$1/versions/$version.version"
-echo $version
-# Do timestamps
-timestamp=`svn log "$2/$1/" | grep r$version | cut -c14-33 | sed s/-//g | sed s/' '//g | sed s/:// | sed s/:/./`
-touch -t $timestamp "$3/$1/versions/$version.version"
-echo $timestamp
-count=$((count+1))
+  echo $version > "$3/$1/versions/$version.version"
+  echo $version
+  # Do timestamps
+  timestamp=`svn log "$2/$1/" | grep r$version | cut -c14-33 | sed s/-//g | sed s/' '//g | sed s/:// | sed s/:/./`
+  touch -t $timestamp "$3/$1/versions/$version.version"
+  count=$((count+1))
 done
 echo ================================================
 echo $count versions found

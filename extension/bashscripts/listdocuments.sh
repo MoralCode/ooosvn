@@ -38,7 +38,6 @@ docext=""
 if test -f "$1/$documentdir/trunk/mimetype"
 then
 
-mimetype=""
 mimetype=`grep application/vnd "$1/$documentdir/trunk/mimetype"`
 # OpenDocument mimetypes
 if [[ $mimetype == "application/vnd.oasis.opendocument.text" ]]
@@ -118,60 +117,20 @@ if [[ $mimetype == "application/vnd.oasis.opendocument.text-web" ]]
 then
 docext=".oth"
 fi
-# OOo 1.x .sx* support
-if [[ $mimetype == "application/vnd.sun.xml.writer" ]]
-then
-docext=".sxw"
-fi
-if [[ $mimetype == "application/vnd.sun.xml.calc" ]]
-then
-docext=".sxc"
-fi
-if [[ $mimetype == "application/vnd.sun.xml.impress" ]]
-then
-docext=".sxi"
-fi
-if [[ $mimetype == "application/vnd.sun.xml.draw" ]]
-then
-docext=".sxd"
-fi
-if [[ $mimetype == "application/vnd.sun.xml.math" ]]
-then
-docext=".sxm"
-fi
-if [[ $mimetype == "application/vnd.sun.xml.text-master" ]]
-then
-docext=".sxg"
-fi
-# OOo 1.x .st* templates
-if [[ $mimetype == "application/vnd.sun.xml.writer.template" ]]
-then
-docext=".stw"
-fi
-if [[ $mimetype == "application/vnd.sun.xml.calc.template" ]]
-then
-docext=".stc"
-fi
-if [[ $mimetype == "application/vnd.sun.xml.impress.template" ]]
-then
-docext=".sti"
-fi
-if [[ $mimetype == "application/vnd.sun.xml.draw.template" ]]
-then
-docext=".std"
-fi
-if [[ $mimetype == "application/vnd.sun.xml.writer.web" ]]
-then
-docext=".stw"
-fi
 fi
 
-
-# now write out the documentlink
-echo "$documentdir" > "$1/documentlist/$docname$documentdir2$docext"
-# find the date
-timestamp=`svn info "$1/$documentdir/" | grep 'Last Changed Date' | cut -c20-38 | sed s/-//g | sed s/' '//g | sed s/:// | sed s/:/./`
-touch -t $timestamp "$1/documentlist/$docname$documentdir2$docext"
+if [[ $docext != "" ]]
+then
+  # now write out the documentlink
+  echo "$documentdir" > "$1/documentlist/$docname$documentdir2$docext"
+  # Test that file was created to catch bad character issues
+  if test -f "$1/documentlist/$docname$documentdir2$docext" 
+    then
+    # find the date
+    timestamp=`svn info "$1/$documentdir/" | grep 'Last Changed Date' | cut -c20-38 | sed s/-//g | sed s/' '//g | sed s/:// | sed s/:/./`
+    touch -t $timestamp "$1/documentlist/$docname$documentdir2$docext"
+  fi
+fi
 fi
 
 done

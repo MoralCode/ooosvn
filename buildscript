@@ -4,6 +4,7 @@
 # eg.    sh buildscript 0.3.4
 
 rm ooosvn-beta-$1.oxt
+rm ooosvn-command-line-only-$1.tar.gz
 #mkdir build
 
 cd extension
@@ -18,3 +19,11 @@ mv description2.xml description.xml
 
 zip -rDX ../ooosvn-beta-$1.oxt * -x *.svn*
 #For some reason I can't get file exclusion working with 7za, otherwise I'd use it for smaller file sizes
+
+# The .tar.gz command line only version
+cd bashscripts
+# Copy the gpl across
+cp ../registration/gpl.txt gpl.txt
+tar -pczf ../../ooosvn-command-line-only-$1.tar.gz *.sh *.txt
+# Remove the GPL again, it doesn't need to be duplicated in the tree.
+rm gpl.txt
