@@ -49,7 +49,7 @@ If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL
 
 		End If
 	
-	Else docpath = FileNameoutofPath(sDocURL, &quot;/&quot;)
+	Else docpath = FileNameoutofPath(ConvertFromURL(sDocURL), &quot;/&quot;)
 		
 End If
 
@@ -65,7 +65,7 @@ End If
    
 	&apos;Start the status bar
    oStatus = oDocFrame.createStatusIndicator()
-   oStatus.start( &quot;Committing &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
+   oStatus.start( &quot;Committing &quot; &amp; FileNameoutofPath(ConvertFromURL(sDocURL), &quot;/&quot;) &amp; &quot; to &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
 
 	oStatus.value=1
 
@@ -129,12 +129,6 @@ if validatefiletype(sDocURL)=&quot;false&quot; then
 	exit sub
 end if
 
-&apos; Test to see if file of same name is already under change control
-&apos;If FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
-&apos;MsgBox( &quot;A file named &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; is already under version control.  Please save as a different file name before attempting import.&quot;, 16, &quot;Error&quot;)
-&apos;Exit Sub
-&apos;End If
-
 docuUUID = generateUUID &apos;put together a 128-bit key as we know this is a new document, otherwise the user wouldn&apos;t have hit Save As!
 parentUUID = getdocumentUUID &apos;If the document currently has a docUUID, make the new document a child of it
          
@@ -145,11 +139,11 @@ parentUUID = getdocumentUUID &apos;If the document currently has a docUUID, make
    
    oStatus = oDocFrame.createStatusIndicator()
    
-   oStatus.start( &quot;Importing &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
+   oStatus.start( &quot;Importing &quot; &amp; FileNameoutofPath(ConvertFromURL(sDocURL), &quot;/&quot;) &amp; &quot; to &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
 
 	oStatus.value=1
 
-command = &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; &quot;&apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &apos;&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; DocuUUID &amp; &quot; &quot; &amp; parentUUID &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
+command = &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; &quot;&apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &apos;&quot; &amp; FileNameoutofPath(ConvertFromURL(sDocURL), &quot;/&quot;) &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; DocuUUID &amp; &quot; &quot; &amp; parentUUID &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
 
    Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)
 

@@ -18,9 +18,6 @@ If ret &lt;&gt; 0 then
    If NOT FileExists(WorkingDir) Then
    
 LastOperationLog
-
-		oStatus.end()
-	oDlgLog.execute
    
      &apos;MsgBox(&quot;Creation of working directory &quot; &amp; WorkingDir &amp; &quot; failed.  Do you have adequate write permissions?&quot;, 16, &quot;Failed&quot;)
      WorkingDirCreate = 0
@@ -111,12 +108,18 @@ FirstRunCheck = 1
 	
 &apos; If we can&apos;t find a shell script in the working dir then OOoSVN is not set up so run the installation
 If NOT FileExists(WorkingDir &amp; &quot;/commit.sh&quot;) then
-               MsgBox(&quot;This appears to be the first time you have run OOoSVN.&quot; &amp; chr(10) &amp; chr(10) &amp; _
+               RunInstallWizard=MsgBox(&quot;This appears to be the first time you have run OOoSVN.&quot; &amp; chr(10) &amp; chr(10) &amp; _
                &quot;There are several configuration steps we must do:&quot; &amp; chr(10) &amp; _
                &quot;1. Check you have the required packages.&quot; &amp; chr(10) &amp; _
                &quot;2. Create a working directory, &quot; &amp; WorkingDir &amp; &quot;, which will be used for file operations.&quot; &amp; chr(10) &amp; _
                &quot;3. Configure a repository for documents to be checked into.&quot; &amp; chr(10) &amp; chr(10) &amp; _
-               &quot;Press OK to begin.&quot;,64, &quot;First run wizard&quot;)
+               &quot;Press OK to begin.&quot;,65, &quot;First run wizard&quot;)
+
+               If RunInstallWizard &lt;&gt; &quot;1&quot; Then
+               		&apos; If the user hits the x, let&apos;s cancel.
+               		Msgbox(&quot;Installation wizard cancelled.&quot;, 48, &quot;Cancelled&quot;)
+               		Exit Function
+               End If
 
               Packages=1
               &apos;Run the dependency check

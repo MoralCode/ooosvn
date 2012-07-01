@@ -25,6 +25,9 @@ else
 	exit
 fi
 
+# Remove nasty characters from the DocName
+DocName=`echo $2 | sed s/\&/and/g | sed s/\;//g | sed s/\(//g | sed s/\)//g`  # | sed 's/\\/\\\\/g;s/\(%\)\([0-9a-fA-F][0-9a-fA-F]\)/\\x\2/g'`
+
 echo ================================================
 unzip -o "$1" -d $4/$5/temp/ -x *.svn* # Spaces in filename fixed
 cd $4/$5/temp/
@@ -97,15 +100,15 @@ fi
 if grep -q "<meta:user-defined meta:name=\"DocName\">" meta.xml
 
 then
-echo Updating Document Name: $2
+echo Updating Document Name: "$DocName"
 txtold="<meta:user-defined meta:name=\"DocName\">\([^<][^<]*\)<\/meta:user-defined>"
-txtnew="<meta:user-defined meta:name=\"DocName\">$2<\/meta:user-defined>"
+txtnew="<meta:user-defined meta:name=\"DocName\">$DocName<\/meta:user-defined>"
 sed -i s/"$txtold"/"$txtnew"/ meta.xml
 
 else
-echo Inserting Document Name: $2
+echo Inserting Document Name: "$DocName"
 txtold="<\/office:meta>"
-txtnew="<meta:user-defined meta:name=\"DocName\">$2<\/meta:user-defined><\/office:meta>"
+txtnew="<meta:user-defined meta:name=\"DocName\">$DocName<\/meta:user-defined><\/office:meta>"
 sed -i s/"$txtold"/"$txtnew"/ meta.xml
 
 fi
