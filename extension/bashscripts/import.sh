@@ -40,77 +40,69 @@ echo ================================================
 
 if grep -q "<meta:user-defined meta:name=\"Repository-UUID\" meta:value-type=\"string\">" meta.xml
 # in case of 0.3 repo format
-then
-echo Updating repository UUID version 0.3 to 0.4
-txtold="<meta:user-defined meta:name=\"RepositoryUUID\" meta:value-type=\"string\">.\{36\}<\/meta:user-defined>"
-txtnew="<meta:user-defined meta:name=\"RepositoryUUID\">$repo_uuid<\/meta:user-defined>"
-sed -i s/"$txtold"/"$txtnew"/ meta.xml
+  then
+  echo Updating repository UUID version 0.3 to 0.4
+  txtold="<meta:user-defined meta:name=\"RepositoryUUID\" meta:value-type=\"string\">.\{36\}<\/meta:user-defined>"
+  txtnew="<meta:user-defined meta:name=\"RepositoryUUID\">$repo_uuid<\/meta:user-defined>"
+  sed -i s/"$txtold"/"$txtnew"/ meta.xml
 
-elif grep -q "<meta:user-defined meta:name=\"RepositoryUUID\">" meta.xml
-# in case of 0.4 repo format
-then
-echo Updating Repository UUID: $repo_uuid
-txtold="<meta:user-defined meta:name=\"RepositoryUUID\">.\{36\}<\/meta:user-defined>"
-txtnew="<meta:user-defined meta:name=\"RepositoryUUID\">$repo_uuid<\/meta:user-defined>"
-sed -i s/"$txtold"/"$txtnew"/ meta.xml
+  elif grep -q "<meta:user-defined meta:name=\"RepositoryUUID\">" meta.xml
+  # in case of 0.4 repo format
+  then
+  echo Updating Repository UUID: $repo_uuid
+  txtold="<meta:user-defined meta:name=\"RepositoryUUID\">.\{36\}<\/meta:user-defined>"
+  txtnew="<meta:user-defined meta:name=\"RepositoryUUID\">$repo_uuid<\/meta:user-defined>"
+  sed -i s/"$txtold"/"$txtnew"/ meta.xml
 
-else
-echo Inserting Repository UUID: $repo_uuid
-txtold="<\/office:meta>"
-txtnew="<meta:user-defined meta:name=\"RepositoryUUID\">$repo_uuid<\/meta:user-defined><\/office:meta>"
-sed -i s/"$txtold"/"$txtnew"/ meta.xml
-
-fi
+  else
+  echo Inserting Repository UUID: $repo_uuid
+  txtold="<\/office:meta>"
+  txtnew="<meta:user-defined meta:name=\"RepositoryUUID\">$repo_uuid<\/meta:user-defined><\/office:meta>"
+  sed -i s/"$txtold"/"$txtnew"/ meta.xml
+  fi
 
 if grep -q "<meta:user-defined meta:name=\"DocumentUUID\">" meta.xml
+  then
+  echo Updating Document UUID: $5
+  txtold="<meta:user-defined meta:name=\"DocumentUUID\">.\{36\}<\/meta:user-defined>"
+  txtnew="<meta:user-defined meta:name=\"DocumentUUID\">$5<\/meta:user-defined>"
+  sed -i s/"$txtold"/"$txtnew"/ meta.xml
 
-then
-echo Updating Document UUID: $5
-txtold="<meta:user-defined meta:name=\"DocumentUUID\">.\{36\}<\/meta:user-defined>"
-txtnew="<meta:user-defined meta:name=\"DocumentUUID\">$5<\/meta:user-defined>"
-sed -i s/"$txtold"/"$txtnew"/ meta.xml
-
-else
-echo Inserting Document UUID: $5
-txtold="<\/office:meta>"
-txtnew="<meta:user-defined meta:name=\"DocumentUUID\">$5<\/meta:user-defined><\/office:meta>"
-sed -i s/"$txtold"/"$txtnew"/ meta.xml
+  else
+  echo Inserting Document UUID: $5
+  txtold="<\/office:meta>"
+  txtnew="<meta:user-defined meta:name=\"DocumentUUID\">$5<\/meta:user-defined><\/office:meta>"
+  sed -i s/"$txtold"/"$txtnew"/ meta.xml
 fi
 
 ###ParentUUID processing
 
 if grep -q "<meta:user-defined meta:name=\"ParentUUID\">" meta.xml
-
-then
-echo Updating Parent UUID: $6
-txtold="<meta:user-defined meta:name=\"ParentUUID\">.\{36\}<\/meta:user-defined>"
-txtnew="<meta:user-defined meta:name=\"ParentUUID\">$6<\/meta:user-defined>"
-sed -i s/"$txtold"/"$txtnew"/ meta.xml
-
-else
-echo Inserting Parent UUID: $6
-txtold="<\/office:meta>"
-txtnew="<meta:user-defined meta:name=\"ParentUUID\">$6<\/meta:user-defined><\/office:meta>"
-sed -i s/"$txtold"/"$txtnew"/ meta.xml
-
+  then
+  echo Updating Parent UUID: $6
+  txtold="<meta:user-defined meta:name=\"ParentUUID\">.\{36\}<\/meta:user-defined>"
+  txtnew="<meta:user-defined meta:name=\"ParentUUID\">$6<\/meta:user-defined>"
+  sed -i s/"$txtold"/"$txtnew"/ meta.xml
+  else
+  echo Inserting Parent UUID: $6
+  txtold="<\/office:meta>"
+  txtnew="<meta:user-defined meta:name=\"ParentUUID\">$6<\/meta:user-defined><\/office:meta>"
+  sed -i s/"$txtold"/"$txtnew"/ meta.xml
 fi
 
 ###Document name processing
 
 if grep -q "<meta:user-defined meta:name=\"DocName\">" meta.xml
-
-then
-echo Updating Document Name: "$DocName"
-txtold="<meta:user-defined meta:name=\"DocName\">\([^<][^<]*\)<\/meta:user-defined>"
-txtnew="<meta:user-defined meta:name=\"DocName\">$DocName<\/meta:user-defined>"
-sed -i s/"$txtold"/"$txtnew"/ meta.xml
-
-else
-echo Inserting Document Name: "$DocName"
-txtold="<\/office:meta>"
-txtnew="<meta:user-defined meta:name=\"DocName\">$DocName<\/meta:user-defined><\/office:meta>"
-sed -i s/"$txtold"/"$txtnew"/ meta.xml
-
+  then
+  echo Updating Document Name: "$DocName"
+  txtold="<meta:user-defined meta:name=\"DocName\">\([^<][^<]*\)<\/meta:user-defined>"
+  txtnew="<meta:user-defined meta:name=\"DocName\">$DocName<\/meta:user-defined>"
+  sed -i s/"$txtold"/"$txtnew"/ meta.xml
+  else
+  echo Inserting Document Name: "$DocName"
+  txtold="<\/office:meta>"
+  txtnew="<meta:user-defined meta:name=\"DocName\">$DocName<\/meta:user-defined><\/office:meta>"
+  sed -i s/"$txtold"/"$txtnew"/ meta.xml
 fi
 
 # delete junk tags

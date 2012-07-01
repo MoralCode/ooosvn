@@ -3,9 +3,9 @@
 # Usage: sh buildscript [version]
 # eg.    sh buildscript 0.3.4
 
+# Remove existing files if they exist
 rm ooosvn-beta-$1.oxt
 rm ooosvn-command-line-only-$1.tar.gz
-#mkdir build
 
 cd extension
 
