@@ -486,7 +486,7 @@ If bash=1 then
 	aSed=Split(sSed,&quot; &quot;)
 	sSed=aSed(3)
 	lSed=left(sSed,3)
-	if lSed &lt; 3 then
+	if lSed &lt; 4 then
 		packagescheck=0
 	end if
 	else

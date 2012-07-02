@@ -67,6 +67,8 @@ End Function
 
 Function generateUUID
 &apos; Makes a 128-bit hex string delimited with hyphens like a SVN repo UUID
+&apos; Deprecated until OOo&apos;s pseudo random number generator becomes random enough!
+&apos; Better algorithms have been proposed: https://issues.apache.org/ooo/show_bug.cgi?id=14730
 
 Dim iVar1 As String
 Dim iVar2 As String 
@@ -102,7 +104,7 @@ End Function
 
 
 Function LeadingZeros( iValue As String) As String 
-&apos; Add leading zeros to a hex
+&apos; Add leading zeros to a hex, required with deprecated UUID generator
    Dim iLen As Integer  
      iLen = 4
  
@@ -119,4 +121,25 @@ Function LeadingZeros( iValue As String) As String
  
  
  End Function 
+ 
+Function uuidgen
+&apos; Function to get a UUID from uuidgen, a command line util included with until-linux(-ng), e2fsprogs under Cygwin and in standard MacOS 
+WorkingDir = GetWorkingDir
+WorkingDir2 = GetWorkingDir2
+cQuote = chr(34)
+ 
+Shell( &quot;bash -c &quot; + cQuote + &quot;uuidgen &gt; &quot; &amp; WorkingDir2 &amp; &quot;/uuidgen.txt&quot; + cQuote, &quot;&quot;,6,true)
+	
+iNumber = Freefile
+aFile = WorkingDir &amp; &quot;/uuidgen.txt&quot;
+Open aFile For Input As iNumber
+While not eof(iNumber)
+	Line Input #iNumber, sLine
+	If sLine &lt;&gt;&quot;&quot; then
+		uuidgen = sLine
+	end if
+wend
+Close #iNumber
+ 
+End Function
 </script:module>

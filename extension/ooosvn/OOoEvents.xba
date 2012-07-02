@@ -129,8 +129,11 @@ if validatefiletype(sDocURL)=&quot;false&quot; then
 	exit sub
 end if
 
-docuUUID = generateUUID &apos;put together a 128-bit key as we know this is a new document, otherwise the user wouldn&apos;t have hit Save As!
 parentUUID = getdocumentUUID &apos;If the document currently has a docUUID, make the new document a child of it
+
+Do
+docuUUID = uuidgen
+Loop While FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID)
          
             cQuote = Chr( 34 )
 &apos;  Status Bar Message

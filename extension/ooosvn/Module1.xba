@@ -90,12 +90,19 @@ ImportType = Msgbox (&quot;A document with the same UUID (&quot; &amp; docuUUID 
 If ImportType = 6 Then
 &apos; If import as child
 parentUUID = docuUUID
-docuUUID = generateUUID
+
+Do
+docuUUID = uuidgen
+Loop While FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID)
+
 End If
 
 If ImportType = 7 Then
 &apos; If new file
-docuUUID = generateUUID
+Do
+docuUUID = uuidgen
+Loop While FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID)
+
 End If
 
 If ImportType = 2 Then
@@ -106,21 +113,19 @@ End If
 Else
 &apos; If file is not in working dir but has a UUID, it may be another users document, need to import it as a child.
 parentUUID = docuUUID
-docuUUID = generateUUID
+
+Do
+docuUUID = uuidgen
+Loop While FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID)
 
 End If
 
 Else
 &apos; No docu-UUID so the file needs to be imported from scratch with a new docu-UUID
-docuUUID = generateUUID
-&apos;msgbox(docuUUID) &apos; uncomment to display UUID
+Do
+docuUUID = uuidgen
+Loop While FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID)
 
-End If
-
-&apos;Docu-UUID Uniqueness check, just in case a 128 bit key isn&apos;t long enough
-If FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then
-&apos; generate a new docuUUID if another document has the same one.
-docuUUID = generateUUID
 End If
 
 &apos; End of docuUUID processing

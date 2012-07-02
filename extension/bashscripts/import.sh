@@ -9,6 +9,15 @@ echo Working directory path: $4
 echo Document UUID: $5 
 echo Parent Document UUID: $6
 echo ================================================
+
+if test -d "$4/$5" 		# test to see if there is already a file of this DocuUUID in OOoSVN, if there is we must not overwrite.
+	then echo Fatal error!
+	echo Working copy "$4/$5" already exists
+	echo Import aborted.
+	echo ================================================
+	exit
+fi
+
 mkdir -v $4/$5/
 mkdir -v $4/$5/temp/
 echo ================================================

@@ -3,34 +3,20 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="UnitImport" script:language="StarBasic">REM  *****  BASIC  *****
 
 Function UnitImport(sDocPath as string)
-&apos; Sub to assign to OnSavedAs event for automated import
-
-&apos;msgbox sDocPath
-
-&apos;dim document   as object
-&apos;dim dispatcher as object
-
-&apos;document   = ThisComponent.CurrentController.Frame
-&apos;dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
   
     repo = getRepo
     WorkingDir = getWorkingDir
 
-docuUUID = generateUUID &apos;put together a 128-bit key as we know this is a new document, otherwise the user wouldn&apos;t have hit Save As!
+Do
+docuUUID = uuidgen &apos;put together a 128-bit key as we know this is a new import
+Loop While FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID)
+
 parentUUID = getdocumentUUID &apos;If the document currently has a docUUID, make the new document a child of it
          
-            cQuote = Chr( 34 )
-&apos;  Status Bar Message
-&apos;   oDocCtrl = oDoc.getCurrentController()
-&apos;   oDocFrame = oDocCtrl.getFrame()
-   
-&apos;   oStatus = oDocFrame.createStatusIndicator()
-   
-&apos;   oStatus.start( &quot;Importing &quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot; to &quot; &amp; repo &amp; &quot;.  Please wait....&quot;, 10 )
+cQuote = Chr( 34 )
    
 command = &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; &quot;&apos;&quot; &amp; sDocPath &amp; &quot;&apos; &apos;&quot; &amp; FileNameoutofPath(sDocPath, &quot;/&quot;) &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; DocuUUID &amp; &quot; &quot; &amp; parentUUID &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
 
-&apos;msgbox (&quot;bash -c &quot; + cQuote + command + cQuote)
    Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)
 
 		If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then
