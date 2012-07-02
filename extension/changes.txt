@@ -1,4 +1,67 @@
 =======================================
+0.4.2 :: 2012-07-02
+=======================================
+### New features ###
+2959084 - Recovery process has been drastically revamped.  Much more helpful,
+more information, better escape handling, visually improved.
+
+1654637 - Timestamps are set on document links, version links and thumbnail
+links as per SVN checkin times.
+
+1654614 - Bulk import.  3 step wizard allows you to set scan options, review
+list of files, then set them for import.  May take a few minutes, on my system
+it took 197 seconds to process 257 files.  Even though it is well tested, it is
+recommended that you backup your files before running the wizard.
+
+Progress bar added to status bar for most operations.
+
+First run check will now detect if dependencies are installed on the system.  If
+they are not then a summary table is shown, you can still skip through this but
+expect problems if the packages are not installed.  This can also be run
+manually from Help > About OOoSVN > Check Dependencies.
+
+OOo minimum version raised to 2.3.0 to accommodate new shellscript installation
+locations and Help window readme.
+
+The Help window now loads a useful readme file.
+
+Many readability improvements to log file output.
+
+Auto-update checking implemented.  A check is done to an XML file on
+Sourceforge.
+
+### Bug Fixes ###
+2306293 - Log files now open in a read-only Writer window which prevents the
+65535 character string limit becoming a problem.  Also allows easy copying or
+saving of the log.
+
+Fixed some more issues with files with certain characters were not being handled
+correctly in some functions.  Some now run OK, those that absolutely can't work
+are captured earlier, the process exits smoothly and failure errors are given in
+log file to prevent corrupt files being created.
+
+Added many more helpful error messages and then safe exits if a problem was
+detected.  Should prevent many nasty error messages.
+
+Changed how libraries were loaded on many modules.  This should prevent
+remaining first run issues where a library can't be found.  These always worked
+on the 2nd run or if another module was run first so never got pinned down!
+
+Many error checks added to shellscripts to prevent data corruption or
+overwriting, clean up log output and reduce clutter created in the working
+directory and repository.
+
+Switched random number generation to the 'uuidgen' tool on the commandline, part
+of utils-linux(-ng) and standard on Apple systems.  The OOo pseudorandom number
+generator was giving far too many duplicates and this was causing problems. 
+uuidgen is looped in the event of a duplicate being given, just in case.
+
+Using uuidgen also fixes a very rare issue with non-36 character long strings
+being generated.
+
+Many bug fixes in the recovery, compare and revert functions.
+
+=======================================
 0.4.1 :: 2012-06-23
 =======================================
 ### New features ###
@@ -216,14 +279,16 @@ Thanks to monnier for spotting this error.
 ### New Features ###
 Added document existence check to file loading on recoverSVN and GetUserguide
 
-Added working directory and scripts installation tool.  This will create the home
+Added working directory and scripts installation tool.  This will create the
+home
 repository also.  It is recommended that users upgrading run Tools > Addons >
 Install OOoSVN scripts to check their scripts are up to date.
 
 No more two layered installation.  The outer ZIP file is the extension so just
 install the ZIP file in OOo through the extension manager and go.
 
-FirstRunCheck Function which checks for existence of working directory, if not found it
+FirstRunCheck Function which checks for existence of working directory, if not
+found it
 creates the working directory, home repository and installs the scripts there. 
 This should make installation straight forward.
 

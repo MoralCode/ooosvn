@@ -42,7 +42,7 @@ Function InstallScripts
   &apos; Get the OOoSVN installation directory
     oPIP = GetDefaultContext().getByName( _ 
     &quot;/singletons/com.sun.star.deployment.PackageInformationProvider&quot;) 
-  ExtensionURL=oPIP.getPackageLocation(&quot;vnd.basicaddonbuilder.ooosvn&quot;)
+  ExtensionURL=oPIP.getPackageLocation(&quot;org.ooosvn.ooosvn&quot;)
 
 sFile = ( Dir (ExtensionURL &amp; &quot;/bashscripts/*.sh&quot;))
    While (sFile &lt;&gt; &quot;&quot;) 

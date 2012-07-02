@@ -23,7 +23,7 @@ zip -rDX ../ooosvn-beta-$1.oxt * -x *.svn*
 # The .tar.gz command line only version
 cd bashscripts
 # Copy the gpl across
-cp ../registration/gpl.txt gpl.txt
+cp ../gpl.txt gpl.txt
 tar -pczf ../../ooosvn-command-line-only-$1.tar.gz *.sh *.txt
 # Remove the GPL again, it doesn't need to be duplicated in the tree.
 rm gpl.txt

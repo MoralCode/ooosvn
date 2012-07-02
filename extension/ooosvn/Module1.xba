@@ -1126,9 +1126,24 @@ LoadTools
 		txtLog = .getControl(&quot;txtHelp&quot;)
 	End With
 
-	txtLog.Text = &quot;Visit OOoSVN on Sourceforge.net:&quot; &amp; chr(13) &amp; &quot;http://sourceforge.net/projects/ooosvn/&quot; &amp; chr(13) &amp; chr(13) &amp;_
-						&quot;Please submit bug reports and feature requests to the issue tracker there.&quot; &amp; chr(13) &amp; chr(13) &amp;_
-						&quot;This software is still beta.&quot;
+&apos; Find the path that the extension is installed in
+    oPIP = GetDefaultContext().getByName( _ 
+    &quot;/singletons/com.sun.star.deployment.PackageInformationProvider&quot;) 
+  ExtensionURL=oPIP.getPackageLocation(&quot;org.ooosvn.ooosvn&quot;)
+
+	iNumber = Freefile
+	aFile = ConvertFromURL(ExtensionURL) &amp; &quot;/readme.txt&quot;
+
+		Open aFile For Input As iNumber
+		While not eof(iNumber)
+		Line Input #iNumber, sLine
+			&apos;If sLine &lt;&gt;&quot;&quot; then
+				sMsg = sMsg &amp; sLine &amp; chr(13)
+			&apos;end if
+		wend
+		Close #iNumber
+
+	txtLog.Text = sMsg
 	oDlgLog.Title = &quot;About OOoSVN&quot;
 	oDlgLog.execute
 		

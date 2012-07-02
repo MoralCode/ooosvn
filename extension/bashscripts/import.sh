@@ -30,9 +30,9 @@ else
 	exit
 fi
 
+echo ================================================
 mkdir -v $4/$5/
 mkdir -v $4/$5/temp/
-echo ================================================
 
 # Remove nasty characters from the DocName
 DocName=`echo $2 | sed s/\&/and/g | sed s/\;//g | sed s/\(//g | sed s/\)//g`

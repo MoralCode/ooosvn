@@ -1,10 +1,9 @@
 Requirements:
-- A Unix/Linux system.  OOoSVN will not work under Windows as yet.  MacOSX has 
-been reported as working if the required packages are installed but is 
+- A Unix/Linux system.  OOoSVN will not work under Windows as yet.  MacOSX has
+been reported as working if the required packages are installed but is
 unsupported as I don't have a Mac to test on.
 - OOo 2.3.0 or later or LibreOffice, tested with LibreOffice 3.5.4.  Problems
-have previously been found
-using OOoSVN under go-OOo.
+have previously been found using OOoSVN under go-OOo.
 - Subversion 1.3 or greater, latest stable version is recommended.
 - bash, coreutils, findutils, zip, unzip, grep, awk, sed 4.0
 

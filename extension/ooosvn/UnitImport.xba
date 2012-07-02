@@ -11,7 +11,7 @@ Do
 docuUUID = uuidgen &apos;put together a 128-bit key as we know this is a new import
 Loop While FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID)
 
-parentUUID = getdocumentUUID &apos;If the document currently has a docUUID, make the new document a child of it
+parentUUID = &quot;&quot; &apos;??? Need to find a way of pulling a parent ID from a document in case it already has a DocUUID from another repository.
          
 cQuote = Chr( 34 )
    
@@ -20,7 +20,7 @@ command = &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; &
    Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)
 
 		If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then
-			UnitImport=1 &apos;set to 1 if fail
+			UnitImport=1 &apos;set to 1 if fail, used in bulkimport failure counter
 		end if
 
 end Function

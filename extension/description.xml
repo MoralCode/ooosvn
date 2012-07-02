@@ -3,14 +3,17 @@
  xmlns="http://openoffice.org/extensions/description/2006"
  xmlns:dep="http://openoffice.org/extensions/description/2006"
  xmlns:xlink="http://www.w3.org/1999/xlink">
-	<identifier value="vnd.basicaddonbuilder.ooosvn"/>
-	<version value="0.4.1.14"/>
+	<identifier value="org.ooosvn.ooosvn"/>
+	<version value="0.4.2"/>
 	<dependencies>
-		<OpenOffice.org-minimal-version value="2.3" dep:name="OpenOffice.org 2.1"/>
+		<OpenOffice.org-minimal-version value="2.3" dep:name="OpenOffice.org 2.3"/>
 	</dependencies>
+	<update-information>
+		<src xlink:href="http://netcologne.dl.sourceforge.net/project/ooosvn/OOoSVN/_update.xml" />
+	</update-information>
 	<registration>
 		<simple-license  accept-by="admin" default-license-id="ID0" suppress-on-update="true" >
-			<license-text xlink:href="registration/gpl.txt" lang="en" license-id="ID0" />
+			<license-text xlink:href="gpl.txt" lang="en" license-id="ID0" />
 		</simple-license>
 	</registration>
 </description>
