@@ -12,12 +12,12 @@
   <dlg:titledbox dlg:id="FileTypes" dlg:tab-index="2" dlg:left="4" dlg:top="25" dlg:width="232" dlg:height="58">
    <dlg:title dlg:value="File Types"/>
   </dlg:titledbox>
-  <dlg:checkbox dlg:id="TickODT" dlg:tab-index="3" dlg:left="7" dlg:top="34" dlg:width="118" dlg:height="11" dlg:help-text="Include .odt files in search" dlg:value="OpenDocument Text (*.odt)" dlg:checked="true"/>
-  <dlg:checkbox dlg:id="TickODS" dlg:tab-index="4" dlg:left="7" dlg:top="49" dlg:width="118" dlg:height="11" dlg:help-text="Include .ods files in search" dlg:value="OpenDocument Spreadsheet (*.ods)" dlg:checked="true"/>
-  <dlg:checkbox dlg:id="TickODP" dlg:tab-index="5" dlg:left="7" dlg:top="65" dlg:width="116" dlg:height="11" dlg:help-text="Include .odp files in search" dlg:value="OpenDocument Presentation (*.odp)" dlg:checked="true"/>
-  <dlg:checkbox dlg:id="TickODG" dlg:tab-index="6" dlg:left="125" dlg:top="34" dlg:width="108" dlg:height="11" dlg:help-text="Include .odg files in search" dlg:value="OpenDocument Graphics (*.odg)" dlg:checked="true"/>
-  <dlg:checkbox dlg:id="TickODB" dlg:tab-index="7" dlg:left="125" dlg:top="49" dlg:width="108" dlg:height="11" dlg:help-text="Include .odb files in search" dlg:value="OpenDocument Database (*.odb)" dlg:checked="true"/>
-  <dlg:checkbox dlg:id="TickODF" dlg:tab-index="8" dlg:left="125" dlg:top="65" dlg:width="108" dlg:height="11" dlg:help-text="Include .odf files in search" dlg:value="OpenDocument Formula (*.odf)" dlg:checked="true"/>
+  <dlg:checkbox dlg:id="TickODT" dlg:tab-index="3" dlg:left="7" dlg:top="34" dlg:width="118" dlg:height="11" dlg:help-text="Include .odt, .odm, .ott and .oth files in search" dlg:value="OpenDocument Text" dlg:checked="true"/>
+  <dlg:checkbox dlg:id="TickODS" dlg:tab-index="4" dlg:left="7" dlg:top="49" dlg:width="118" dlg:height="11" dlg:help-text="Include .ods and .ots files in search" dlg:value="OpenDocument Spreadsheet" dlg:checked="true"/>
+  <dlg:checkbox dlg:id="TickODP" dlg:tab-index="5" dlg:left="7" dlg:top="65" dlg:width="116" dlg:height="11" dlg:help-text="Include .odp and .otp files in search" dlg:value="OpenDocument Presentation" dlg:checked="true"/>
+  <dlg:checkbox dlg:id="TickODG" dlg:tab-index="6" dlg:left="125" dlg:top="34" dlg:width="108" dlg:height="11" dlg:help-text="Include .odg and .otg files in search" dlg:value="OpenDocument Graphics" dlg:checked="true"/>
+  <dlg:checkbox dlg:id="TickODB" dlg:tab-index="7" dlg:left="125" dlg:top="49" dlg:width="108" dlg:height="11" dlg:help-text="Include .odb files in search" dlg:value="OpenDocument Database" dlg:checked="true"/>
+  <dlg:checkbox dlg:id="TickODF" dlg:tab-index="8" dlg:left="125" dlg:top="65" dlg:width="108" dlg:height="11" dlg:help-text="Include .odf and .otf files in search" dlg:value="OpenDocument Formula" dlg:checked="true"/>
   <dlg:text dlg:style-id="0" dlg:id="LabelPath" dlg:tab-index="9" dlg:left="6" dlg:top="9" dlg:width="43" dlg:height="13" dlg:value="Search Path:"/>
   <dlg:titledbox dlg:id="FrameExclusions" dlg:tab-index="10" dlg:left="4" dlg:top="89" dlg:width="233" dlg:height="43">
    <dlg:title dlg:value="Exclusions"/>

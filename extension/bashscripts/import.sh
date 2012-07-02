@@ -18,24 +18,24 @@ if test -d "$4/$5" 		# test to see if there is already a file of this DocuUUID i
 	exit
 fi
 
-mkdir -v $4/$5/
-mkdir -v $4/$5/temp/
-echo ================================================
-
 if test -f "$1" 		# test that file exists
 	then echo "$1" found		# confirmation of file existence
 else
 	# Error that file doesn't exist and exit
 	echo Fatal error!
 	echo "$1" not found
-	echo "Maybe the filename includes a forbidden character: & ; ( )"
+	echo "Maybe the filename includes a forbidden character: & ; ( ) or an apostrophe"
 	echo Import aborted.
 	echo ================================================
 	exit
 fi
 
+mkdir -v $4/$5/
+mkdir -v $4/$5/temp/
+echo ================================================
+
 # Remove nasty characters from the DocName
-DocName=`echo $2 | sed s/\&/and/g | sed s/\;//g | sed s/\(//g | sed s/\)//g`  # | sed 's/\\/\\\\/g;s/\(%\)\([0-9a-fA-F][0-9a-fA-F]\)/\\x\2/g'`
+DocName=`echo $2 | sed s/\&/and/g | sed s/\;//g | sed s/\(//g | sed s/\)//g`
 
 echo ================================================
 unzip -o "$1" -d $4/$5/temp/ -x *.svn* # Spaces in filename fixed

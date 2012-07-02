@@ -15,30 +15,29 @@ echo File types:
 # Extract the file types specified and put together the find parameters
 
 filetypes=""
-odt=""
 
 if [[ "$3" == *t* ]]
   then
   echo .odt - OpenDocument Text
-  filetypes=${filetypes}"-iname \"*.odt\""
+  filetypes=${filetypes}"-iname \"*.odt\" -o -iname \"*.odm\" -o -iname \"*.ott\" -o -iname \"*.oth\""
 fi
 
 if [[ "$3" == *s* ]]
   then
   echo .ods - OpenDocument Spreadsheet
-  filetypes=${filetypes}" -o -iname \"*.ods\""
+  filetypes=${filetypes}" -o -iname \"*.ods\" -o -iname \"*.ots\""
 fi
 
 if [[ "$3" == *p* ]]
   then
   echo .odp - OpenDocument Presentation
-  filetypes=${filetypes}" -o -iname \"*.odp\""
+  filetypes=${filetypes}" -o -iname \"*.odp\" -o -iname \"*.otp\""
 fi
 
 if [[ "$3" == *g* ]]
   then
   echo .odg - OpenDocument Graphics
-  filetypes=${filetypes}" -o -iname \"*.odg\""
+  filetypes=${filetypes}" -o -iname \"*.odg\" -o -iname \"*.otg\""
 fi
 
 if [[ "$3" == *b* ]]
@@ -50,7 +49,7 @@ fi
 if [[ "$3" == *f* ]]
   then
   echo .odf - OpenDocument Formula
-  filetypes=${filetypes}" -o -iname \"*.odf\""
+  filetypes=${filetypes}" -o -iname \"*.odf\" -o -iname \"*.otf\""
 fi
 
 # Tidy up the filetypes string
@@ -108,8 +107,7 @@ testmeta=`unzip -p "$line" meta.xml | grep "<meta:user-defined meta:name=\"Docum
 
 if [ $testmeta = "1" ]
 then
-docuUUID=`unzip -p "$line" meta.xml | awk '/<meta:user-defined meta:name=\"DocumentUUID\">/,/<\/meta:user-defined>/' | sed 's/\(.*\)\(<meta:user-defined meta:name=\"DocumentUUID\">\)\(.*\)\(<\/meta:user-defined>\)\(.*\)/\3/' | head -c36`
-#echo $line already has a DocuUUID: $docuUUID
+docuUUID=`unzip -p "$line" meta.xml | awk '/<meta:user-defined meta:name=\"DocumentUUID\">/,/<\/meta:user-defined>/' | sed 's/\(.*\)\(<meta:user-defined meta:name=\"DocumentUUID\">\)\(.*\)\(<\/meta:user-defined>\)\(.*\)/\3/' | head -c36  | cut -f1 -d"<"`
 if [ -d ~/.ooosvn/$docuUUID/.svn/ ]
 then
 # the document UUID is already in the working directory so skip it
