@@ -39,17 +39,29 @@ echo ================================================
 echo Versions found:
 
 count=0
+thumbnails=0
 for version in `svn log -q $2/$1 | grep r | cut -c2- | cut -d' ' -f1`
 do
   svn checkout -q -r$version $2/$1/trunk/Thumbnails/ $3/$1/preview/.$version/
   mv $3/$1/preview/.$version/thumbnail.png $3/$1/preview/$version.png >> $3/$1/preview/log.txt
   rm -rf $3/$1/preview/$version/
-  echo $version
-  # Do timestamps
+
+  # test that thumbnail does exist
+  if test -f "$3/$1/preview/$version.png"
+      then echo "$version - Retrieving thumbnail"
+      thumbnails=$((thumbnails+1))
+  else
+      # If no thumbnail found then copy the nopreview.png placeholder in place
+      echo "$version - No thumbnail found"
+      cp $3/nopreview.png $3/$1/preview/$version.png
+  fi
+  
+# Do timestamps
   timestamp=`svn log "$2/$1/" | grep r$version | cut -c14-33 | sed s/-//g | sed s/' '//g | sed s/:// | sed s/:/./`
   touch -t $timestamp "$3/$1/preview/$version.png"
   count=$((count+1))
 done
 echo ================================================
-echo $count version thumbnails generated
+echo $count versions found
+echo $thumbnails version thumbnails generated
 echo ================================================

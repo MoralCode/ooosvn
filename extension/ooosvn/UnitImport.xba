@@ -15,7 +15,7 @@ parentUUID = &quot;&quot; &apos;??? Need to find a way of pulling a parent ID fr
          
 cQuote = Chr( 34 )
    
-command = &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; &quot;&apos;&quot; &amp; sDocPath &amp; &quot;&apos; &apos;&quot; &amp; FileNameoutofPath(sDocPath, &quot;/&quot;) &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; DocuUUID &amp; &quot; &quot; &amp; parentUUID &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
+command = &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; &quot;&apos;&quot; &amp; sDocPath &amp; &quot;&apos; &apos;&quot; &amp; FileNameoutofPath(sDocPath, &quot;/&quot;) &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; DocuUUID &amp; &quot; &quot; &amp; parentUUID &amp; &quot; &gt;&gt; &quot; &amp; WorkingDir &amp; &quot;/operationlog.txt&quot;
 
    Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)
 

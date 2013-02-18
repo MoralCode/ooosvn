@@ -199,7 +199,7 @@ cQuote = Chr( 34 )
    
 	oStatus.value=1
 
-command = &quot;sh &quot; &amp; WorkingDir &amp; &quot;/bulklist.sh &apos;&quot; &amp; sDirectory &amp; &quot;&apos; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; sFileTypes &amp; &quot; &quot; &amp; sExclude &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
+command = &quot;sh &quot; &amp; WorkingDir &amp; &quot;/bulklist.sh &apos;&quot; &amp; sDirectory &amp; &quot;&apos; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; sFileTypes &amp; &quot; &quot; &amp; sExclude &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operationlog.txt&quot;
 
 &apos;msgbox( &quot;bash -c &quot; + cQuote + command + cQuote)
 Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)
@@ -362,7 +362,7 @@ Function OnClickLogBulkImportEnd
   End If
 LoadTools
 oDlgBulkImportEnd.endExecute
-OperationLog(&quot;Bulk import wizard log...&quot;)
+OperationLog(&quot;Bulk import wizard log... &quot;)
 End Function
 
 Function OnClickCloseBulkImportEnd

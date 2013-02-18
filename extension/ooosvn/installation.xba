@@ -6,27 +6,22 @@
    WorkingDir = getWorkingDir
 
 &apos; Create the home repository
-   ret = Shell(&quot;svnadmin create --fs-type fsfs&quot; , 6, WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;,true)
-If ret &lt;&gt; 0 then 
+   ret = Shell(&quot;svnadmin create --fs-type fsfs&quot; , 6, WorkingDir &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operationlog.txt&quot;,true)
+	If ret &lt;&gt; 0 then 
 		CreateSVN = false
-		&apos;Error Log window
-		&apos;OperationLog(&quot;Failed to create repository&quot;)
+		OperationLog(&quot;Failed to create repository, log follows...&quot;)
 		
 		MsgBox(&quot;Failed to create repository.&quot;,48,&quot;Error&quot;)
-		end if
+	end if
 
    If NOT FileExists(WorkingDir) Then
    
-LastOperationLog
-   
-     &apos;MsgBox(&quot;Creation of working directory &quot; &amp; WorkingDir &amp; &quot; failed.  Do you have adequate write permissions?&quot;, 16, &quot;Failed&quot;)
-     WorkingDirCreate = 0
-     Exit Function
+	OperationLog(&quot;Failed to create repository, log follows...&quot;)
+    WorkingDirCreate = 0
+    Exit Function
    End If
 
    Installscripts
-
-&apos;end if
 
 end Function
 
@@ -53,11 +48,48 @@ sFile = ( Dir (ExtensionURL &amp; &quot;/bashscripts/*.sh&quot;))
 &apos; test to make sure script creation worked
 If Not FileExists(WorkingDir &amp; &quot;/commit.sh&quot;) then
 
-MsgBox(&quot;Failed to create scripts in &quot; &amp; WorkingDir,48,&quot;Error&quot;)
+MsgBox(&quot;Failed to install scripts in &quot; &amp; WorkingDir,48,&quot;Error&quot;)
+
+Else
+
+InstallResources &apos; Now install other resources
 
 End If
 
 end Function
+
+&apos; ######################################################
+
+Function InstallResources
+&apos; Installs other resources from the resources directory to the working directory
+  WorkingDir = getWorkingDir
+
+          If NOT FileExists(WorkingDir) then
+               CreateWorkingDir
+            exit function
+          end if
+
+  &apos; Get the OOoSVN installation directory
+    oPIP = GetDefaultContext().getByName( _ 
+    &quot;/singletons/com.sun.star.deployment.PackageInformationProvider&quot;) 
+  ExtensionURL=oPIP.getPackageLocation(&quot;org.ooosvn.ooosvn&quot;)
+
+sFile = ( Dir (ExtensionURL &amp; &quot;/resources/*&quot;))
+   While (sFile &lt;&gt; &quot;&quot;) 
+         FileCopy ExtensionURL &amp; &quot;/resources/&quot; &amp; sFile, ConvertToURL(WorkingDir &amp; &quot;/&quot; &amp; sFile) 
+         sFile = Dir 
+   Wend 
+
+&apos; test to make sure script creation worked
+If Not FileExists(WorkingDir &amp; &quot;/nopreview.png&quot;) then
+
+MsgBox(&quot;Failed to install resources in &quot; &amp; WorkingDir,48,&quot;Error&quot;)
+
+End If
+
+End Function
+
+&apos; ######################################################
 
 function CreateSVN() as integer
 	CreateSVN = True

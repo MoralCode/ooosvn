@@ -10,7 +10,7 @@
   <dlg:button dlg:id="GetUserguide" dlg:tab-index="2" dlg:left="161" dlg:top="190" dlg:width="45" dlg:height="15" dlg:value="Get Userguide">
    <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:ooosvn.UserGuide.GetUserguide?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:button>
-  <dlg:button dlg:id="buttonPackagesCheck" dlg:tab-index="3" dlg:left="93" dlg:top="191" dlg:width="64" dlg:height="15" dlg:value="Check Dependencies">
+  <dlg:button dlg:id="buttonPackagesCheck" dlg:tab-index="3" dlg:left="93" dlg:top="190" dlg:width="64" dlg:height="15" dlg:value="Check Dependencies">
    <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:ooosvn.installation.HelpDoPackagesCheck?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:button>
  </dlg:bulletinboard>

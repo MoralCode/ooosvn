@@ -39,17 +39,17 @@ End If
 docuUUID = GetDocumentUUID
 
 &apos; Test to see if file of same name is already under change control
-If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then &apos;Version 0.3
-	
-		If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then &apos; Version 0.4
-		
-			Exit Sub &apos; File not under version control so stop.
-		
-			Else docpath = docuUUID
+If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then &apos; Version 0.4
 
-		End If
+	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then &apos;Version 0.3
+		
+		Exit Sub &apos; File not under version control so stop.
+		
+		Else docpath = FileNameoutofPath(ConvertFromURL(sDocURL), &quot;/&quot;)			
+
+	End If
 	
-	Else docpath = FileNameoutofPath(ConvertFromURL(sDocURL), &quot;/&quot;)
+Else docpath = docuUUID
 		
 End If
 
@@ -69,7 +69,7 @@ End If
 
 	oStatus.value=1
 
-command =  &quot;sh &quot; &amp; WorkingDir &amp; &quot;/commit.sh &quot; &amp; &quot;&apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &apos;&quot; &amp; docpath &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; Comment &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
+command =  &quot;sh &quot; &amp; WorkingDir &amp; &quot;/commit.sh &quot; &amp; &quot;&apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &apos;&quot; &amp; docpath &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; Comment &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operationlog.txt&quot;
 
 	Shell( &quot;bash -c &quot; + cQuote + command + cQuote)  
 
@@ -146,7 +146,7 @@ Loop While FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID)
 
 	oStatus.value=1
 
-command = &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; &quot;&apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &apos;&quot; &amp; FileNameoutofPath(ConvertFromURL(sDocURL), &quot;/&quot;) &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; DocuUUID &amp; &quot; &quot; &amp; parentUUID &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot;
+command = &quot;sh &quot; &amp; WorkingDir &amp; &quot;/import.sh &quot; &amp; &quot;&apos;&quot; &amp; ConvertFromURL(sDocURL) &amp; &quot;&apos; &apos;&quot; &amp; FileNameoutofPath(ConvertFromURL(sDocURL), &quot;/&quot;) &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; DocuUUID &amp; &quot; &quot; &amp; parentUUID &amp; &quot; &gt; &quot; &amp; WorkingDir &amp; &quot;/operationlog.txt&quot;
 
    Shell( &quot;bash -c &quot; + cQuote + command + cQuote, &quot;&quot;,6,true)
 
@@ -207,8 +207,17 @@ dispatcher.executeDispatch(document, &quot;.uno:Save&quot;, &quot;&quot;, 0, Arr
   End If
 
 &apos; Test to see if file of same name is already under change control
-If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then
-	Exit Sub
+If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; docuUUID &amp; &quot;/.svn/&quot;) Then &apos; Version 0.4
+
+	If NOT FileExists(WorkingDir &amp; &quot;/&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;/.svn/&quot;) Then &apos;Version 0.3
+			Exit Sub &apos; File not under version control so stop.
+
+			Else docpath = FileNameoutofPath(sDocURL, &quot;/&quot;)		
+
+	End If
+	
+Else docpath = docuUUID
+		
 End If
 
         copytype = &quot;tag&quot;
@@ -216,7 +225,7 @@ End If
     comment = &quot;tagtest&quot;
     &apos; tag the active version     
     cQuote = Chr( 34 )
-	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/tag.sh &apos;&quot; &amp; sDocURL2 &amp; &quot;&apos; &apos;&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; copytype &amp; &quot; &quot; &amp; copyname &amp; &quot; &apos;&quot; &amp; comment &amp; &quot;&apos; &gt; &quot; &amp; WorkingDir &amp; &quot;/operation.log&quot; + cQuote )
+	Shell( &quot;bash -c &quot; + cQuote + &quot;sh &quot; &amp; WorkingDir &amp; &quot;/tag.sh &apos;&quot; &amp; sDocURL2 &amp; &quot;&apos; &apos;&quot; &amp; FileNameoutofPath(sDocURL, &quot;/&quot;) &amp; &quot;&apos; &quot; &amp; repo &amp; &quot; &quot; &amp; WorkingDir &amp; &quot; &quot; &amp; copytype &amp; &quot; &quot; &amp; copyname &amp; &quot; &apos;&quot; &amp; comment &amp; &quot;&apos; &gt; &quot; &amp; WorkingDir &amp; &quot;/operationlog.txt&quot; + cQuote )
   
 
   
