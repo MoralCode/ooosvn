@@ -1,7 +1,26 @@
 =======================================
+0.4.3 :: 2013-02-18
+=======================================
+### New Features ###
+1654576 - If a document does not have a thumbnail within it, the thumbnail tool 
+will insert a 'No preview available' placeholder instead.  The document can 
+still be opened from Graphically browse versions and compare.
+
+Improved log file window titlebars to be more helpful.
+
+### Bug Fixes ###
+3605083 - The operation log opened in Calc instead of Writer.  This never used 
+to be the case and seems to be down to some behavioural change in LibreOffice 
+with .log files.
+
+3605131 - If a filename had been used for a version 0.3 file, any 0.4 file with 
+the same filename was registered as the same document and effectively broke 
+change management.  This behaviour has been reversed.
+
+=======================================
 0.4.2 :: 2012-07-02
 =======================================
-### New features ###
+### New Features ###
 2959084 - Recovery process has been drastically revamped.  Much more helpful,
 more information, better escape handling, visually improved.
 
@@ -64,7 +83,7 @@ Many bug fixes in the recovery, compare and revert functions.
 =======================================
 0.4.1 :: 2012-06-23
 =======================================
-### New features ###
+### New Features ###
 The initial name of a document is now stored in the documents metadata.  This
 will allow some new features in future.
 
@@ -83,7 +102,7 @@ Fixed an issue in pulling down the userguide.
 0.4.0 :: 2010-02-25
 =======================================
 
-### New features ###
+### New Features ###
 Every document is now assigned a 128-bit DocumentUUID to uniquely identify it.
 This has meant a major rewrite of how OOoSVN structures files with documents
 now being logged under their UUID rather than file name.  This means there are
@@ -155,7 +174,7 @@ try to continue.  An error is now given and the process is ended.
 0.3.10 :: 2009-01-12
 =======================================
 
-### New features ###
+### New Features ###
 1805953 - Superseding versions will now be able to install as an upgrade via
 OOo's package manager in recent versions of OOo.  This will not work on top of
 pre-0.3.10 versions.  This will make upgrades much smoother and allow checking
@@ -184,7 +203,7 @@ SVN Menu order fixed to how it was supposed to be.
 0.3.9 :: 2009-01-06
 =======================================
 
-### New features ###
+### New Features ###
 2488967 - Added FirstRunCheck to OnSavedSVN and OnSavedAsSVN meaning that if
 macros have already been assigned to these events, the wizard will run on the
 first run.
@@ -215,7 +234,7 @@ problem characters such as spaces in them.
 0.3.8 :: 2007-08-20
 =======================================
 
-### New features ###
+### New Features ###
 Some experimental configuration scripts which are not connected to anything but
 give some idea of what 0.4.0 might try to do.  Harmless, but don't run them
 unless you like error messages.
@@ -347,7 +366,7 @@ This is related to the big load of bug fixes too.
 0.3.2 :: 2007-02-13
 =======================================
 
-### New features ###
+### New Features ###
 Switched back to using .zip extension from .oxt.  The packages are exactly the
 same but .zip will install on OOo <2.1 without problems.
 
@@ -371,7 +390,7 @@ and really should never display the wrong info version or blank.
 0.3.1 :: 2007-02-07
 =======================================
 
-### New features ###
+### New Features ###
 1655501 - Comments no longer hardcoded as 'Revision' in commit.sh.  Now the
 comment is taken as $5 and is different for different operations. 
 'Incremental-save' and 'Manual-commit' are currently being used for OnSavedSVN

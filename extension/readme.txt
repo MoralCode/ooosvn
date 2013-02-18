@@ -2,10 +2,12 @@ Requirements:
 - A Unix/Linux system.  OOoSVN will not work under Windows as yet.  MacOSX has
 been reported as working if the required packages are installed but is
 unsupported as I don't have a Mac to test on.
-- OOo 2.3.0 or later or LibreOffice, tested with LibreOffice 3.5.4.  Problems
-have previously been found using OOoSVN under go-OOo.
+- OOo 2.3.0 or later or LibreOffice, tested with LibreOffice 3.6.5.  Problems
+have previously been found using OOoSVN under the now deprecated go-OOo.
 - Subversion 1.3 or greater, latest stable version is recommended.
-- bash, coreutils, findutils, zip, unzip, grep, awk, sed 4.0
+- bash, coreutils, findutils, zip, unzip, grep, awk, sed 4.0.  A built in 
+dependency check is included and can be run at any time: Help > About OOoSVN > 
+Check Dependencies
 
 Installation:
 This is BETA, use with caution.
@@ -14,17 +16,17 @@ The OOoSVN is available for download as an .oxt file.  This is the
 OpenOffice.org extension format.  Use of the .oxt format eases installation a
 lot:
 
-1. Install the ooosvn-0.4.2.oxt package using OOo's package manager, Tools >
+1. Install the ooosvn-0.4.3.oxt package using OOo's package manager, Tools >
 Extensions.  This will install the BASIC modules and will give you the SVN menu.
  With OOo 2.4 or later and OOoSVN 0.3.10 or later, the extension can be updated
 from within the Package Manager, including by checking packages against the OOo
 Extensions repository.
 
 2. If doing an upgrade it is STRONGLY RECOMMENDED that you run Tools > Add-Ons >
-Install OOoSVN scripts to upgrade the scripts in the working directory.  If this
-is a fresh install, use SVN > Place document under version control for the first
-time and your home repository, working directory and shell scripts will be
-created for you by the first run wizard.
+Install OOoSVN scripts to upgrade the scripts and other resources in the working 
+directory.  If this is a fresh install, use SVN > Place document under version 
+control for the first time and your home repository, working directory and shell 
+scripts will be created for you by the first run wizard.
 
 Use:
 Installing the .oxt package gets you an SVN menu in OOo.  From this menu you can
@@ -58,7 +60,7 @@ OOoSVN to be pulled back.
 
 - Bulk import - provides a wizard to recursively search and import ODF files of
 different types on your computer in bulk.  The easiest way to get working with
-OOoSVN straightaway.
+OOoSVN straight away.
 
 - View last operation log - Provides feedback on the last SVN operation.  Useful
 for troubleshooting.
