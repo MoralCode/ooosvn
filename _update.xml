@@ -4,6 +4,6 @@
 	<identifier value="org.ooosvn.ooosvn"/>
 	<version value="0.4.3"/>
 	<update-download>
-		<src xlink:href="https://sourceforge.net/projects/ooosvn/files/OOoSVN/0.4.3/ooosvn-beta-0.4.3.oxt/download" />
+		<src xlink:href="https://downloads.sourceforge.net/project/ooosvn/OOoSVN/0.4.3/ooosvn-beta-0.4.3.oxt?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fooosvn%2Ffiles%2FOOoSVN%2F0.4.3%2F&ts=1361212814&use_mirror=switch" />
 	</update-download>
 </description> 
