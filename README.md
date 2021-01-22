@@ -10,3 +10,7 @@ The goal of this fork is to:
 - [ ] update the original extension to be compatible with newer versions of OpenOffice/LibreOffice
 - [ ] Add support for git repositories
 - [ ] (possibly) make the UI easier to use so that it is able to be used by people who dont have experience with using git
+
+
+## Similar Projects
+https://sourceforge.net/projects/odfsvn/
